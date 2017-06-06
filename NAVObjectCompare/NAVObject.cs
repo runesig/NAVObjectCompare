@@ -8,6 +8,8 @@ namespace NAVObjectCompare
 {
     public class NavObject
     {
+        public enum Difference { None, Unexisting, Id, Name, DateOrTime, ModifiedFlag, Code }
+
         private List<string> _lines = null;
 
         public NavObject()
@@ -62,6 +64,60 @@ namespace NAVObjectCompare
             return _lines[index];
         }
 
+        public bool IsEqualTo(NavObject b, out Difference difference)
+        {
+            difference = Difference.None;
+
+            if(b == null)
+            {
+                difference = Difference.Unexisting;
+                return false;
+            }
+
+            if (InternalId != b.InternalId)
+            {
+                difference = Difference.Id;
+                return false;
+            }
+
+            if (Name != b.Name)
+            {
+                difference = Difference.Name;
+                return false;
+            }
+
+            if (this.LineCount() != b.LineCount())
+            {
+                difference = Difference.Code;
+                return false;
+            }
+
+            for (int i = 0; i < LineCount(); i++)
+            {
+                string lineA = GetLine(i);
+                string lineB = b.GetLine(i);
+
+                if (!lineA.Equals(lineB))
+                {
+                    difference = Difference.Code;
+                    return false;
+                }
+            }
+
+            if ((StringTime != b.StringTime) || (StringDate != b.StringDate))
+            {
+                difference = Difference.DateOrTime;
+                return false;
+            }
+
+            if (Modified != b.Modified)
+            {
+                difference = Difference.ModifiedFlag;
+                return false;
+            }
+
+            return true;
+        }
 
         public override bool Equals(System.Object obj)
         {
