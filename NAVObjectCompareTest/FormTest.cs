@@ -7,14 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NAVObjectCompare;
 
 namespace NAVObjectCompareTest
 {
-    public partial class Form1 : Form
+    public partial class FormTest : Form
     {
-        public Form1()
+        public FormTest()
         {
             InitializeComponent();
+        }
+
+        private void FormTest_Load(object sender, EventArgs e)
+        {
+            NAVObjectCompare.Compare compare = new Compare(@"C:\temp\Objects\VehicleArea2.txt", string.Empty);
+            //compare.Run();
         }
     }
 }
