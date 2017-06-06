@@ -14,8 +14,8 @@ namespace NAVObjectCompare
         private string _compareFileA = string.Empty;
         private string _compareFileB = string.Empty;
 
-        private List<NAVObject> _navObjectsA = new List<NAVObject>();
-        private List<NAVObject> _navObjectsB = new List<NAVObject>();
+        private Dictionary<string, NavObject> _navObjectsA = new Dictionary<string, NavObject>();
+        private Dictionary<string, NavObject> _navObjectsB = new Dictionary<string, NavObject>();
 
         public Compare(string compareFileA, string compareFileB)
         {
@@ -30,17 +30,22 @@ namespace NAVObjectCompare
 
             ObjectFile fileB = new ObjectFile(_compareFileB);
             _navObjectsB = fileB.Run();
+
+            FindDifferences();
         }
 
-        public void FindDifferences()
+        private void FindDifferences()
         {
-            foreach(NAVObject navObjectA in _navObjectsA)
+            foreach (string key in _navObjectsA.Keys)
             {
-                foreach (NAVObject navObjectB in _navObjectsB)
+                NavObject navObjectA = _navObjectsA[key];
+                NavObject navObjectB = _navObjectsB[key];
+
+                if (!navObjectA.Equals(navObjectB))
                 {
-                    //if()
-                    //navObjectA.Id
-                }
+                    string test = "Test";
+                    string test2 = test;
+                }                   
             }
         }
     }

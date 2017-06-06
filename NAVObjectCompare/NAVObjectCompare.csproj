@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="Compare.cs" />
     <Compile Include="ObjectHelper.cs" />
-    <Compile Include="NAVObject.cs" />
+    <Compile Include="NavObject.cs" />
     <Compile Include="ObjectFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -20,8 +20,8 @@ namespace NAVObjectCompareTest
 
         private void FormTest_Load(object sender, EventArgs e)
         {
-            NAVObjectCompare.Compare compare = new Compare(@"C:\temp\Objects\VehicleArea2.txt", string.Empty);
-            //compare.Run();
+            NAVObjectCompare.Compare compare = new Compare(@"C:\temp\Objects\VehicleAreaA.txt", @"C:\temp\Objects\VehicleAreaB.txt");
+            compare.RunCompare();
         }
     }
 }

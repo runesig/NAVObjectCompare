@@ -9,41 +9,39 @@ namespace NAVObjectCompare
 {
     public class ObjectFile
     {
-        private enum ObjectPart { Empty, NewObject, ObjectProperties, Properties, Code };
+        private enum ObjectSection { Empty, NewObject, ObjectProperties, Properties, Code };
 
         private string _filePath = string.Empty;
 
-        private List<NAVObject> _navObjects = new List<NAVObject>();
-        private NAVObject _currentNAVObject = null;
-        private string _currentNAVObjectDate = string.Empty;
-        private string _currentNAVObjectTime = string.Empty;
-
-        private ObjectPart _currentObjectPart = ObjectPart.Empty;
+        private Dictionary<string, NavObject> _navObjects = new Dictionary<string, NavObject>(); 
 
         public ObjectFile(string filePath)
         {
             _filePath = filePath;
         }
 
-        public List<NAVObject> Run()
+        public Dictionary<string, NavObject> Run()
         {
-            string currentLine = string.Empty;
-            string prevLine = string.Empty;
+            ObjectSection currObjectSection = ObjectSection.Empty;
+            NavObject currNavObject = null;
 
             var lines = File.ReadAllLines(_filePath);
             foreach (var line in lines)
             {
-                prevLine = currentLine;
-                currentLine = line;
+                ObjectSection objectSection = FindObjectKeyWord(line);
+                if (objectSection != ObjectSection.Empty)
+                    currObjectSection = objectSection;
 
-                SearchObjectKeyWord(currentLine, prevLine);
+                ProcessLine(line, currObjectSection, ref currNavObject);
             }
 
             return _navObjects;
         }
 
-        private void SearchObjectKeyWord(string currentLine, string prevLine)
+        private ObjectSection FindObjectKeyWord(string currentLine)
         {
+            ObjectSection objectSection = ObjectSection.Empty;
+
             string[] parts = currentLine.Split(' ');
 
             foreach (string element in parts)
@@ -51,95 +49,78 @@ namespace NAVObjectCompare
                 switch (element)
                 {
                     case "OBJECT":
-                        AddNewNavObject();
+                        objectSection = ObjectSection.NewObject;
                         break;
                     case "OBJECT-PROPERTIES":
-                        AddObjectProperties();
+                        objectSection = ObjectSection.ObjectProperties;
                         break;
                     case "PROPERTIES":
-                        AddProperties();
+                        objectSection = ObjectSection.Properties;
                         break;
                     case "CODE":
-                        AddCode();
+                        objectSection = ObjectSection.Code;
                         break;
                 }
             }
 
-            ProcessLine(currentLine);
+            return objectSection;
         }
 
-        private void ProcessLine(string line)
+        private void ProcessLine(string line, ObjectSection objectSection, ref NavObject navObject)
         {
-            switch (_currentObjectPart)
+            switch (objectSection)
             {
-                case ObjectPart.NewObject:
-                    SetObjectIdAndName(line);
+                case ObjectSection.NewObject:
+                    navObject = CheckCreateNewNavObject(line, objectSection, navObject);
                     break;
-                case ObjectPart.ObjectProperties:
-                    SetObjectProperties(line);
+                case ObjectSection.ObjectProperties:
+                    SetObjectProperties(line, objectSection, ref navObject);
                     break;
-                case ObjectPart.Properties:
+                case ObjectSection.Properties:
                     break;
-                case ObjectPart.Code:
+                case ObjectSection.Code:
                     break;
             }
 
-            _currentNAVObject.AddLine(line);
+            navObject.AddLine(line);
         }
 
-        private void AddNewNavObject()
+        private NavObject CheckCreateNewNavObject(string line, ObjectSection objectSection, NavObject navObject)
         {
-            // New Object
-            _currentObjectPart = ObjectPart.NewObject;
-            _currentNAVObject = null;
-            _currentNAVObjectDate = string.Empty;
-            _currentNAVObjectTime = string.Empty;
+            NavObject newNavObject = CreateNewObject(line, objectSection);
+            if (newNavObject != null)
+            {
+                navObject = newNavObject;
+                _navObjects.Add(newNavObject.InternalId, newNavObject);
+            }
 
-            NAVObject navObject = new NAVObject();
-            _navObjects.Add(navObject);
-
-            // Set Current Object
-            _currentNAVObject = navObject;
+            return navObject;
         }
 
-        private void AddObjectProperties()
-        {
-            // Object Properties
-            _currentObjectPart = ObjectPart.ObjectProperties;
-        }
-
-        private void AddProperties()
-        {
-            // Properties
-            _currentObjectPart = ObjectPart.Properties;
-        }
-        private void AddCode()
-        {
-            // Code
-            _currentObjectPart = ObjectPart.Code;
-        }
-
-        private void SetObjectIdAndName(string line)
+        private NavObject CreateNewObject(string line, ObjectSection objectSection)
         {
             string[] parts = line.Split(' ');
 
-            if (_currentObjectPart != ObjectPart.NewObject)
-                return;
+            if (objectSection != ObjectSection.NewObject)
+                return null;
 
             if (parts.Length == 0)
-                return;
+                return null;
 
             if (parts[0] != "OBJECT")
-                return;
+                return null;
 
-            _currentNAVObject.Type = parts[1];
-            _currentNAVObject.Id = ObjectHelper.GetInt(parts[2]);
-            _currentNAVObject.Name = ObjectHelper.GetObjectName(line);
+            NavObject navObject = new NavObject();
+            navObject.Type = parts[1];
+            navObject.Id = ObjectHelper.GetInt(parts[2]);
+            navObject.Name = ObjectHelper.GetObjectName(line);
+
+            return navObject;
         }
 
-        private void SetObjectProperties(string line)
+        private void SetObjectProperties(string line, ObjectSection objectSection, ref NavObject navObject)
         {
-            if (_currentObjectPart != ObjectPart.ObjectProperties)
+            if (objectSection != ObjectSection.ObjectProperties)
                 return;
 
             string[] parts = line.Split('=');
@@ -147,25 +128,18 @@ namespace NAVObjectCompare
             switch (ObjectHelper.RemoveIllChar(parts[0]))
             {
                 case "Date":
-                    _currentNAVObjectDate = ObjectHelper.RemoveIllChar(parts[1]);
+                    navObject.StringDate = ObjectHelper.RemoveIllChar(parts[1]);
                     break;
                 case "Time":
-                    _currentNAVObjectTime = ObjectHelper.RemoveIllChar(parts[1]);
+                    navObject.StringTime = ObjectHelper.RemoveIllChar(parts[1]);
                     break;
                 case "Modified":
-                    _currentNAVObject.Modified = ObjectHelper.GetBool(parts[1]);
+                    navObject.Modified = ObjectHelper.GetBool(parts[1]);
                     break;
                 case "Version List":
-                    _currentNAVObject.VersionList = ObjectHelper.GetVersionList(line, parts[0]);
+                    navObject.VersionList = ObjectHelper.GetVersionList(line, parts[0]);
                     break;
             }
-
-            if ((!string.IsNullOrEmpty(_currentNAVObjectDate)) && (!string.IsNullOrEmpty(_currentNAVObjectTime)))
-            {
-                string stringDateTime = string.Format("{0} {1}", _currentNAVObjectDate, _currentNAVObjectTime);
-                _currentNAVObject.DateTime = ObjectHelper.GetDateTime(stringDateTime);
-            }
-
         }
     }
 }
