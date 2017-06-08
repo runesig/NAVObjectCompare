@@ -9,8 +9,6 @@ namespace NAVObjectCompare
 {
     public class ObjectFile
     {
-        private enum ObjectSection { Empty, NewObject, ObjectProperties, Properties, Code };
-
         private string _filePath = string.Empty;
 
         private Dictionary<string, NavObject> _navObjects = new Dictionary<string, NavObject>(); 
@@ -28,7 +26,7 @@ namespace NAVObjectCompare
             var lines = File.ReadAllLines(_filePath);
             foreach (var line in lines)
             {
-                ObjectSection objectSection = FindObjectKeyWord(line);
+                ObjectSection objectSection = ObjectHelper.FindObjectKeyWord(line);
                 if (objectSection != ObjectSection.Empty)
                     currObjectSection = objectSection;
 
@@ -38,33 +36,7 @@ namespace NAVObjectCompare
             return _navObjects;
         }
 
-        private ObjectSection FindObjectKeyWord(string currentLine)
-        {
-            ObjectSection objectSection = ObjectSection.Empty;
 
-            string[] parts = currentLine.Split(' ');
-
-            foreach (string element in parts)
-            {
-                switch (element)
-                {
-                    case "OBJECT":
-                        objectSection = ObjectSection.NewObject;
-                        break;
-                    case "OBJECT-PROPERTIES":
-                        objectSection = ObjectSection.ObjectProperties;
-                        break;
-                    case "PROPERTIES":
-                        objectSection = ObjectSection.Properties;
-                        break;
-                    case "CODE":
-                        objectSection = ObjectSection.Code;
-                        break;
-                }
-            }
-
-            return objectSection;
-        }
 
         private void ProcessLine(string line, ObjectSection objectSection, ref NavObject navObject)
         {
@@ -76,13 +48,11 @@ namespace NAVObjectCompare
                 case ObjectSection.ObjectProperties:
                     SetObjectProperties(line, objectSection, ref navObject);
                     break;
-                case ObjectSection.Properties:
-                    break;
                 case ObjectSection.Code:
                     break;
             }
 
-            navObject.AddLine(line);
+            navObject.Lines.Add(line);
         }
 
         private NavObject CheckCreateNewNavObject(string line, ObjectSection objectSection, NavObject navObject)

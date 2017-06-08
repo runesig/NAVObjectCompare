@@ -49,20 +49,15 @@ namespace NAVObjectCompare
         public string StringTime { get; set; }
         public string StringDate { get; set; }
 
-        public void AddLine(string line)
-        {
-            _lines.Add(line);
-        }
-
-        public int LineCount()
-        {
-            return _lines.Count;
-        }
-
         public string GetLine(int index)
         {
-            return _lines[index];
+            if(_lines.Count > index)
+                return _lines[index];
+
+            return string.Empty;
         }
+
+        public List<string> Lines { get { return _lines; } }
 
         public bool IsEqualTo(NavObject b, out Difference difference)
         {
@@ -86,23 +81,35 @@ namespace NAVObjectCompare
                 return false;
             }
 
-            if (this.LineCount() != b.LineCount())
-            {
-                difference = Difference.Code;
-                return false;
-            }
+            // Code Start
 
-            for (int i = 0; i < LineCount(); i++)
+            ObjectSection currObjectSectionA = ObjectSection.Empty;
+            ObjectSection currObjectSectionB = ObjectSection.Empty;
+
+            for (int i = 0; i < this.Lines.Count; i++)
             {
                 string lineA = GetLine(i);
                 string lineB = b.GetLine(i);
 
+                ObjectSection objectSectionA = ObjectHelper.FindObjectKeyWord(lineA);
+                if (objectSectionA != ObjectSection.Empty)
+                    currObjectSectionA = objectSectionA;
+
+                ObjectSection objectSectionB = ObjectHelper.FindObjectKeyWord(lineB);
+                if (objectSectionB != ObjectSection.Empty)
+                    currObjectSectionB = objectSectionB;
+
                 if (!lineA.Equals(lineB))
                 {
-                    difference = Difference.Code;
-                    return false;
+                    if ((currObjectSectionA == ObjectSection.Code) || (currObjectSectionB == ObjectSection.Code))
+                    {
+                        difference = Difference.Code;
+                        return false;
+                    }
                 }
             }
+            
+            // Code Stop
 
             if ((StringTime != b.StringTime) || (StringDate != b.StringDate))
             {
@@ -116,8 +123,15 @@ namespace NAVObjectCompare
                 return false;
             }
 
+            if (this.Lines.Count != b.Lines.Count)
+            {
+                difference = Difference.Code;
+                return false;
+            }
+
             return true;
         }
+
 
         public override bool Equals(System.Object obj)
         {
@@ -140,10 +154,10 @@ namespace NAVObjectCompare
             if (InternalId != b.InternalId)
                 return false;
 
-            if (this.LineCount() != b.LineCount())
+            if (this.Lines.Count != b.Lines.Count)
                 return false;
 
-            for (int i = 0; i < LineCount(); i++)
+            for (int i = 0; i < this.Lines.Count; i++)
             {
                 string lineA = GetLine(i);
                 string lineB = b.GetLine(i);

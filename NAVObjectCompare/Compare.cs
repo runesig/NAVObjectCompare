@@ -25,6 +25,9 @@ namespace NAVObjectCompare
             _compareFileB = compareFileB;
         }
 
+        public Dictionary<string, NavObject> NavObjectsA { get { return _navObjectsA; } }
+        public Dictionary<string, NavObject> NavObjectsB { get { return _navObjectsB; } }
+
         public void RunCompare()
         {
             ObjectFile fileA = new ObjectFile(_compareFileA);
@@ -111,7 +114,7 @@ namespace NAVObjectCompare
                 objectsCompared.StringDateA = navObjectA.StringDate;
                 objectsCompared.StringTimeA = navObjectA.StringTime;
                 objectsCompared.VersionListA = navObjectA.VersionList;
-                objectsCompared.NoOfLinesA = navObjectA.LineCount();
+                objectsCompared.NoOfLinesA = navObjectA.Lines.Count;
             }
         }
 
@@ -122,7 +125,7 @@ namespace NAVObjectCompare
                 objectsCompared.StringDateB = navObjectB.StringDate;
                 objectsCompared.StringTimeB = navObjectB.StringTime;
                 objectsCompared.VersionListB = navObjectB.VersionList;
-                objectsCompared.NoOfLinesB = navObjectB.LineCount();
+                objectsCompared.NoOfLinesB = navObjectB.Lines.Count;
             }
         }
 
@@ -157,7 +160,7 @@ namespace NAVObjectCompare
                     differenceDescription = "Modified flag is not equal.";
                     break;
                 case NavObject.Difference.Code:
-                    differenceDescription = "Code or comments are different.";
+                    differenceDescription = "Code, properties or comments are different.";
                     break;
                 default:
                     differenceDescription = "Equal.";

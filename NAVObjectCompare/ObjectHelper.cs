@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace NAVObjectCompare
 {
+    public enum ObjectSection { Empty, NewObject, ObjectProperties, Code };
+
     public class ObjectHelper
     {
         public static string GetObjectName(string line)
@@ -85,6 +87,31 @@ namespace NAVObjectCompare
             stringPart = stringPart.Replace(";", string.Empty);
 
             return stringPart;
+        }
+
+        public static ObjectSection FindObjectKeyWord(string currentLine)
+        {
+            ObjectSection objectSection = ObjectSection.Empty;
+
+            string[] parts = currentLine.Split(' ');
+
+            foreach (string element in parts)
+            {
+                switch (element)
+                {
+                    case "OBJECT":
+                        objectSection = ObjectSection.NewObject;
+                        break;
+                    case "OBJECT-PROPERTIES":
+                        objectSection = ObjectSection.ObjectProperties;
+                        break;
+                    case "CODE":
+                        objectSection = ObjectSection.Code;
+                        break;
+                }
+            }
+
+            return objectSection;
         }
     }
 }
