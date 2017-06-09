@@ -16,7 +16,7 @@ namespace NAVObjectCompareTest
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormTest());
+            Application.Run(new FormMain());
         }
     }
 }

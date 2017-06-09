@@ -20,6 +20,9 @@ namespace NAVObjectCompare
 
         public Dictionary<string, NavObject> Run()
         {
+            if (string.IsNullOrEmpty(_filePath))
+                return new Dictionary<string, NavObject>();
+
             ObjectSection currObjectSection = ObjectSection.Unknown;
             NavObject currNavObject = null;
 
