@@ -46,17 +46,31 @@ namespace NAVObjectCompare
                     break;
                 case ObjectSection.ObjectProperties:
                     SetObjectProperties(line, objectSection, ref navObject);
+                    navObject.ObjectProperties.Add(line);
+                    break;
+                case ObjectSection.Properties:
+                    navObject.Properties.Add(line);
+                    break;
+                case ObjectSection.Fields:
+                    navObject.Fields.Add(line);
+                    break;
+                case ObjectSection.Keys:
+                    navObject.Keys.Add(line);
+                    break;
+                case ObjectSection.FieldGroups:
+                    navObject.FieldGroups.Add(line);
                     break;
                 case ObjectSection.Code:
+                    navObject.Code.Add(line);
                     break;
             }
 
-            navObject.Lines.Add(line);
+            navObject.ObjectLines.Add(line);
         }
 
         private NavObject CreateNewObject(string line, ObjectSection objectSection, NavObject navObject)
         {
-            NavObject newNavObject = CreateNewObject(line, objectSection);
+            NavObject newNavObject = NewObject(line, objectSection);
             if (newNavObject != null)
             {
                 navObject = newNavObject;
@@ -66,7 +80,7 @@ namespace NAVObjectCompare
             return navObject;
         }
 
-        private NavObject CreateNewObject(string line, ObjectSection objectSection)
+        private NavObject NewObject(string line, ObjectSection objectSection)
         {
             string[] parts = line.Split(' ');
 

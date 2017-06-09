@@ -34,7 +34,7 @@ namespace NAVObjectCompare
             if (objects.TryGetValue(objectsCompared.InternalId, out navObject))
             {
                 filePath = GetObjectFilePath(navObject, tag);
-                ExportFile(navObject.Lines, filePath);
+                ExportFile(navObject.ObjectLines, filePath);
             }
 
             return filePath;

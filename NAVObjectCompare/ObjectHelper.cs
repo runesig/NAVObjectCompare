@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 namespace NAVObjectCompare
 {
-    public enum ObjectSection { Unknown, Object, ObjectProperties, Properties, Fields, Keys, FieldGroups, Code };
-
     public class ObjectHelper
     {
         public static string GetObjectName(string line)

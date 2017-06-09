@@ -6,10 +6,16 @@ using System.Threading.Tasks;
 
 namespace NAVObjectCompare
 {
+    public enum ObjectSection { Unknown, Object, ObjectProperties, Properties, Fields, Keys, FieldGroups, Code };
     public class NavObject
     {
-        public enum Difference { None, Unexisting, Id, Name, DateOrTime, ModifiedFlag, Code }
-        private List<string> _lines = new List<string>();
+        private List<string> _objectLines = new List<string>();
+        private List<string> _objectProperties = new List<string>();
+        private List<string> _properties = new List<string>();
+        private List<string> _fields = new List<string>();
+        private List<string> _keys = new List<string>();
+        private List<string> _fieldGroups = new List<string>();
+        private List<string> _code = new List<string>();
 
         public string InternalId
         {
@@ -45,116 +51,32 @@ namespace NAVObjectCompare
 
         public string GetLine(int index)
         {
-            if(_lines.Count > index)
-                return _lines[index];
+            if(_objectLines.Count > index)
+                return _objectLines[index];
 
             return string.Empty;
         }
 
-        public List<string> Lines { get { return _lines; } }
+        public List<string> ObjectLines { get { return _objectLines; } }
+        public List<string> ObjectProperties { get { return _objectProperties; } }
+        public List<string> Properties { get { return _properties; } }
+        public List<string> Fields { get { return _fields; } }
+        public List<string> Keys { get { return _keys; } }
+        public List<string> FieldGroups { get { return _fieldGroups; } }
+        public List<string> Code { get { return _code; } }
 
-        public bool IsEqualTo(NavObject b, out Difference difference)
+        public bool IsEqualTo(NavObject objectToCompare)
         {
-            difference = Difference.None;
-
-            if(b == null)
-            {
-                difference = Difference.Unexisting;
+            if (objectToCompare == null)
                 return false;
-            }
 
-            if (InternalId != b.InternalId)
-            {
-                difference = Difference.Id;
+            if (this.ObjectLines.Count != objectToCompare.ObjectLines.Count)
                 return false;
-            }
 
-            if (Name != b.Name)
-            {
-                difference = Difference.Name;
-                return false;
-            }
-
-            //// Code Start
-
-            ObjectSection currObjectSectionA = ObjectSection.Unknown;
-            ObjectSection currObjectSectionB = ObjectSection.Unknown;
-
-            for (int i = 0; i < this.Lines.Count; i++)
+            for (int i = 0; i < this.ObjectLines.Count; i++)
             {
                 string lineA = GetLine(i);
-                string lineB = b.GetLine(i);
-
-                ObjectSection objectSectionA = ObjectHelper.FindObjectSection(lineA);
-                if (objectSectionA != ObjectSection.Unknown)
-                    currObjectSectionA = objectSectionA;
-
-                ObjectSection objectSectionB = ObjectHelper.FindObjectSection(lineB);
-                if (objectSectionB != ObjectSection.Unknown)
-                    currObjectSectionB = objectSectionB;
-
-                if (!lineA.Equals(lineB))
-                {
-                    if ((currObjectSectionA == ObjectSection.Code) || (currObjectSectionB == ObjectSection.Code))
-                    {
-                        difference = Difference.Code;
-                        return false;
-                    }
-                }
-            }
-
-            // Code Stop
-
-            if ((StringTime != b.StringTime) || (StringDate != b.StringDate))
-            {
-                difference = Difference.DateOrTime;
-                return false;
-            }
-
-            if (Modified != b.Modified)
-            {
-                difference = Difference.ModifiedFlag;
-                return false;
-            }
-
-            if (this.Lines.Count != b.Lines.Count)
-            {
-                difference = Difference.Code;
-                return false;
-            }
-
-            return true;
-        }
-
-
-        public override bool Equals(System.Object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            NavObject b = obj as NavObject;
-            if ((System.Object)b == null)
-            {
-                return false;
-            }
-
-            return Equals(b);
-        }
-
-        public bool Equals(NavObject b)
-        {
-            if (InternalId != b.InternalId)
-                return false;
-
-            if (this.Lines.Count != b.Lines.Count)
-                return false;
-
-            for (int i = 0; i < this.Lines.Count; i++)
-            {
-                string lineA = GetLine(i);
-                string lineB = b.GetLine(i);
+                string lineB = objectToCompare.GetLine(i);
 
                 if (!lineA.Equals(lineB))
                     return false;
@@ -163,9 +85,70 @@ namespace NAVObjectCompare
             return true;
         }
 
-        public override int GetHashCode()
+        public bool IsObjectPropertiesEqual(NavObject objectToCompare)
         {
-            return base.GetHashCode() * Id;
+            if (objectToCompare == null)
+                return false;
+
+            if (this.ObjectProperties.Count != objectToCompare.ObjectProperties.Count)
+                return false;
+
+            for (int i = 0; i < this.ObjectProperties.Count; i++)
+            {
+                string lineA = this.ObjectProperties[i];
+                string lineB = string.Empty;
+                if (objectToCompare.ObjectProperties.Count > i)
+                    lineB = objectToCompare.ObjectProperties[i];
+
+                if (!lineA.Equals(lineB))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public bool IsPropertiesEqual(NavObject objectToCompare)
+        {
+            if (objectToCompare == null)
+                return false;
+
+            if (this.Properties.Count != objectToCompare.Properties.Count)
+                return false;
+
+            for (int i = 0; i < this.Properties.Count; i++)
+            {
+                string lineA = this.Properties[i];
+                string lineB = string.Empty;
+                if (objectToCompare.Properties.Count > i)
+                    lineB = objectToCompare.Properties[i];
+
+                if (!lineA.Equals(lineB))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public bool IsCodeEqual(NavObject objectToCompare)
+        {
+            if (objectToCompare == null)
+                return false;
+
+            if (this.Code.Count != objectToCompare.Code.Count)
+                return false;
+
+            for (int i = 0; i < this.Code.Count; i++)
+            {
+                string lineA = this.Code[i];
+                string lineB = string.Empty;
+                if (objectToCompare.Code.Count > i)
+                    lineB = objectToCompare.Code[i];
+
+                if (!lineA.Equals(lineB))
+                    return false;
+            }
+
+            return true;
         }
 
         public static bool operator ==(NavObject a, NavObject b)
@@ -182,6 +165,16 @@ namespace NAVObjectCompare
         public static bool operator !=(NavObject a, NavObject b)
         {
             return !(a == b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

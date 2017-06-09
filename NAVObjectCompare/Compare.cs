@@ -93,17 +93,32 @@ namespace NAVObjectCompare
 
         private void GetDifference(NavObject navObject1, NavObject navObject2, ObjectsCompared objectsCompared)
         {
-            NavObject.Difference difference = NavObject.Difference.None;
-
-            if (navObject1.IsEqualTo(navObject2, out difference))
+            if (!navObject1.IsEqualTo(navObject2))
             {
-                objectsCompared.Equal = true;
-                objectsCompared.Difference = DifferenceDescription(NavObject.Difference.None);
+                objectsCompared.Equal = false;
+
+                // Do More Analysis
+                if (!navObject1.IsObjectPropertiesEqual(navObject2))
+                {
+                    objectsCompared.ObjectPropertiesEqual = false;
+                    objectsCompared.Difference = "Date or Time";
+                }
+
+                if (!navObject1.IsPropertiesEqual(navObject2))
+                {
+                    objectsCompared.PropertiesEqual = false;
+                    objectsCompared.Difference = objectsCompared.Difference += ", Properties";
+                }
+
+                if (!navObject1.IsCodeEqual(navObject2))
+                {
+                    objectsCompared.CodeEqual = false;
+                    objectsCompared.Difference = objectsCompared.Difference  += ", Code";
+                }
             }
             else
             {
-                objectsCompared.Equal = false;
-                objectsCompared.Difference = DifferenceDescription(difference);
+                objectsCompared.Equal = true;
             }
         }
 
@@ -114,7 +129,7 @@ namespace NAVObjectCompare
                 objectsCompared.StringDateA = navObjectA.StringDate;
                 objectsCompared.StringTimeA = navObjectA.StringTime;
                 objectsCompared.VersionListA = navObjectA.VersionList;
-                objectsCompared.NoOfLinesA = navObjectA.Lines.Count;
+                objectsCompared.NoOfLinesA = navObjectA.ObjectLines.Count;
             }
         }
 
@@ -125,7 +140,7 @@ namespace NAVObjectCompare
                 objectsCompared.StringDateB = navObjectB.StringDate;
                 objectsCompared.StringTimeB = navObjectB.StringTime;
                 objectsCompared.VersionListB = navObjectB.VersionList;
-                objectsCompared.NoOfLinesB = navObjectB.Lines.Count;
+                objectsCompared.NoOfLinesB = navObjectB.ObjectLines.Count;
             }
         }
 
@@ -136,38 +151,6 @@ namespace NAVObjectCompare
                 return null;
 
             return navObject;
-        }
-
-        private string DifferenceDescription(NavObject.Difference difference)
-        {
-            string differenceDescription = string.Empty;
-
-            switch (difference)
-            {
-                case NavObject.Difference.Unexisting:
-                    differenceDescription = "Object does not exists in file.";
-                    break;
-                case NavObject.Difference.Id:
-                    differenceDescription = "Object Ids are not equal.";
-                    break;
-                case NavObject.Difference.Name:
-                    differenceDescription = "Object names are not equal.";
-                    break;
-                case NavObject.Difference.DateOrTime:
-                    differenceDescription = "Date or time is not equal.";
-                    break;
-                case NavObject.Difference.ModifiedFlag:
-                    differenceDescription = "Modified flag is not equal.";
-                    break;
-                case NavObject.Difference.Code:
-                    differenceDescription = "Code, properties or comments are different.";
-                    break;
-                default:
-                    differenceDescription = "Equal.";
-                    break;
-            }
-
-            return differenceDescription;
         }
     }
 }

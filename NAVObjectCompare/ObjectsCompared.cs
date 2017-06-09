@@ -25,6 +25,9 @@ namespace NAVObjectCompare
         public int NoOfLinesA { get; set; }
         public int NoOfLinesB { get; set; }
         public bool Equal { get; set; }
+        public bool ObjectPropertiesEqual { get; set; }
+        public bool PropertiesEqual { get; set; }
+        public bool CodeEqual { get; set; }
         public string Difference { get; set; }
     }
 }
