@@ -9,13 +9,7 @@ namespace NAVObjectCompare
     public class NavObject
     {
         public enum Difference { None, Unexisting, Id, Name, DateOrTime, ModifiedFlag, Code }
-
-        private List<string> _lines = null;
-
-        public NavObject()
-        {
-            _lines = new List<string>();
-        }
+        private List<string> _lines = new List<string>();
 
         public string InternalId
         {
@@ -81,22 +75,22 @@ namespace NAVObjectCompare
                 return false;
             }
 
-            // Code Start
+            //// Code Start
 
-            ObjectSection currObjectSectionA = ObjectSection.Empty;
-            ObjectSection currObjectSectionB = ObjectSection.Empty;
+            ObjectSection currObjectSectionA = ObjectSection.Unknown;
+            ObjectSection currObjectSectionB = ObjectSection.Unknown;
 
             for (int i = 0; i < this.Lines.Count; i++)
             {
                 string lineA = GetLine(i);
                 string lineB = b.GetLine(i);
 
-                ObjectSection objectSectionA = ObjectHelper.FindObjectKeyWord(lineA);
-                if (objectSectionA != ObjectSection.Empty)
+                ObjectSection objectSectionA = ObjectHelper.FindObjectSection(lineA);
+                if (objectSectionA != ObjectSection.Unknown)
                     currObjectSectionA = objectSectionA;
 
-                ObjectSection objectSectionB = ObjectHelper.FindObjectKeyWord(lineB);
-                if (objectSectionB != ObjectSection.Empty)
+                ObjectSection objectSectionB = ObjectHelper.FindObjectSection(lineB);
+                if (objectSectionB != ObjectSection.Unknown)
                     currObjectSectionB = objectSectionB;
 
                 if (!lineA.Equals(lineB))
@@ -108,7 +102,7 @@ namespace NAVObjectCompare
                     }
                 }
             }
-            
+
             // Code Stop
 
             if ((StringTime != b.StringTime) || (StringDate != b.StringDate))

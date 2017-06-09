@@ -66,8 +66,9 @@ namespace NAVObjectCompare
         }
 
         private string GetObjectFilePath(NavObject navObject, string tag)
-        {
-            return string.Format("{0}/{1}{2}.txt", GetObjectFileFolder(), navObject.InternalId, tag);
+        {            
+            string fileName = string.Format("{0}{1}.txt", navObject.InternalId, tag);
+            return Path.Combine(GetObjectFileFolder(), fileName);
         }
 
         private string GetObjectFileFolder()

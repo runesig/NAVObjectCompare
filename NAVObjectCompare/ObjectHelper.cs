@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NAVObjectCompare
 {
-    public enum ObjectSection { Empty, NewObject, ObjectProperties, Code };
+    public enum ObjectSection { Unknown, Object, ObjectProperties, Properties, Fields, Keys, FieldGroups, Code };
 
     public class ObjectHelper
     {
@@ -45,9 +45,6 @@ namespace NAVObjectCompare
                                    out date))
                 throw new Exception(string.Format("{0} could not be converted to 'DateTime'", stringValue));
 
-            //if(!DateTime.TryParse(stringValue, out date))
-            //    throw new Exception(string.Format("{0} could not be converted to 'DateTime'", stringValue));
-
             return date;
         }
 
@@ -66,11 +63,15 @@ namespace NAVObjectCompare
         {
             stringValue = RemoveIllChar(stringValue);
 
-            switch (stringValue)
+            switch (stringValue.ToUpper())
             {
-                case "Yes":
+                case "YES":
                     return true;
-                case "False":
+                case "NO":
+                    return false;
+                case "TRUE":
+                    return true;
+                case "FALSE":
                     return false;
             }
 
@@ -89,10 +90,8 @@ namespace NAVObjectCompare
             return stringPart;
         }
 
-        public static ObjectSection FindObjectKeyWord(string currentLine)
+        public static ObjectSection FindObjectSection(string currentLine)
         {
-            ObjectSection objectSection = ObjectSection.Empty;
-
             string[] parts = currentLine.Split(' ');
 
             foreach (string element in parts)
@@ -100,18 +99,23 @@ namespace NAVObjectCompare
                 switch (element)
                 {
                     case "OBJECT":
-                        objectSection = ObjectSection.NewObject;
-                        break;
+                        return ObjectSection.Object;
                     case "OBJECT-PROPERTIES":
-                        objectSection = ObjectSection.ObjectProperties;
-                        break;
+                        return ObjectSection.ObjectProperties;
+                    case "PROPERTIES":
+                        return ObjectSection.Properties;
+                    case "FIELDS":
+                        return ObjectSection.Fields;
+                    case "KEYS":
+                        return ObjectSection.Fields;
+                    case "FIELDGROUPS":
+                        return ObjectSection.FieldGroups;
                     case "CODE":
-                        objectSection = ObjectSection.Code;
-                        break;
+                        return ObjectSection.Code;
                 }
             }
 
-            return objectSection;
+            return ObjectSection.Unknown;
         }
     }
 }

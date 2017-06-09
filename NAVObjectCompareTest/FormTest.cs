@@ -23,6 +23,7 @@ namespace NAVObjectCompareTest
 
         private void FormTest_Load(object sender, EventArgs e)
         {
+            //_compare = new Compare(@"C:\temp\Objects\ObjectCompareTEST.txt", @"C:\temp\Objects\ObjectCompareSandbox.txt");
             _compare = new Compare(@"C:\temp\Objects\AllObjectsTEST.txt", @"C:\temp\Objects\AllObjectsSandbox.txt");
             _compare.RunCompare();
 

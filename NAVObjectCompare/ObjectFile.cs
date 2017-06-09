@@ -20,30 +20,29 @@ namespace NAVObjectCompare
 
         public Dictionary<string, NavObject> Run()
         {
-            ObjectSection currObjectSection = ObjectSection.Empty;
+            ObjectSection currObjectSection = ObjectSection.Unknown;
             NavObject currNavObject = null;
 
             var lines = File.ReadAllLines(_filePath);
-            foreach (var line in lines)
+            for (int i = 0; i < lines.Length; i++)
             {
-                ObjectSection objectSection = ObjectHelper.FindObjectKeyWord(line);
-                if (objectSection != ObjectSection.Empty)
+                ObjectSection objectSection = ObjectHelper.FindObjectSection(lines[i]);
+                if (objectSection != ObjectSection.Unknown)
                     currObjectSection = objectSection;
 
-                ProcessLine(line, currObjectSection, ref currNavObject);
+                ProcessLine(lines[i], currObjectSection, ref currNavObject);
             }
 
             return _navObjects;
         }
 
 
-
         private void ProcessLine(string line, ObjectSection objectSection, ref NavObject navObject)
         {
             switch (objectSection)
             {
-                case ObjectSection.NewObject:
-                    navObject = CheckCreateNewNavObject(line, objectSection, navObject);
+                case ObjectSection.Object:
+                    navObject = CreateNewObject(line, objectSection, navObject);
                     break;
                 case ObjectSection.ObjectProperties:
                     SetObjectProperties(line, objectSection, ref navObject);
@@ -55,7 +54,7 @@ namespace NAVObjectCompare
             navObject.Lines.Add(line);
         }
 
-        private NavObject CheckCreateNewNavObject(string line, ObjectSection objectSection, NavObject navObject)
+        private NavObject CreateNewObject(string line, ObjectSection objectSection, NavObject navObject)
         {
             NavObject newNavObject = CreateNewObject(line, objectSection);
             if (newNavObject != null)
@@ -71,7 +70,7 @@ namespace NAVObjectCompare
         {
             string[] parts = line.Split(' ');
 
-            if (objectSection != ObjectSection.NewObject)
+            if (objectSection != ObjectSection.Object)
                 return null;
 
             if (parts.Length == 0)
