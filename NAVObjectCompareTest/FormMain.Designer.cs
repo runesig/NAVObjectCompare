@@ -1,4 +1,4 @@
-﻿namespace NAVObjectCompareTest
+﻿namespace NAVObjectCompareWinClient
 {
     partial class FormMain
     {
@@ -30,6 +30,9 @@
         {
             this.comparedDataGridView = new System.Windows.Forms.DataGridView();
             this.panelToolbar = new System.Windows.Forms.Panel();
+            this.notEqualCheckBox = new System.Windows.Forms.CheckBox();
+            this.fileBLabel = new System.Windows.Forms.Label();
+            this.fileALabel = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,16 +42,13 @@
             this.StringDateA = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StringTimeA = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.VersionListA = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.NoOfLinesA = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StringDateB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StringTimeB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.VersionListB = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.NoOfLinesA = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NoOfLinesB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IsEqual = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Difference = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fileALabel = new System.Windows.Forms.Label();
-            this.fileBLabel = new System.Windows.Forms.Label();
-            this.notEqualCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.comparedDataGridView)).BeginInit();
             this.panelToolbar.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -66,10 +66,10 @@
             this.StringDateA,
             this.StringTimeA,
             this.VersionListA,
+            this.NoOfLinesA,
             this.StringDateB,
             this.StringTimeB,
             this.VersionListB,
-            this.NoOfLinesA,
             this.NoOfLinesB,
             this.IsEqual,
             this.Difference});
@@ -79,6 +79,7 @@
             this.comparedDataGridView.Size = new System.Drawing.Size(1428, 504);
             this.comparedDataGridView.TabIndex = 0;
             this.comparedDataGridView.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.comparedDataGridView_CellMouseDoubleClick);
+            this.comparedDataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.comparedDataGridView_CellPainting);
             this.comparedDataGridView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.comparedDataGridView_DataBindingComplete);
             // 
             // panelToolbar
@@ -92,6 +93,35 @@
             this.panelToolbar.Name = "panelToolbar";
             this.panelToolbar.Size = new System.Drawing.Size(1428, 89);
             this.panelToolbar.TabIndex = 1;
+            // 
+            // notEqualCheckBox
+            // 
+            this.notEqualCheckBox.AutoSize = true;
+            this.notEqualCheckBox.Location = new System.Drawing.Point(12, 27);
+            this.notEqualCheckBox.Name = "notEqualCheckBox";
+            this.notEqualCheckBox.Size = new System.Drawing.Size(134, 17);
+            this.notEqualCheckBox.TabIndex = 3;
+            this.notEqualCheckBox.Text = "Show Only Differences";
+            this.notEqualCheckBox.UseVisualStyleBackColor = true;
+            this.notEqualCheckBox.CheckedChanged += new System.EventHandler(this.notEqualCheckBox_CheckedChanged);
+            // 
+            // fileBLabel
+            // 
+            this.fileBLabel.AutoSize = true;
+            this.fileBLabel.Location = new System.Drawing.Point(805, 64);
+            this.fileBLabel.Name = "fileBLabel";
+            this.fileBLabel.Size = new System.Drawing.Size(93, 13);
+            this.fileBLabel.TabIndex = 2;
+            this.fileBLabel.Text = "B: No file selected";
+            // 
+            // fileALabel
+            // 
+            this.fileALabel.AutoSize = true;
+            this.fileALabel.Location = new System.Drawing.Point(303, 64);
+            this.fileALabel.Name = "fileALabel";
+            this.fileALabel.Size = new System.Drawing.Size(93, 13);
+            this.fileALabel.TabIndex = 1;
+            this.fileALabel.Text = "A: No file selected";
             // 
             // menuStrip1
             // 
@@ -115,7 +145,7 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -167,6 +197,13 @@
             this.VersionListA.Name = "VersionListA";
             this.VersionListA.ReadOnly = true;
             // 
+            // NoOfLinesA
+            // 
+            this.NoOfLinesA.DataPropertyName = "NoOfLinesA";
+            this.NoOfLinesA.HeaderText = "No Of Lines Object A";
+            this.NoOfLinesA.Name = "NoOfLinesA";
+            this.NoOfLinesA.ReadOnly = true;
+            // 
             // StringDateB
             // 
             this.StringDateB.DataPropertyName = "StringDateB";
@@ -188,13 +225,6 @@
             this.VersionListB.Name = "VersionListB";
             this.VersionListB.ReadOnly = true;
             // 
-            // NoOfLinesA
-            // 
-            this.NoOfLinesA.DataPropertyName = "NoOfLinesA";
-            this.NoOfLinesA.HeaderText = "No Of Lines Object A";
-            this.NoOfLinesA.Name = "NoOfLinesA";
-            this.NoOfLinesA.ReadOnly = true;
-            // 
             // NoOfLinesB
             // 
             this.NoOfLinesB.DataPropertyName = "NoOfLinesB";
@@ -215,35 +245,6 @@
             this.Difference.HeaderText = "Difference Comment";
             this.Difference.Name = "Difference";
             this.Difference.ReadOnly = true;
-            // 
-            // fileALabel
-            // 
-            this.fileALabel.AutoSize = true;
-            this.fileALabel.Location = new System.Drawing.Point(303, 64);
-            this.fileALabel.Name = "fileALabel";
-            this.fileALabel.Size = new System.Drawing.Size(93, 13);
-            this.fileALabel.TabIndex = 1;
-            this.fileALabel.Text = "A: No file selected";
-            // 
-            // fileBLabel
-            // 
-            this.fileBLabel.AutoSize = true;
-            this.fileBLabel.Location = new System.Drawing.Point(805, 64);
-            this.fileBLabel.Name = "fileBLabel";
-            this.fileBLabel.Size = new System.Drawing.Size(93, 13);
-            this.fileBLabel.TabIndex = 2;
-            this.fileBLabel.Text = "B: No file selected";
-            // 
-            // notEqualCheckBox
-            // 
-            this.notEqualCheckBox.AutoSize = true;
-            this.notEqualCheckBox.Location = new System.Drawing.Point(12, 27);
-            this.notEqualCheckBox.Name = "notEqualCheckBox";
-            this.notEqualCheckBox.Size = new System.Drawing.Size(127, 17);
-            this.notEqualCheckBox.TabIndex = 3;
-            this.notEqualCheckBox.Text = "Show Only Not Equal";
-            this.notEqualCheckBox.UseVisualStyleBackColor = true;
-            this.notEqualCheckBox.CheckedChanged += new System.EventHandler(this.notEqualCheckBox_CheckedChanged);
             // 
             // FormMain
             // 
@@ -272,22 +273,22 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+        private System.Windows.Forms.Label fileBLabel;
+        private System.Windows.Forms.Label fileALabel;
+        private System.Windows.Forms.CheckBox notEqualCheckBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn Id;
         private System.Windows.Forms.DataGridViewTextBoxColumn Type;
         private System.Windows.Forms.DataGridViewTextBoxColumn Object_Name;
         private System.Windows.Forms.DataGridViewTextBoxColumn StringDateA;
         private System.Windows.Forms.DataGridViewTextBoxColumn StringTimeA;
         private System.Windows.Forms.DataGridViewTextBoxColumn VersionListA;
+        private System.Windows.Forms.DataGridViewTextBoxColumn NoOfLinesA;
         private System.Windows.Forms.DataGridViewTextBoxColumn StringDateB;
         private System.Windows.Forms.DataGridViewTextBoxColumn StringTimeB;
         private System.Windows.Forms.DataGridViewTextBoxColumn VersionListB;
-        private System.Windows.Forms.DataGridViewTextBoxColumn NoOfLinesA;
         private System.Windows.Forms.DataGridViewTextBoxColumn NoOfLinesB;
         private System.Windows.Forms.DataGridViewTextBoxColumn IsEqual;
         private System.Windows.Forms.DataGridViewTextBoxColumn Difference;
-        private System.Windows.Forms.Label fileBLabel;
-        private System.Windows.Forms.Label fileALabel;
-        private System.Windows.Forms.CheckBox notEqualCheckBox;
     }
 }
 

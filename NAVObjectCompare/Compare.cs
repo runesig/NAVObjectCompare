@@ -45,50 +45,65 @@ namespace NAVObjectCompare
             return _objectsComparedDict.Values.ToList<ObjectsCompared>();
         }
 
-        private void FindDifferencesA()
+
+
+        public void FindDifferencesA()
         {
-            foreach (string key in _navObjectsA.Keys)
+            foreach (string internalId in _navObjectsA.Keys)
             {
-                NavObject navObjectA = GetDictValue(_navObjectsA, key);
-                NavObject navObjectB = GetDictValue(_navObjectsB, key);
-
-                ObjectsCompared objectsCompared = new ObjectsCompared(navObjectA.InternalId);
-                objectsCompared.Id = navObjectA.Id;
-                objectsCompared.Type = navObjectA.Type;
-                objectsCompared.Name = navObjectA.Name;
-
-                GetDifference(navObjectA, navObjectB, objectsCompared);
-
-                SetAValues(navObjectA, objectsCompared);
-                SetBValues(navObjectB, objectsCompared);
-
-                if (!_objectsComparedDict.ContainsKey(objectsCompared.InternalId))
-                    _objectsComparedDict.Add(objectsCompared.InternalId, objectsCompared);
+                FindDifferencesA(internalId);
             }
         }
 
-
-
-        private void FindDifferencesB()
+        public void FindDifferencesA(string internalId)
         {
-            foreach (string key in _navObjectsB.Keys)
+            NavObject navObjectA = GetDictValue(_navObjectsA, internalId);
+            NavObject navObjectB = GetDictValue(_navObjectsB, internalId);
+
+            ObjectsCompared objectsCompared = new ObjectsCompared(internalId);
+            objectsCompared.Id = navObjectA.Id;
+            objectsCompared.Type = navObjectA.Type;
+            objectsCompared.Name = navObjectA.Name;
+
+            GetDifference(navObjectA, navObjectB, objectsCompared);
+
+            SetAValues(navObjectA, objectsCompared);
+            SetBValues(navObjectB, objectsCompared);
+
+            if (!_objectsComparedDict.ContainsKey(internalId))
+                _objectsComparedDict.Add(internalId, objectsCompared);
+            else
+                _objectsComparedDict[internalId] = objectsCompared;
+        }
+
+        public void FindDifferencesB()
+        {
+            foreach (string internalId in _navObjectsB.Keys)
             {
-                NavObject navObjectB = GetDictValue(_navObjectsB, key);
-                NavObject navObjectA = GetDictValue(_navObjectsA, key);
-
-                ObjectsCompared objectsCompared = new ObjectsCompared(navObjectB.InternalId);
-                objectsCompared.Id = navObjectB.Id;
-                objectsCompared.Type = navObjectB.Type;
-                objectsCompared.Name = navObjectB.Name;
-
-                GetDifference(navObjectB, navObjectA, objectsCompared);
-
-                SetAValues(navObjectA, objectsCompared);
-                SetBValues(navObjectB, objectsCompared);
-
-                if (!_objectsComparedDict.ContainsKey(objectsCompared.InternalId))
-                    _objectsComparedDict.Add(objectsCompared.InternalId, objectsCompared);
+                FindDifferencesB(internalId);
             }
+        }
+
+        public void FindDifferencesB(string internalId)
+        {
+            NavObject navObjectB = GetDictValue(_navObjectsB, internalId);
+            NavObject navObjectA = GetDictValue(_navObjectsA, internalId);
+
+            ObjectsCompared objectsCompared = new ObjectsCompared(internalId);
+            objectsCompared.Id = navObjectB.Id;
+            objectsCompared.Type = navObjectB.Type;
+            objectsCompared.Name = navObjectB.Name;
+
+            GetDifference(navObjectB, navObjectA, objectsCompared);
+
+            SetAValues(navObjectA, objectsCompared);
+            SetBValues(navObjectB, objectsCompared);
+
+            if (!_objectsComparedDict.ContainsKey(internalId))
+                _objectsComparedDict.Add(internalId, objectsCompared);
+            else
+                _objectsComparedDict[internalId] = objectsCompared;
+
         }
 
         private void GetDifference(NavObject navObject1, NavObject navObject2, ObjectsCompared objectsCompared)

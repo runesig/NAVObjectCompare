@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Compare.cs" />
     <Compile Include="Editor.cs" />
+    <Compile Include="FileNotification\FileWatcher.cs" />
     <Compile Include="ObjectsCompared.cs" />
     <Compile Include="ObjectHelper.cs" />
     <Compile Include="NavObject.cs" />

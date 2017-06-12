@@ -9,12 +9,16 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
 using System.Configuration;
+using System.Diagnostics;
 using NAVObjectCompare;
+using NAVObjectCompareWinClient.Helpers;
+using NAVObjectCompareWinClient.FileNotification;
 
-namespace NAVObjectCompareTest
+namespace NAVObjectCompareWinClient
 {
     public partial class FormMain : Form
     {
+        Editor _editor = null;
         Compare _compare = null;
 
         public FormMain()
@@ -24,63 +28,54 @@ namespace NAVObjectCompareTest
 
         private void FormTest_Load(object sender, EventArgs e)
         {
-            //CompareAndFillGrid((@"C:\temp\Objects\ObjectCompareTEST.txt", @"C:\temp\Objects\ObjectCompareSandbox.txt");
-            //CompareAndFillGrid((@"C:\temp\Objects\AllObjectsTEST.txt", @"C:\temp\Objects\AllObjectsSandbox.txt");
-            //CompareAndFillGrid((@"C:\temp\Objects\VehicleAreaPreProd090617.txt", @"C:\temp\Objects\VehicleAreaSandbox090617.txt");
+            InitApplication();
+        }
 
-            // CompareAndFillGrid(@"C:\temp\Objects\VehicleAreaPreProd090617.txt", @"C:\temp\Objects\VehicleAreaSandbox090617.txt");
-
+        private void InitApplication()
+        {
+            // Sewt Lables
             SetFileNameLabels(string.Empty, string.Empty);
+
+            // Editor
+            string filePathEditor = ConfigurationManager.AppSettings["BeyondComparePath"];
+            _editor = new Editor(filePathEditor);
+            _editor.OnReCompareObject += _editor_OnReCompareObject;
         }
 
-        private void comparedDataGridView_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void _editor_OnReCompareObject(object source, EditorEventArgs e)
         {
-            OpenEditor(e.RowIndex);
-        }
+            try
+            {
+                _compare.FindDifferencesA(e.NavObject.InternalId);
+                _compare.FindDifferencesB(e.NavObject.InternalId);
 
-        private void comparedDataGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
-        {
-            //foreach (DataGridViewRow dgvr in comparedDataGridView.Rows)
-            //{
-            //    DataRowView drv = dgvr.DataBoundItem as DataRowView;
-            //    if (drv["Equal"].ToString() = "False")
-            //    {
-
-            //        if (!objectCompared.Equal)
-            //            dgvr.DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;
-
-            //    }
-            //}
-
-            //foreach (DataGridViewRow dgvr in comparedDataGridView.Rows)
-            //{
-            //    DataRowView drv = dgvr.DataBoundItem as DataRowView;
-            //    ObjectsCompared objectCompared = (ObjectsCompared)dgvr.DataBoundItem;
-            //    if (objectCompared != null)
-            //    {
-
-            //        if (!objectCompared.Equal)
-            //            dgvr.DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;
-
-            //    }
-            //}
+                PopulateGrid();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         // Private
-        private void OpenEditor(int rowIndex)
+        private void OpenEditor(string internalId)
         {
-            string filePathEditor = ConfigurationManager.AppSettings["BeyondComparePath"];
-
-            if ((rowIndex > -1) && (_compare.GetList().Count > rowIndex))
+            if (!string.IsNullOrEmpty(internalId))
             {
+                ObjectsCompared objectCompared = null;
+                foreach (ObjectsCompared searchCompared in _compare.GetList())
+                {
+                    if (searchCompared.InternalId == internalId)
+                        objectCompared = searchCompared;
+                }
 
-                ObjectsCompared objectCompared = _compare.GetList()[rowIndex];
+                if (objectCompared == null)
+                    return;
 
-                Editor editor = new Editor(filePathEditor);
-                editor.ObjectsA = _compare.NavObjectsA;
-                editor.ObjectsB = _compare.NavObjectsB;
+                _editor.ObjectsA = _compare.NavObjectsA;
+                _editor.ObjectsB = _compare.NavObjectsB;
 
-                editor.OpenEditor(objectCompared);
+                _editor.OpenEditor(objectCompared);
             }
         }
 
@@ -98,35 +93,79 @@ namespace NAVObjectCompareTest
 
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
-                if (openDialog.FileNames.Length > 1)
+                try
                 {
-                    // Get the two first ones
-                    string filePathA = openDialog.FileNames[0];
-                    string filePathB = openDialog.FileNames[1];
+                    if (openDialog.FileNames.Length > 1)
+                    {
+                        // Get the two first ones
+                        string filePathA = openDialog.FileNames[0];
+                        string filePathB = openDialog.FileNames[1];
 
-                    CompareAndFillGrid(filePathA, filePathB);
+                        CompareAndFillGrid(filePathA, filePathB);
+                    }
+                    else
+                        CompareAndFillGrid(openDialog.FileName, string.Empty);
                 }
-                else
-                    CompareAndFillGrid(openDialog.FileName, string.Empty);
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
             }
         }
 
         private void CompareAndFillGrid(string filePathA, string filePathB)
         {
+            // Testing Start
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            // Testing Stop
+
+            // Set Cursor
+            Cursor.Current = Cursors.WaitCursor;
+
             _compare = new Compare(filePathA, filePathB);
             _compare.RunCompare();
 
-            // populate list
-            DataTable ListAsDataTable = BuildDataTable<ObjectsCompared>(_compare.GetList());
+            PopulateGrid();
+
+            SetFileNameLabels(filePathA, filePathB);
+
+            Cursor.Current = Cursors.Default;
+
+            // Testing Start
+            sw.Stop();
+            Console.WriteLine("Elapsed={0}", sw.Elapsed);
+            // Testing Stop
+        }
+
+        private void PopulateGrid()
+        {
+            // Populate list
+            DataTable ListAsDataTable = DataTableHelper.BuildDataTable<ObjectsCompared>(_compare.GetList());
             DataView ListAsDataView = ListAsDataTable.DefaultView;
 
             var bindingList = new BindingList<ObjectsCompared>(_compare.GetList());
             var source = new BindingSource(bindingList, null);
 
-            comparedDataGridView.AutoGenerateColumns = false;
-            comparedDataGridView.DataSource = ListAsDataTable;
+            if (InvokeRequired)
+            {
+                // after we've done all the processing, 
+                this.Invoke(new MethodInvoker(delegate {
 
-            SetFileNameLabels(filePathA, filePathB);
+                    comparedDataGridView.AutoGenerateColumns = false;
+                    comparedDataGridView.DataSource = ListAsDataView;
+
+                    SetRowFilters();
+                }));
+                return;
+            }
+            else
+            {
+                comparedDataGridView.AutoGenerateColumns = false;
+                comparedDataGridView.DataSource = ListAsDataView;
+
+                SetRowFilters();
+            }
         }
 
         private void SetFileNameLabels(string filePathA, string filePathB)
@@ -147,44 +186,43 @@ namespace NAVObjectCompareTest
 
         }
 
-        public static DataTable BuildDataTable<T>(IList<T> lst)
-        {
-            DataTable tbl = CreateTable<T>();
-            Type entType = typeof(T);
-            PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(entType);
-
-            foreach (T item in lst)
-            {
-                DataRow row = tbl.NewRow();
-                foreach (PropertyDescriptor prop in properties)
-                {
-                    row[prop.Name] = prop.GetValue(item);
-                }
-                tbl.Rows.Add(row);
-            }
-            return tbl;
-        }
-
-        private static DataTable CreateTable<T>()
-        {
-            Type entType = typeof(T);
-
-            DataTable tbl = new DataTable(entType.Name);
-
-            PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(entType);
-            foreach (PropertyDescriptor prop in properties)
-            {
-                tbl.Columns.Add(prop.Name, prop.PropertyType);
-            }
-            return tbl;
-        }
-
         private void notEqualCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (notEqualCheckBox.Checked)
-                (comparedDataGridView.DataSource as DataTable).DefaultView.RowFilter = string.Format("Equal = {0}", "False");
-            else
-                (comparedDataGridView.DataSource as DataTable).DefaultView.RowFilter = string.Empty;
+            SetRowFilters();
         }
+
+        #region DataGridEvents
+
+        private void comparedDataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            DataGridViewHelper.SetRowColors(comparedDataGridView, e);
+        }
+
+        private void comparedDataGridView_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            // dgDocRow is DataGrid
+            BindingManagerBase bm = this.comparedDataGridView.BindingContext[this.comparedDataGridView.DataSource, this.comparedDataGridView.DataMember];
+            DataRow dr = ((DataRowView)bm.Current).Row;
+
+            string internalId = (string)dr["InternalId"];
+            OpenEditor(internalId);
+        }
+
+        private void comparedDataGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+        }
+        #endregion DataGridEvents
+
+        private void SetRowFilters()
+        {
+            if (comparedDataGridView.DataSource == null)
+                return;
+
+            if (notEqualCheckBox.Checked)
+                (comparedDataGridView.DataSource as DataView).RowFilter = string.Format("Equal = {0}", "False");
+            else
+                (comparedDataGridView.DataSource as DataView).RowFilter = string.Empty;
+        }
+
     }
 }
