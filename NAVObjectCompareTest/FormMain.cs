@@ -40,6 +40,34 @@ namespace NAVObjectCompareWinClient
             string filePathEditor = ConfigurationManager.AppSettings["BeyondComparePath"];
             _editor = new Editor(filePathEditor);
             _editor.OnReCompareObject += _editor_OnReCompareObject;
+
+            AddFilterFieldsComboBox();
+            AddShowItemsComboBox();
+        }
+
+        private void AddFilterFieldsComboBox()
+        {
+            foreach (DataGridViewColumn column in comparedDataGridView.Columns)
+            {
+                AddItem(fieldFilterComboBox, column.HeaderText, column.DataPropertyName);
+            }
+        }
+
+        private void AddShowItemsComboBox()
+        {
+            AddItem(showComboBox, "Show all", "ALL");
+            AddItem(showComboBox, "Show all equal", "ALLEQUAL");
+            AddItem(showComboBox, "Show all non equal", "ALLNONEQUAL");
+            AddItem(showComboBox, "Show only date,time differences", "OBJECTPROPERTIES");
+            AddItem(showComboBox, "Show code differences", "CODEDIFF");
+        }
+
+        private void AddItem(ComboBox combo, string text, string value)
+        {
+            ComboboxItem item = new ComboboxItem();
+            item.Text = text;
+            item.Value = value;
+            combo.Items.Add(item);
         }
 
         private void _editor_OnReCompareObject(object source, EditorEventArgs e)
@@ -170,25 +198,21 @@ namespace NAVObjectCompareWinClient
 
         private void SetFileNameLabels(string filePathA, string filePathB)
         {
-            if(!string.IsNullOrEmpty(filePathA))
+            if (!string.IsNullOrEmpty(filePathA))
+            {
                 fileALabel.Text = string.Format("File A: {0}", Path.GetFileName(filePathA));
+                fileALabel.BackColor = DataGridViewHelper.GetColorA;
+            }
             else
                 fileALabel.Text = string.Format("File A Not Set");
 
             if (!string.IsNullOrEmpty(filePathB))
+            {
                 fileBLabel.Text = string.Format("File B: {0}", Path.GetFileName(filePathB));
+                fileBLabel.BackColor = DataGridViewHelper.GetColorB;
+            }
             else
                 fileBLabel.Text = string.Format("File B Not Set");
-        }
-
-        private void fileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void notEqualCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            SetRowFilters();
         }
 
         #region DataGridEvents
@@ -208,9 +232,21 @@ namespace NAVObjectCompareWinClient
             OpenEditor(internalId);
         }
 
-        private void comparedDataGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        private void filterTextBox_TextChanged(object sender, EventArgs e)
         {
+            SetRowFilters();
         }
+
+        private void fieldFilterComboBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            SetRowFilters();
+        }
+
+        private void showComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetRowFilters();
+        }
+
         #endregion DataGridEvents
 
         private void SetRowFilters()
@@ -218,10 +254,120 @@ namespace NAVObjectCompareWinClient
             if (comparedDataGridView.DataSource == null)
                 return;
 
-            if (notEqualCheckBox.Checked)
-                (comparedDataGridView.DataSource as DataView).RowFilter = string.Format("Equal = {0}", "False");
-            else
-                (comparedDataGridView.DataSource as DataView).RowFilter = string.Empty;
+            (comparedDataGridView.DataSource as DataView).RowFilter = CreateRowFilter();
+
+            int count = (comparedDataGridView.DataSource as DataView).Count;
+            SetStatus(count);
+        }
+
+        private void SetStatus(int numberOfObjects)
+        {
+            toolStripStatusLabel.Text = string.Format("{0} object(s)", numberOfObjects);
+        }
+        private string CreateRowFilter()
+        {
+            string rowFilter = string.Empty;
+
+            rowFilter = CreateEqualFilter();
+            rowFilter = CreateComboRowFilter(rowFilter);
+
+            return rowFilter;
+        }
+
+        private string CreateEqualFilter()
+        {
+            string rowFilter = string.Empty;
+
+            ComboboxItem selectedItem = (ComboboxItem)showComboBox.SelectedItem;
+            if (selectedItem == null)
+                return string.Empty;
+
+            switch(selectedItem.Value)
+            {
+                case "ALL":
+                    rowFilter = string.Empty;
+                    break;
+                case "ALLEQUAL":
+                    rowFilter = string.Format("Equal = {0}", "True");
+                    break;
+                case "ALLNONEQUAL":
+                    rowFilter = string.Format("Equal = {0}", "False");
+                    break;
+                case "OBJECTPROPERTIES":
+                    rowFilter = string.Format("Equal = {0} AND CodeEqual = {1} AND ObjectPropertiesEqual = {2}", "False", "True", "False");
+                    break;
+                case "CODEDIFF":
+                    rowFilter = string.Format("Equal = {0} AND CodeEqual = {1}", "False", "False");
+                    break;                   
+            }
+
+            return rowFilter;
+        }
+
+        private string CreateComboRowFilter(string existingFilter)
+        {
+            string rowFilter = existingFilter;
+
+            ComboboxItem item = (ComboboxItem)fieldFilterComboBox.SelectedItem;
+            string comboFilter = string.Empty;
+
+            if (!string.IsNullOrEmpty(filterTextBox.Text) && (item != null))
+            {
+             if(!string.IsNullOrEmpty(existingFilter))
+                comboFilter = string.Format(" AND CONVERT({0}, System.String) LIKE '%{1}%'", item.Value, filterTextBox.Text);
+             else
+                comboFilter = string.Format("CONVERT({0}, System.String) LIKE '%{1}%'", item.Value, filterTextBox.Text);
+
+                rowFilter += comboFilter;
+            }
+
+            return rowFilter;
+        }
+
+        private void exportAFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string initFilename = string.Format("{0}_edited.txt", Path.GetFileNameWithoutExtension(_compare.FilenameA));
+
+            ExportFileDialog(_compare.NavObjectsA, initFilename, "A");
+        }
+
+        private void exportBFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string initFilename = string.Format("{0}_edited.txt", Path.GetFileNameWithoutExtension(_compare.FilenameB));
+
+            ExportFileDialog(_compare.NavObjectsB, initFilename, "B");
+        }
+
+        private void ExportFileDialog(Dictionary<string, NavObject> objects, string initFilename, string tag)
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Title = string.Format("Export {0}: NAV Object File(s)", tag);
+            saveDialog.Filter = "Txt files|*.txt";
+            saveDialog.FileName = initFilename;
+
+            if (saveDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    Export(objects, saveDialog.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+            }
+        }
+
+        private void Export(Dictionary<string, NavObject> objects, string filePath)
+        {
+
+            // Set Cursor
+            Cursor.Current = Cursors.WaitCursor;
+
+            ObjectFile.Export(objects, filePath);
+
+            // Set Cursor
+            Cursor.Current = Cursors.Default;
         }
 
     }

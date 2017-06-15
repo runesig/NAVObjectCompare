@@ -29,7 +29,7 @@ namespace NAVObjectCompare
             ObjectSection currObjectSection = ObjectSection.Unknown;
             NavObject currNavObject = null;
 
-            var lines = File.ReadAllLines(_filePath);
+            var lines = File.ReadAllLines(_filePath, Encoding.Default);
             for (int i = 0; i < lines.Length; i++)
             {
                 ObjectSection objectSection = ObjectHelper.FindObjectSection(lines[i]);
@@ -54,21 +54,24 @@ namespace NAVObjectCompare
                     SetObjectProperties(line, objectSection, ref navObject);
                     navObject.ObjectProperties.Add(line);
                     break;
-                case ObjectSection.Properties:
-                    navObject.Properties.Add(line);
-                    break;
-                case ObjectSection.Fields:
-                    navObject.Fields.Add(line);
-                    break;
-                case ObjectSection.Keys:
-                    navObject.Keys.Add(line);
-                    break;
-                case ObjectSection.FieldGroups:
-                    navObject.FieldGroups.Add(line);
-                    break;
-                case ObjectSection.Code:
+                default:
                     navObject.Code.Add(line);
                     break;
+                    //case ObjectSection.Properties:
+                    //    navObject.Properties.Add(line);
+                    //    break;
+                    //case ObjectSection.Fields:
+                    //    navObject.Fields.Add(line);
+                    //    break;
+                    //case ObjectSection.Keys:
+                    //    navObject.Keys.Add(line);
+                    //    break;
+                    //case ObjectSection.FieldGroups:
+                    //    navObject.FieldGroups.Add(line);
+                    //    break;
+                    //case ObjectSection.Code:
+                    //    navObject.Code.Add(line);
+                    //    break;
             }
 
             navObject.ObjectLines.Add(line);
@@ -128,6 +131,22 @@ namespace NAVObjectCompare
                 case "Version List":
                     navObject.VersionList = ObjectHelper.GetVersionList(line, parts[0]);
                     break;
+            }
+        }
+
+        public static void Export(Dictionary<string, NavObject> objects, string filePath)
+        {
+            using (StreamWriter textObject = new StreamWriter(filePath, false, Encoding.Default))
+            {
+                foreach(string key in objects.Keys)
+                {
+                    NavObject navObject = ObjectHelper.GetDictValue(objects, key);
+
+                    foreach (string line in navObject.ObjectLines)
+                    {
+                        textObject.WriteLine(line);
+                    }
+                }
             }
         }
     }

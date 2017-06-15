@@ -32,6 +32,10 @@ namespace NAVObjectCompareWinClient.Helpers
             }
         }
 
+        public static Color GetColorA { get { return _colorColumnEqualA; }}
+
+        public static Color GetColorB { get { return _colorColumnEqualB; } }
+
         private static void SetColumnColors(bool equal, DataGridView dataGridView, DataGridViewRow dataGridViewRow, DataGridViewCellPaintingEventArgs e)
         {
             Color colorColumnA;

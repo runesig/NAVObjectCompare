@@ -44,8 +44,8 @@ namespace NAVObjectCompare
         {
             return _objectsComparedDict.Values.ToList<ObjectsCompared>();
         }
-
-
+        public string FilenameA { get { return _compareFileA; } }
+        public string FilenameB { get { return _compareFileB; } }
 
         public void FindDifferencesA()
         {
@@ -57,8 +57,8 @@ namespace NAVObjectCompare
 
         public void FindDifferencesA(string internalId)
         {
-            NavObject navObjectA = GetDictValue(_navObjectsA, internalId);
-            NavObject navObjectB = GetDictValue(_navObjectsB, internalId);
+            NavObject navObjectA = ObjectHelper.GetDictValue(_navObjectsA, internalId);
+            NavObject navObjectB = ObjectHelper.GetDictValue(_navObjectsB, internalId);
 
             ObjectsCompared objectsCompared = new ObjectsCompared(internalId);
             objectsCompared.Id = navObjectA.Id;
@@ -86,8 +86,8 @@ namespace NAVObjectCompare
 
         public void FindDifferencesB(string internalId)
         {
-            NavObject navObjectB = GetDictValue(_navObjectsB, internalId);
-            NavObject navObjectA = GetDictValue(_navObjectsA, internalId);
+            NavObject navObjectB = ObjectHelper.GetDictValue(_navObjectsB, internalId);
+            NavObject navObjectA = ObjectHelper.GetDictValue(_navObjectsA, internalId);
 
             ObjectsCompared objectsCompared = new ObjectsCompared(internalId);
             objectsCompared.Id = navObjectB.Id;
@@ -108,6 +108,10 @@ namespace NAVObjectCompare
 
         private void GetDifference(NavObject navObject1, NavObject navObject2, ObjectsCompared objectsCompared)
         {
+            objectsCompared.CodeEqual = true;
+            objectsCompared.ObjectPropertiesEqual = true;
+            objectsCompared.Equal = true;
+
             if (!navObject1.IsEqualTo(navObject2))
             {
                 objectsCompared.Equal = false;
@@ -119,21 +123,21 @@ namespace NAVObjectCompare
                     objectsCompared.Difference = "Date or Time";
                 }
 
-                if (!navObject1.IsPropertiesEqual(navObject2))
-                {
-                    objectsCompared.PropertiesEqual = false;
-                    objectsCompared.Difference = objectsCompared.Difference += ", Properties";
-                }
+                //if (!navObject1.IsPropertiesEqual(navObject2))
+                //{
+                //    objectsCompared.PropertiesEqual = false;
+                //    if (!string.IsNullOrEmpty(objectsCompared.Difference))
+                //        objectsCompared.Difference += ", ";
+                //    objectsCompared.Difference = objectsCompared.Difference += "Properties";
+                //}
 
                 if (!navObject1.IsCodeEqual(navObject2))
                 {
                     objectsCompared.CodeEqual = false;
-                    objectsCompared.Difference = objectsCompared.Difference  += ", Code";
+                    if (!string.IsNullOrEmpty(objectsCompared.Difference))
+                        objectsCompared.Difference += ", ";
+                    objectsCompared.Difference = objectsCompared.Difference += "Code";
                 }
-            }
-            else
-            {
-                objectsCompared.Equal = true;
             }
         }
 
@@ -157,15 +161,6 @@ namespace NAVObjectCompare
                 objectsCompared.VersionListB = navObjectB.VersionList;
                 objectsCompared.NoOfLinesB = navObjectB.ObjectLines.Count;
             }
-        }
-
-        private NavObject GetDictValue(Dictionary<string, NavObject> dict, string key)
-        {
-            NavObject navObject = null;
-            if (!dict.TryGetValue(key, out navObject))
-                return null;
-
-            return navObject;
         }
     }
 }

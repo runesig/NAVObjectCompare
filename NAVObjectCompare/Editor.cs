@@ -41,13 +41,16 @@ namespace NAVObjectCompare
 
         private string CreateAndExportObject(ObjectsCompared objectsCompared, Dictionary<string, NavObject> objects, string tag)
         { 
-            string filePath = string.Empty;
+            string filePath = GetObjectFilePath(objectsCompared, tag);
 
             NavObject navObject = null;
             if (objects.TryGetValue(objectsCompared.InternalId, out navObject))
             {
-                filePath = GetObjectFilePath(navObject, tag);
                 ExportFile(navObject.ObjectLines, filePath);
+            }
+            else
+            {
+                ExportFile(new List<string>(), filePath); // Empty file
             }
 
             return filePath;
@@ -69,7 +72,7 @@ namespace NAVObjectCompare
 
         private void ExportFile(List<string> lines, string filePath)
         {
-            using (StreamWriter textObject = new StreamWriter(filePath))
+            using (StreamWriter textObject = new StreamWriter(filePath, false, Encoding.Default))
             {
                 foreach (string line in lines)
                 {
@@ -78,9 +81,9 @@ namespace NAVObjectCompare
             }
         }
 
-        private string GetObjectFilePath(NavObject navObject, string tag)
+        private string GetObjectFilePath(ObjectsCompared objectsCompared, string tag)
         {            
-            string fileName = string.Format("{0}-{1}-{2}.txt", navObject.Type, navObject.Id, tag);
+            string fileName = string.Format("{0}-{1}-{2}.txt", objectsCompared.Type, objectsCompared.Id, tag);
             return Path.Combine(GetObjectFileFolder(), fileName);
         }
 
@@ -128,23 +131,29 @@ namespace NAVObjectCompare
 
         private void GetObjectAndImport(Dictionary<string, NavObject> prevObjects, string internalId, string filePath)
         {
-            NavObject navObject = null;
-            if (prevObjects.TryGetValue(internalId, out navObject))
-            {
-                ObjectFile objectFile = new ObjectFile(filePath);
-                Dictionary<string, NavObject> newObjects = objectFile.Run();
+            // Add New Non Exsisting Object
+            ObjectFile objectFile = new ObjectFile(filePath);
+            Dictionary<string, NavObject> newObjects = objectFile.Run();
 
-                foreach (string key in newObjects.Keys)
+            AddOrUpdateObject(prevObjects, internalId, newObjects);
+        }
+
+        private void AddOrUpdateObject(Dictionary<string, NavObject> prevObjects, string internalId, Dictionary<string, NavObject> newObjects)
+        {
+            if (newObjects.ContainsKey(internalId))
+            {
+                NavObject newObject = newObjects[internalId];
+                if (prevObjects.ContainsKey(internalId))
                 {
-                    if (newObjects.ContainsKey(internalId) && prevObjects.ContainsKey(internalId))
-                    {
-                        NavObject newObject = newObjects[internalId];
-                        prevObjects[internalId] = newObject;
-                        // Fire Event
-                        if (OnReCompareObject != null)
-                            OnReCompareObject(this, new EditorEventArgs(newObject));
-                    }
+                    prevObjects[internalId] = newObject;
                 }
+                else
+                {
+                    prevObjects.Add(internalId, newObject);
+                }
+                // Fire Event
+                if (OnReCompareObject != null)
+                    OnReCompareObject(this, new EditorEventArgs(newObject));
             }
         }
     }

@@ -115,5 +115,14 @@ namespace NAVObjectCompare
 
             return ObjectSection.Unknown;
         }
+
+        public static NavObject GetDictValue(Dictionary<string, NavObject> dict, string key)
+        {
+            NavObject navObject = null;
+            if (!dict.TryGetValue(key, out navObject))
+                return null;
+
+            return navObject;
+        }
     }
 }

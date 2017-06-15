@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\ComboBoxHelper.cs" />
     <Compile Include="Helpers\DataGridViewHelper.cs" />
     <Compile Include="Helpers\DataTableHelper.cs" />
     <Compile Include="FormMain.cs">

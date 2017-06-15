@@ -29,13 +29,6 @@
         private void InitializeComponent()
         {
             this.comparedDataGridView = new System.Windows.Forms.DataGridView();
-            this.panelToolbar = new System.Windows.Forms.Panel();
-            this.notEqualCheckBox = new System.Windows.Forms.CheckBox();
-            this.fileBLabel = new System.Windows.Forms.Label();
-            this.fileALabel = new System.Windows.Forms.Label();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Type = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Object_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -48,10 +41,29 @@
             this.VersionListB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NoOfLinesB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IsEqual = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CodeEqual = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ObjectPropertiesEqual = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Difference = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panelToolbar = new System.Windows.Forms.Panel();
+            this.showComboBox = new System.Windows.Forms.ComboBox();
+            this.filePanel = new System.Windows.Forms.Panel();
+            this.fileBLabel = new System.Windows.Forms.Label();
+            this.fileALabel = new System.Windows.Forms.Label();
+            this.filterTextBox = new System.Windows.Forms.TextBox();
+            this.fieldFilterComboBox = new System.Windows.Forms.ComboBox();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportAFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportBFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.comparedDataGridView)).BeginInit();
             this.panelToolbar.SuspendLayout();
+            this.filePanel.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // comparedDataGridView
@@ -72,6 +84,8 @@
             this.VersionListB,
             this.NoOfLinesB,
             this.IsEqual,
+            this.CodeEqual,
+            this.ObjectPropertiesEqual,
             this.Difference});
             this.comparedDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.comparedDataGridView.Location = new System.Drawing.Point(0, 89);
@@ -80,74 +94,6 @@
             this.comparedDataGridView.TabIndex = 0;
             this.comparedDataGridView.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.comparedDataGridView_CellMouseDoubleClick);
             this.comparedDataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.comparedDataGridView_CellPainting);
-            this.comparedDataGridView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.comparedDataGridView_DataBindingComplete);
-            // 
-            // panelToolbar
-            // 
-            this.panelToolbar.Controls.Add(this.notEqualCheckBox);
-            this.panelToolbar.Controls.Add(this.fileBLabel);
-            this.panelToolbar.Controls.Add(this.fileALabel);
-            this.panelToolbar.Controls.Add(this.menuStrip1);
-            this.panelToolbar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelToolbar.Location = new System.Drawing.Point(0, 0);
-            this.panelToolbar.Name = "panelToolbar";
-            this.panelToolbar.Size = new System.Drawing.Size(1428, 89);
-            this.panelToolbar.TabIndex = 1;
-            // 
-            // notEqualCheckBox
-            // 
-            this.notEqualCheckBox.AutoSize = true;
-            this.notEqualCheckBox.Location = new System.Drawing.Point(12, 27);
-            this.notEqualCheckBox.Name = "notEqualCheckBox";
-            this.notEqualCheckBox.Size = new System.Drawing.Size(134, 17);
-            this.notEqualCheckBox.TabIndex = 3;
-            this.notEqualCheckBox.Text = "Show Only Differences";
-            this.notEqualCheckBox.UseVisualStyleBackColor = true;
-            this.notEqualCheckBox.CheckedChanged += new System.EventHandler(this.notEqualCheckBox_CheckedChanged);
-            // 
-            // fileBLabel
-            // 
-            this.fileBLabel.AutoSize = true;
-            this.fileBLabel.Location = new System.Drawing.Point(805, 64);
-            this.fileBLabel.Name = "fileBLabel";
-            this.fileBLabel.Size = new System.Drawing.Size(93, 13);
-            this.fileBLabel.TabIndex = 2;
-            this.fileBLabel.Text = "B: No file selected";
-            // 
-            // fileALabel
-            // 
-            this.fileALabel.AutoSize = true;
-            this.fileALabel.Location = new System.Drawing.Point(303, 64);
-            this.fileALabel.Name = "fileALabel";
-            this.fileALabel.Size = new System.Drawing.Size(93, 13);
-            this.fileALabel.TabIndex = 1;
-            this.fileALabel.Text = "A: No file selected";
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1428, 24);
-            this.menuStrip1.TabIndex = 0;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // fileToolStripMenuItem
-            // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openToolStripMenuItem});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
-            this.fileToolStripMenuItem.Click += new System.EventHandler(this.fileToolStripMenuItem_Click);
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.openToolStripMenuItem.Text = "Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // Id
             // 
@@ -239,6 +185,18 @@
             this.IsEqual.Name = "IsEqual";
             this.IsEqual.ReadOnly = true;
             // 
+            // CodeEqual
+            // 
+            this.CodeEqual.DataPropertyName = "CodeEqual";
+            this.CodeEqual.HeaderText = "Code is Equal";
+            this.CodeEqual.Name = "CodeEqual";
+            // 
+            // ObjectPropertiesEqual
+            // 
+            this.ObjectPropertiesEqual.DataPropertyName = "ObjectPropertiesEqual";
+            this.ObjectPropertiesEqual.HeaderText = "Date and Time is Equal";
+            this.ObjectPropertiesEqual.Name = "ObjectPropertiesEqual";
+            // 
             // Difference
             // 
             this.Difference.DataPropertyName = "Difference";
@@ -246,11 +204,149 @@
             this.Difference.Name = "Difference";
             this.Difference.ReadOnly = true;
             // 
+            // panelToolbar
+            // 
+            this.panelToolbar.Controls.Add(this.showComboBox);
+            this.panelToolbar.Controls.Add(this.filePanel);
+            this.panelToolbar.Controls.Add(this.filterTextBox);
+            this.panelToolbar.Controls.Add(this.fieldFilterComboBox);
+            this.panelToolbar.Controls.Add(this.menuStrip1);
+            this.panelToolbar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelToolbar.Location = new System.Drawing.Point(0, 0);
+            this.panelToolbar.Name = "panelToolbar";
+            this.panelToolbar.Size = new System.Drawing.Size(1428, 89);
+            this.panelToolbar.TabIndex = 1;
+            // 
+            // showComboBox
+            // 
+            this.showComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.showComboBox.FormattingEnabled = true;
+            this.showComboBox.Location = new System.Drawing.Point(13, 26);
+            this.showComboBox.Name = "showComboBox";
+            this.showComboBox.Size = new System.Drawing.Size(364, 21);
+            this.showComboBox.TabIndex = 7;
+            this.showComboBox.SelectedIndexChanged += new System.EventHandler(this.showComboBox_SelectedIndexChanged);
+            // 
+            // filePanel
+            // 
+            this.filePanel.Controls.Add(this.fileBLabel);
+            this.filePanel.Controls.Add(this.fileALabel);
+            this.filePanel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.filePanel.Location = new System.Drawing.Point(1119, 24);
+            this.filePanel.Name = "filePanel";
+            this.filePanel.Size = new System.Drawing.Size(309, 65);
+            this.filePanel.TabIndex = 6;
+            // 
+            // fileBLabel
+            // 
+            this.fileBLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.fileBLabel.AutoSize = true;
+            this.fileBLabel.Location = new System.Drawing.Point(7, 37);
+            this.fileBLabel.Name = "fileBLabel";
+            this.fileBLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.fileBLabel.Size = new System.Drawing.Size(93, 13);
+            this.fileBLabel.TabIndex = 3;
+            this.fileBLabel.Text = "B: No file selected";
+            this.fileBLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // fileALabel
+            // 
+            this.fileALabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.fileALabel.AutoSize = true;
+            this.fileALabel.Location = new System.Drawing.Point(8, 10);
+            this.fileALabel.Name = "fileALabel";
+            this.fileALabel.Size = new System.Drawing.Size(93, 13);
+            this.fileALabel.TabIndex = 2;
+            this.fileALabel.Text = "A: No file selected";
+            this.fileALabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // filterTextBox
+            // 
+            this.filterTextBox.Location = new System.Drawing.Point(147, 58);
+            this.filterTextBox.Name = "filterTextBox";
+            this.filterTextBox.Size = new System.Drawing.Size(230, 20);
+            this.filterTextBox.TabIndex = 5;
+            this.filterTextBox.TextChanged += new System.EventHandler(this.filterTextBox_TextChanged);
+            // 
+            // fieldFilterComboBox
+            // 
+            this.fieldFilterComboBox.FormattingEnabled = true;
+            this.fieldFilterComboBox.Location = new System.Drawing.Point(13, 57);
+            this.fieldFilterComboBox.Name = "fieldFilterComboBox";
+            this.fieldFilterComboBox.Size = new System.Drawing.Size(121, 21);
+            this.fieldFilterComboBox.TabIndex = 4;
+            this.fieldFilterComboBox.SelectedValueChanged += new System.EventHandler(this.fieldFilterComboBox_SelectedValueChanged);
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1428, 24);
+            this.menuStrip1.TabIndex = 0;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem,
+            this.saveToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportAFileToolStripMenuItem,
+            this.exportBFileToolStripMenuItem});
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Text = "Export";
+            // 
+            // exportAFileToolStripMenuItem
+            // 
+            this.exportAFileToolStripMenuItem.Name = "exportAFileToolStripMenuItem";
+            this.exportAFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportAFileToolStripMenuItem.Text = "Export A File";
+            this.exportAFileToolStripMenuItem.Click += new System.EventHandler(this.exportAFileToolStripMenuItem_Click);
+            // 
+            // exportBFileToolStripMenuItem
+            // 
+            this.exportBFileToolStripMenuItem.Name = "exportBFileToolStripMenuItem";
+            this.exportBFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportBFileToolStripMenuItem.Text = "Export B File";
+            this.exportBFileToolStripMenuItem.Click += new System.EventHandler(this.exportBFileToolStripMenuItem_Click);
+            // 
+            // statusStrip
+            // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel});
+            this.statusStrip.Location = new System.Drawing.Point(0, 571);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(1428, 22);
+            this.statusStrip.TabIndex = 2;
+            this.statusStrip.Text = "statusStrip";
+            // 
+            // toolStripStatusLabel
+            // 
+            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1428, 593);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.comparedDataGridView);
             this.Controls.Add(this.panelToolbar);
             this.MainMenuStrip = this.menuStrip1;
@@ -260,9 +356,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.comparedDataGridView)).EndInit();
             this.panelToolbar.ResumeLayout(false);
             this.panelToolbar.PerformLayout();
+            this.filePanel.ResumeLayout(false);
+            this.filePanel.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -273,9 +374,13 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-        private System.Windows.Forms.Label fileBLabel;
+        private System.Windows.Forms.ComboBox fieldFilterComboBox;
+        private System.Windows.Forms.Panel filePanel;
         private System.Windows.Forms.Label fileALabel;
-        private System.Windows.Forms.CheckBox notEqualCheckBox;
+        private System.Windows.Forms.TextBox filterTextBox;
+        private System.Windows.Forms.Label fileBLabel;
+        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ComboBox showComboBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn Id;
         private System.Windows.Forms.DataGridViewTextBoxColumn Type;
         private System.Windows.Forms.DataGridViewTextBoxColumn Object_Name;
@@ -288,7 +393,13 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn VersionListB;
         private System.Windows.Forms.DataGridViewTextBoxColumn NoOfLinesB;
         private System.Windows.Forms.DataGridViewTextBoxColumn IsEqual;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CodeEqual;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ObjectPropertiesEqual;
         private System.Windows.Forms.DataGridViewTextBoxColumn Difference;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+        private System.Windows.Forms.ToolStripMenuItem exportAFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportBFileToolStripMenuItem;
     }
 }
 
