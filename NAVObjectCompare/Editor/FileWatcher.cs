@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NAVObjectCompareWinClient.FileNotification
+namespace NAVObjectCompare.Editor
 {
     public delegate void FileWatcherEventHandler(object source, FileWatcherEventArgs e);
     public class FileWatcher

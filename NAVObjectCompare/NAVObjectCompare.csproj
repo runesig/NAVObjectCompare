@@ -41,14 +41,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compare.cs" />
-    <Compile Include="Editor.cs" />
-    <Compile Include="FileNotification\FileWatcher.cs" />
-    <Compile Include="ObjectsCompared.cs" />
-    <Compile Include="ObjectHelper.cs" />
-    <Compile Include="NavObject.cs" />
+    <Compile Include="Editor\Editor.cs" />
+    <Compile Include="Editor\FileWatcher.cs" />
+    <Compile Include="Models\NavObjectsCompared.cs" />
+    <Compile Include="Helpers\ObjectHelper.cs" />
+    <Compile Include="Models\NavObject.cs" />
     <Compile Include="ObjectFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NAVObjectCompare.Helpers;
 
-namespace NAVObjectCompare
+namespace NAVObjectCompare.Models
 {
     public enum ObjectSection { Unknown, Object, ObjectProperties, Properties, Fields, Keys, FieldGroups, Code };
     public class NavObject
@@ -64,6 +65,7 @@ namespace NAVObjectCompare
         public List<string> Keys { get { return _keys; } }
         public List<string> FieldGroups { get { return _fieldGroups; } }
         public List<string> Code { get { return _code; } }
+        public bool IsEdited { get; set; }
 
         public bool IsEqualTo(NavObject objectToCompare)
         {

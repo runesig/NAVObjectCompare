@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NAVObjectCompare
+namespace NAVObjectCompare.Models
 {
-    public class ObjectsCompared
+    public class NavObjectsCompared
     {
-        public ObjectsCompared(string internalId)
+        public NavObjectsCompared(string internalId)
         {
             this.InternalId = internalId;
         }

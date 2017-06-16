@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAVObjectCompareTestWinClient", "NAVObjectCompareTest\NAVObjectCompareTestWinClient.csproj", "{3F0531FF-7F2F-42D3-AB08-F5B69DE7A345}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAVObjectCompareWinClient", "NAVObjectCompareTest\NAVObjectCompareWinClient.csproj", "{3F0531FF-7F2F-42D3-AB08-F5B69DE7A345}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAVObjectCompare", "NAVObjectCompare\NAVObjectCompare.csproj", "{63EB0AEB-837A-4687-A279-C418F30E9427}"
 EndProject

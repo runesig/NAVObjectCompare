@@ -11,8 +11,9 @@ using System.Windows.Forms;
 using System.Configuration;
 using System.Diagnostics;
 using NAVObjectCompare;
+using NAVObjectCompare.Models;
 using NAVObjectCompareWinClient.Helpers;
-using NAVObjectCompareWinClient.FileNotification;
+using NAVObjectCompare.Editor;
 
 namespace NAVObjectCompareWinClient
 {
@@ -20,6 +21,8 @@ namespace NAVObjectCompareWinClient
     {
         Editor _editor = null;
         Compare _compare = null;
+
+        #region FormEvents
 
         public FormMain()
         {
@@ -31,79 +34,19 @@ namespace NAVObjectCompareWinClient
             InitApplication();
         }
 
-        private void InitApplication()
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Sewt Lables
-            SetFileNameLabels(string.Empty, string.Empty);
+            if (_compare == null)
+                return;
 
-            // Editor
-            string filePathEditor = ConfigurationManager.AppSettings["BeyondComparePath"];
-            _editor = new Editor(filePathEditor);
-            _editor.OnReCompareObject += _editor_OnReCompareObject;
-
-            AddFilterFieldsComboBox();
-            AddShowItemsComboBox();
-        }
-
-        private void AddFilterFieldsComboBox()
-        {
-            foreach (DataGridViewColumn column in comparedDataGridView.Columns)
+            if(_compare.IsEditedA() || _compare.IsEditedB())
             {
-                AddItem(fieldFilterComboBox, column.HeaderText, column.DataPropertyName);
-            }
-        }
+                var window = MessageBox.Show(
+                  "You have done changes to the objects that have not been exported. Are you sure you want to close the application?",
+                  "Close Application",
+                  MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
 
-        private void AddShowItemsComboBox()
-        {
-            AddItem(showComboBox, "Show all", "ALL");
-            AddItem(showComboBox, "Show all equal", "ALLEQUAL");
-            AddItem(showComboBox, "Show all non equal", "ALLNONEQUAL");
-            AddItem(showComboBox, "Show only date,time differences", "OBJECTPROPERTIES");
-            AddItem(showComboBox, "Show code differences", "CODEDIFF");
-        }
-
-        private void AddItem(ComboBox combo, string text, string value)
-        {
-            ComboboxItem item = new ComboboxItem();
-            item.Text = text;
-            item.Value = value;
-            combo.Items.Add(item);
-        }
-
-        private void _editor_OnReCompareObject(object source, EditorEventArgs e)
-        {
-            try
-            {
-                _compare.FindDifferencesA(e.NavObject.InternalId);
-                _compare.FindDifferencesB(e.NavObject.InternalId);
-
-                PopulateGrid();
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
-        // Private
-        private void OpenEditor(string internalId)
-        {
-            if (!string.IsNullOrEmpty(internalId))
-            {
-                ObjectsCompared objectCompared = null;
-                foreach (ObjectsCompared searchCompared in _compare.GetList())
-                {
-                    if (searchCompared.InternalId == internalId)
-                        objectCompared = searchCompared;
-                }
-
-                if (objectCompared == null)
-                    return;
-
-                _editor.ObjectsA = _compare.NavObjectsA;
-                _editor.ObjectsB = _compare.NavObjectsB;
-
-                _editor.OpenEditor(objectCompared);
+                e.Cancel = (window == DialogResult.No);
             }
         }
 
@@ -111,111 +54,6 @@ namespace NAVObjectCompareWinClient
         {
             OpenFileDialog();
         }
-
-        private void OpenFileDialog()
-        {
-            OpenFileDialog openDialog = new OpenFileDialog();
-            openDialog.Title = "Open NAV Object File(s)";
-            openDialog.Filter = "Txt files|*.txt";
-            openDialog.Multiselect = true;
-
-            if (openDialog.ShowDialog() == DialogResult.OK)
-            {
-                try
-                {
-                    if (openDialog.FileNames.Length > 1)
-                    {
-                        // Get the two first ones
-                        string filePathA = openDialog.FileNames[0];
-                        string filePathB = openDialog.FileNames[1];
-
-                        CompareAndFillGrid(filePathA, filePathB);
-                    }
-                    else
-                        CompareAndFillGrid(openDialog.FileName, string.Empty);
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-            }
-        }
-
-        private void CompareAndFillGrid(string filePathA, string filePathB)
-        {
-            // Testing Start
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            // Testing Stop
-
-            // Set Cursor
-            Cursor.Current = Cursors.WaitCursor;
-
-            _compare = new Compare(filePathA, filePathB);
-            _compare.RunCompare();
-
-            PopulateGrid();
-
-            SetFileNameLabels(filePathA, filePathB);
-
-            Cursor.Current = Cursors.Default;
-
-            // Testing Start
-            sw.Stop();
-            Console.WriteLine("Elapsed={0}", sw.Elapsed);
-            // Testing Stop
-        }
-
-        private void PopulateGrid()
-        {
-            // Populate list
-            DataTable ListAsDataTable = DataTableHelper.BuildDataTable<ObjectsCompared>(_compare.GetList());
-            DataView ListAsDataView = ListAsDataTable.DefaultView;
-
-            var bindingList = new BindingList<ObjectsCompared>(_compare.GetList());
-            var source = new BindingSource(bindingList, null);
-
-            if (InvokeRequired)
-            {
-                // after we've done all the processing, 
-                this.Invoke(new MethodInvoker(delegate {
-
-                    comparedDataGridView.AutoGenerateColumns = false;
-                    comparedDataGridView.DataSource = ListAsDataView;
-
-                    SetRowFilters();
-                }));
-                return;
-            }
-            else
-            {
-                comparedDataGridView.AutoGenerateColumns = false;
-                comparedDataGridView.DataSource = ListAsDataView;
-
-                SetRowFilters();
-            }
-        }
-
-        private void SetFileNameLabels(string filePathA, string filePathB)
-        {
-            if (!string.IsNullOrEmpty(filePathA))
-            {
-                fileALabel.Text = string.Format("File A: {0}", Path.GetFileName(filePathA));
-                fileALabel.BackColor = DataGridViewHelper.GetColorA;
-            }
-            else
-                fileALabel.Text = string.Format("File A Not Set");
-
-            if (!string.IsNullOrEmpty(filePathB))
-            {
-                fileBLabel.Text = string.Format("File B: {0}", Path.GetFileName(filePathB));
-                fileBLabel.BackColor = DataGridViewHelper.GetColorB;
-            }
-            else
-                fileBLabel.Text = string.Format("File B Not Set");
-        }
-
-        #region DataGridEvents
 
         private void comparedDataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
@@ -247,8 +85,218 @@ namespace NAVObjectCompareWinClient
             SetRowFilters();
         }
 
-        #endregion DataGridEvents
+        private void exportAFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string initFilename = string.Format("{0}_edited.txt", Path.GetFileNameWithoutExtension(_compare.FilenameA));
 
+            OpenSaveFileDialog(_compare.NavObjectsA, initFilename, "A");
+        }
+
+        private void exportBFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string initFilename = string.Format("{0}_edited.txt", Path.GetFileNameWithoutExtension(_compare.FilenameB));
+
+            OpenSaveFileDialog(_compare.NavObjectsB, initFilename, "B");
+        }
+
+        private void _editor_OnReCompareObject(object source, EditorEventArgs e)
+        {
+            try
+            {
+                _compare.FindDifferencesA(e.NavObject.InternalId);
+                _compare.FindDifferencesB(e.NavObject.InternalId);
+
+                PopulateGrid();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        #endregion FormEvents
+
+        private void InitApplication()
+        {
+            // Sewt Lables
+            SetFileNameLabels(string.Empty, string.Empty);
+
+            // Editor
+            string filePathEditor = ConfigurationManager.AppSettings["BeyondComparePath"];
+            _editor = new Editor(filePathEditor);
+            _editor.OnReCompareObject += _editor_OnReCompareObject;
+
+            AddFilterFieldsComboBox();
+            AddShowItemsComboBox();
+        }
+
+        #region ComboBoxes
+        private void AddFilterFieldsComboBox()
+        {
+            foreach (DataGridViewColumn column in comparedDataGridView.Columns)
+            {
+                AddComboBoxItem(fieldFilterComboBox, column.HeaderText, column.DataPropertyName);
+            }
+        }
+
+        private void AddShowItemsComboBox()
+        {
+            AddComboBoxItem(showComboBox, "Show all", "ALL");
+            AddComboBoxItem(showComboBox, "Show all equal", "ALLEQUAL");
+            AddComboBoxItem(showComboBox, "Show all non equal", "ALLNONEQUAL");
+            AddComboBoxItem(showComboBox, "Show only date,time differences", "OBJECTPROPERTIES");
+            AddComboBoxItem(showComboBox, "Show code differences", "CODEDIFF");
+        }
+
+        private void AddComboBoxItem(ComboBox combo, string text, string value)
+        {
+            ComboboxItem item = new ComboboxItem();
+            item.Text = text;
+            item.Value = value;
+            combo.Items.Add(item);
+        }
+
+        #endregion ComboBoxes
+
+        #region FileHandling
+        private void OpenEditor(string internalId)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(internalId))
+                {
+                    NavObjectsCompared objectCompared = null;
+                    foreach (NavObjectsCompared searchCompared in _compare.GetList())
+                    {
+                        if (searchCompared.InternalId == internalId)
+                            objectCompared = searchCompared;
+                    }
+
+                    if (objectCompared == null)
+                        return;
+
+                    _editor.ObjectsA = _compare.NavObjectsA;
+                    _editor.ObjectsB = _compare.NavObjectsB;
+
+                    _editor.OpenEditor(objectCompared);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void OpenFileDialog()
+        {
+            OpenFileDialog openDialog = new OpenFileDialog();
+            openDialog.Title = "Open NAV Object File(s)";
+            openDialog.Filter = "Txt files|*.txt";
+            openDialog.Multiselect = true;
+
+            if (openDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    if (openDialog.FileNames.Length > 1)
+                    {
+                        // Get the two first ones
+                        string filePathA = openDialog.FileNames[0];
+                        string filePathB = openDialog.FileNames[1];
+
+                        CompareAndFillGrid(filePathA, filePathB);
+                    }
+                    else
+                        CompareAndFillGrid(openDialog.FileName, string.Empty);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+            }
+        }
+
+        private void OpenSaveFileDialog(Dictionary<string, NavObject> objects, string initFilename, string tag)
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Title = string.Format("Export {0}: NAV Object File(s)", tag);
+            saveDialog.Filter = "Txt files|*.txt";
+            saveDialog.FileName = initFilename;
+
+            if (saveDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    ExportObjects(objects, saveDialog.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+            }
+        }
+
+        #endregion FileHandling
+
+        #region DataGridMethods
+        private void CompareAndFillGrid(string filePathA, string filePathB)
+        {
+            // Testing Start
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            // Testing Stop
+
+            // Set Cursor
+            Cursor.Current = Cursors.WaitCursor;
+
+            _compare = new Compare(filePathA, filePathB);
+            _compare.RunCompare();
+
+            PopulateGrid();
+
+            SetFileNameLabels(filePathA, filePathB);
+
+            Cursor.Current = Cursors.Default;
+
+            // Testing Start
+            sw.Stop();
+            Console.WriteLine("Elapsed={0}", sw.Elapsed);
+            // Testing Stop
+        }
+
+        private void PopulateGrid()
+        {
+            // Populate list
+            DataTable ListAsDataTable = DataTableHelper.BuildDataTable<NavObjectsCompared>(_compare.GetList());
+            DataView ListAsDataView = ListAsDataTable.DefaultView;
+
+            var bindingList = new BindingList<NavObjectsCompared>(_compare.GetList());
+            var source = new BindingSource(bindingList, null);
+
+            if (InvokeRequired)
+            {
+                // after we've done all the processing, 
+                this.Invoke(new MethodInvoker(delegate {
+
+                    comparedDataGridView.AutoGenerateColumns = false;
+                    comparedDataGridView.DataSource = ListAsDataView;
+
+                    SetRowFilters();
+                }));
+                return;
+            }
+            else
+            {
+                comparedDataGridView.AutoGenerateColumns = false;
+                comparedDataGridView.DataSource = ListAsDataView;
+
+                SetRowFilters();
+            }
+        }
+
+        #endregion DataGridMethods
+
+        #region Filters
         private void SetRowFilters()
         {
             if (comparedDataGridView.DataSource == null)
@@ -260,10 +308,6 @@ namespace NAVObjectCompareWinClient
             SetStatus(count);
         }
 
-        private void SetStatus(int numberOfObjects)
-        {
-            toolStripStatusLabel.Text = string.Format("{0} object(s)", numberOfObjects);
-        }
         private string CreateRowFilter()
         {
             string rowFilter = string.Empty;
@@ -324,41 +368,33 @@ namespace NAVObjectCompareWinClient
             return rowFilter;
         }
 
-        private void exportAFileToolStripMenuItem_Click(object sender, EventArgs e)
+        #endregion Filters
+
+        private void SetFileNameLabels(string filePathA, string filePathB)
         {
-            string initFilename = string.Format("{0}_edited.txt", Path.GetFileNameWithoutExtension(_compare.FilenameA));
-
-            ExportFileDialog(_compare.NavObjectsA, initFilename, "A");
-        }
-
-        private void exportBFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string initFilename = string.Format("{0}_edited.txt", Path.GetFileNameWithoutExtension(_compare.FilenameB));
-
-            ExportFileDialog(_compare.NavObjectsB, initFilename, "B");
-        }
-
-        private void ExportFileDialog(Dictionary<string, NavObject> objects, string initFilename, string tag)
-        {
-            SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Title = string.Format("Export {0}: NAV Object File(s)", tag);
-            saveDialog.Filter = "Txt files|*.txt";
-            saveDialog.FileName = initFilename;
-
-            if (saveDialog.ShowDialog() == DialogResult.OK)
+            if (!string.IsNullOrEmpty(filePathA))
             {
-                try
-                {
-                    Export(objects, saveDialog.FileName);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
+                fileALabel.Text = string.Format("File A: {0}", Path.GetFileName(filePathA));
+                fileALabel.BackColor = DataGridViewHelper.GetColorA;
             }
+            else
+                fileALabel.Text = string.Format("File A Not Set");
+
+            if (!string.IsNullOrEmpty(filePathB))
+            {
+                fileBLabel.Text = string.Format("File B: {0}", Path.GetFileName(filePathB));
+                fileBLabel.BackColor = DataGridViewHelper.GetColorB;
+            }
+            else
+                fileBLabel.Text = string.Format("File B Not Set");
         }
 
-        private void Export(Dictionary<string, NavObject> objects, string filePath)
+        private void SetStatus(int numberOfObjects)
+        {
+            toolStripStatusLabel.Text = string.Format("{0} object(s)", numberOfObjects);
+        }
+
+        private void ExportObjects(Dictionary<string, NavObject> objects, string filePath)
         {
 
             // Set Cursor
@@ -369,6 +405,5 @@ namespace NAVObjectCompareWinClient
             // Set Cursor
             Cursor.Current = Cursors.Default;
         }
-
     }
 }

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using NAVObjectCompare.Models;
+using NAVObjectCompare.Helpers;
 
 namespace NAVObjectCompare
 {
@@ -17,7 +19,7 @@ namespace NAVObjectCompare
         private Dictionary<string, NavObject> _navObjectsA = null;
         private Dictionary<string, NavObject> _navObjectsB = null;
 
-        private Dictionary<string, ObjectsCompared> _objectsComparedDict = new Dictionary<string, ObjectsCompared>();
+        private Dictionary<string, NavObjectsCompared> _objectsComparedDict = new Dictionary<string, NavObjectsCompared>();
 
         public Compare(string compareFileA, string compareFileB)
         {
@@ -40,12 +42,14 @@ namespace NAVObjectCompare
             FindDifferencesB();
         }
 
-        public List<ObjectsCompared> GetList()
+        public List<NavObjectsCompared> GetList()
         {
-            return _objectsComparedDict.Values.ToList<ObjectsCompared>();
+            return _objectsComparedDict.Values.ToList<NavObjectsCompared>();
         }
         public string FilenameA { get { return _compareFileA; } }
         public string FilenameB { get { return _compareFileB; } }
+
+        #region Public Methods
 
         public void FindDifferencesA()
         {
@@ -60,7 +64,7 @@ namespace NAVObjectCompare
             NavObject navObjectA = ObjectHelper.GetDictValue(_navObjectsA, internalId);
             NavObject navObjectB = ObjectHelper.GetDictValue(_navObjectsB, internalId);
 
-            ObjectsCompared objectsCompared = new ObjectsCompared(internalId);
+            NavObjectsCompared objectsCompared = new NavObjectsCompared(internalId);
             objectsCompared.Id = navObjectA.Id;
             objectsCompared.Type = navObjectA.Type;
             objectsCompared.Name = navObjectA.Name;
@@ -89,7 +93,7 @@ namespace NAVObjectCompare
             NavObject navObjectB = ObjectHelper.GetDictValue(_navObjectsB, internalId);
             NavObject navObjectA = ObjectHelper.GetDictValue(_navObjectsA, internalId);
 
-            ObjectsCompared objectsCompared = new ObjectsCompared(internalId);
+            NavObjectsCompared objectsCompared = new NavObjectsCompared(internalId);
             objectsCompared.Id = navObjectB.Id;
             objectsCompared.Type = navObjectB.Type;
             objectsCompared.Name = navObjectB.Name;
@@ -106,7 +110,45 @@ namespace NAVObjectCompare
 
         }
 
-        private void GetDifference(NavObject navObject1, NavObject navObject2, ObjectsCompared objectsCompared)
+        public bool IsEditedA()
+        {
+            bool isEdited = false;
+
+            foreach (string internalId in _navObjectsA.Keys)
+            {
+                NavObject navObjectA = ObjectHelper.GetDictValue(_navObjectsA, internalId);
+                if(navObjectA.IsEdited)
+                {
+                    isEdited = true;
+                    break;
+                }
+            }
+
+            return isEdited;
+        }
+
+        public bool IsEditedB()
+        {
+            bool isEdited = false;
+
+            foreach (string internalId in _navObjectsB.Keys)
+            {
+                NavObject navObjectB = ObjectHelper.GetDictValue(_navObjectsB, internalId);
+                if (navObjectB.IsEdited)
+                {
+                    isEdited = true;
+                    break;
+                }
+            }
+
+            return isEdited;
+        }
+
+        #endregion Public Methods
+
+        #region Private Methods
+
+        private void GetDifference(NavObject navObject1, NavObject navObject2, NavObjectsCompared objectsCompared)
         {
             objectsCompared.CodeEqual = true;
             objectsCompared.ObjectPropertiesEqual = true;
@@ -141,7 +183,7 @@ namespace NAVObjectCompare
             }
         }
 
-        private static void SetAValues(NavObject navObjectA, ObjectsCompared objectsCompared)
+        private static void SetAValues(NavObject navObjectA, NavObjectsCompared objectsCompared)
         {
             if (navObjectA != null)
             {
@@ -152,7 +194,7 @@ namespace NAVObjectCompare
             }
         }
 
-        private static void SetBValues(NavObject navObjectB, ObjectsCompared objectsCompared)
+        private static void SetBValues(NavObject navObjectB, NavObjectsCompared objectsCompared)
         {
             if (navObjectB != null)
             {
@@ -162,5 +204,7 @@ namespace NAVObjectCompare
                 objectsCompared.NoOfLinesB = navObjectB.ObjectLines.Count;
             }
         }
+
+        #endregion Private Methods
     }
 }

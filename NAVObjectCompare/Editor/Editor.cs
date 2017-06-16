@@ -5,9 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
-using NAVObjectCompareWinClient.FileNotification;
+using NAVObjectCompare.Editor;
+using NAVObjectCompare.Models;
 
-namespace NAVObjectCompare
+namespace NAVObjectCompare.Editor
 {
     public delegate void EditorEventHandler(object source, EditorEventArgs e);
     public class Editor
@@ -27,7 +28,7 @@ namespace NAVObjectCompare
             _watcher.OnFileChanged += _watcher_OnFileChanged;
         }
 
-        public void OpenEditor(ObjectsCompared objectsCompared)
+        public void OpenEditor(NavObjectsCompared objectsCompared)
         {
             _watcher.StopWatching();
 
@@ -39,7 +40,7 @@ namespace NAVObjectCompare
             _watcher.StartWatching(filePathA, filePathB);
         }
 
-        private string CreateAndExportObject(ObjectsCompared objectsCompared, Dictionary<string, NavObject> objects, string tag)
+        private string CreateAndExportObject(NavObjectsCompared objectsCompared, Dictionary<string, NavObject> objects, string tag)
         { 
             string filePath = GetObjectFilePath(objectsCompared, tag);
 
@@ -67,6 +68,9 @@ namespace NAVObjectCompare
             else
                 command = string.Format("{0} {1}", filePathA, filePathB);
 
+            if (!File.Exists(_editorExePath))
+                throw new Exception(string.Format("Beyond Compare is not installed at {0}", _editorExePath));
+
             Process.Start(_editorExePath, command);
         }
 
@@ -81,7 +85,7 @@ namespace NAVObjectCompare
             }
         }
 
-        private string GetObjectFilePath(ObjectsCompared objectsCompared, string tag)
+        private string GetObjectFilePath(NavObjectsCompared objectsCompared, string tag)
         {            
             string fileName = string.Format("{0}-{1}-{2}.txt", objectsCompared.Type, objectsCompared.Id, tag);
             return Path.Combine(GetObjectFileFolder(), fileName);
@@ -143,6 +147,8 @@ namespace NAVObjectCompare
             if (newObjects.ContainsKey(internalId))
             {
                 NavObject newObject = newObjects[internalId];
+                newObject.IsEdited = true;
+
                 if (prevObjects.ContainsKey(internalId))
                 {
                     prevObjects[internalId] = newObject;

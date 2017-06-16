@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using NAVObjectCompare.Models;
+using NAVObjectCompare.Helpers;
 
 namespace NAVObjectCompare
 {
@@ -141,6 +143,7 @@ namespace NAVObjectCompare
                 foreach(string key in objects.Keys)
                 {
                     NavObject navObject = ObjectHelper.GetDictValue(objects, key);
+                    navObject.IsEdited = false;
 
                     foreach (string line in navObject.ObjectLines)
                     {

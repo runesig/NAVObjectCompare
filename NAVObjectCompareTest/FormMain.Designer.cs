@@ -299,7 +299,7 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -309,20 +309,20 @@
             this.exportAFileToolStripMenuItem,
             this.exportBFileToolStripMenuItem});
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.saveToolStripMenuItem.Text = "Export";
             // 
             // exportAFileToolStripMenuItem
             // 
             this.exportAFileToolStripMenuItem.Name = "exportAFileToolStripMenuItem";
-            this.exportAFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportAFileToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.exportAFileToolStripMenuItem.Text = "Export A File";
             this.exportAFileToolStripMenuItem.Click += new System.EventHandler(this.exportAFileToolStripMenuItem_Click);
             // 
             // exportBFileToolStripMenuItem
             // 
             this.exportBFileToolStripMenuItem.Name = "exportBFileToolStripMenuItem";
-            this.exportBFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportBFileToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.exportBFileToolStripMenuItem.Text = "Export B File";
             this.exportBFileToolStripMenuItem.Click += new System.EventHandler(this.exportBFileToolStripMenuItem_Click);
             // 
@@ -352,6 +352,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormMain";
             this.Text = "Object Compare";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.FormTest_Load);
             ((System.ComponentModel.ISupportInitialize)(this.comparedDataGridView)).EndInit();
             this.panelToolbar.ResumeLayout(false);

@@ -4,8 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NAVObjectCompare.Models;
 
-namespace NAVObjectCompare
+namespace NAVObjectCompare.Helpers
 {
     public class ObjectHelper
     {

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NAVObjectCompareTest")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Dynamics NAV Object Compare")]
+[assembly: AssemblyDescription("Dynamics NAV Object Compare")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NAVObjectCompareTest")]
+[assembly: AssemblyCompany("Rune Sigurdsen")]
+[assembly: AssemblyProduct("Dynamics NAV Object Compare")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
