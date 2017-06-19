@@ -13,29 +13,19 @@ namespace NAVObjectCompare
     {
         private enum ObjectPart { Empty, NewObject, ObjectProperties, Properties, Code };
 
-        private string _compareFileA = string.Empty;
-        private string _compareFileB = string.Empty;
-
         private Dictionary<string, NavObject> _navObjectsA = null;
         private Dictionary<string, NavObject> _navObjectsB = null;
-
         private Dictionary<string, NavObjectsCompared> _objectsComparedDict = new Dictionary<string, NavObjectsCompared>();
-
-        public Compare(string compareFileA, string compareFileB)
-        {
-            _compareFileA = compareFileA;
-            _compareFileB = compareFileB;
-        }
 
         public Dictionary<string, NavObject> NavObjectsA { get { return _navObjectsA; } }
         public Dictionary<string, NavObject> NavObjectsB { get { return _navObjectsB; } }
 
         public void RunCompare()
         {
-            ObjectFile fileA = new ObjectFile(_compareFileA);
+            ObjectFile fileA = new ObjectFile(this.CompareFilePathA);
             _navObjectsA = fileA.Run();
 
-            ObjectFile fileB = new ObjectFile(_compareFileB);
+            ObjectFile fileB = new ObjectFile(this.CompareFilePathB);
             _navObjectsB = fileB.Run();
 
             FindDifferencesA();
@@ -46,8 +36,8 @@ namespace NAVObjectCompare
         {
             return _objectsComparedDict.Values.ToList<NavObjectsCompared>();
         }
-        public string FilenameA { get { return _compareFileA; } }
-        public string FilenameB { get { return _compareFileB; } }
+        public string CompareFilePathA { get; set; }
+        public string CompareFilePathB { get; set; }
 
         #region Public Methods
 

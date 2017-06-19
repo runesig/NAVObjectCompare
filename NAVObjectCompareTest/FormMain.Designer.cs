@@ -59,6 +59,9 @@
             this.exportBFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gridToExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.comparedDataGridView)).BeginInit();
             this.panelToolbar.SuspendLayout();
             this.filePanel.SuspendLayout();
@@ -291,7 +294,9 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
-            this.saveToolStripMenuItem});
+            this.saveToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.exportToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -299,7 +304,7 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -309,22 +314,22 @@
             this.exportAFileToolStripMenuItem,
             this.exportBFileToolStripMenuItem});
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.saveToolStripMenuItem.Text = "Export";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Text = "Save";
             // 
             // exportAFileToolStripMenuItem
             // 
             this.exportAFileToolStripMenuItem.Name = "exportAFileToolStripMenuItem";
-            this.exportAFileToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-            this.exportAFileToolStripMenuItem.Text = "Export A File";
-            this.exportAFileToolStripMenuItem.Click += new System.EventHandler(this.exportAFileToolStripMenuItem_Click);
+            this.exportAFileToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.exportAFileToolStripMenuItem.Text = "Save Edited File A";
+            this.exportAFileToolStripMenuItem.Click += new System.EventHandler(this.saveAFileToolStripMenuItem_Click);
             // 
             // exportBFileToolStripMenuItem
             // 
             this.exportBFileToolStripMenuItem.Name = "exportBFileToolStripMenuItem";
-            this.exportBFileToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-            this.exportBFileToolStripMenuItem.Text = "Export B File";
-            this.exportBFileToolStripMenuItem.Click += new System.EventHandler(this.exportBFileToolStripMenuItem_Click);
+            this.exportBFileToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.exportBFileToolStripMenuItem.Text = "Save Edited File B";
+            this.exportBFileToolStripMenuItem.Click += new System.EventHandler(this.saveBFileToolStripMenuItem_Click);
             // 
             // statusStrip
             // 
@@ -340,6 +345,26 @@
             // 
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
             this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // exportToolStripMenuItem
+            // 
+            this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.gridToExcelToolStripMenuItem});
+            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportToolStripMenuItem.Text = "Export";
+            // 
+            // gridToExcelToolStripMenuItem
+            // 
+            this.gridToExcelToolStripMenuItem.Name = "gridToExcelToolStripMenuItem";
+            this.gridToExcelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.gridToExcelToolStripMenuItem.Text = "Grid to Excel";
+            this.gridToExcelToolStripMenuItem.Click += new System.EventHandler(this.gridToExcelToolStripMenuItem_Click_1);
             // 
             // FormMain
             // 
@@ -401,6 +426,9 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolStripMenuItem exportAFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportBFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gridToExcelToolStripMenuItem;
     }
 }
 

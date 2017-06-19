@@ -85,16 +85,16 @@ namespace NAVObjectCompareWinClient
             SetRowFilters();
         }
 
-        private void exportAFileToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveAFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string initFilename = string.Format("{0}_edited.txt", Path.GetFileNameWithoutExtension(_compare.FilenameA));
+            string initFilename = string.Format("{0}_edited.txt", Path.GetFileNameWithoutExtension(_compare.CompareFilePathA));
 
             OpenSaveFileDialog(_compare.NavObjectsA, initFilename, "A");
         }
 
-        private void exportBFileToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveBFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string initFilename = string.Format("{0}_edited.txt", Path.GetFileNameWithoutExtension(_compare.FilenameB));
+            string initFilename = string.Format("{0}_edited.txt", Path.GetFileNameWithoutExtension(_compare.CompareFilePathB));
 
             OpenSaveFileDialog(_compare.NavObjectsB, initFilename, "B");
         }
@@ -112,6 +112,11 @@ namespace NAVObjectCompareWinClient
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+   
+        private void gridToExcelToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            ExcelHelper.ExportDataGridToExcel(comparedDataGridView);
         }
 
         #endregion FormEvents
@@ -249,12 +254,11 @@ namespace NAVObjectCompareWinClient
             // Set Cursor
             Cursor.Current = Cursors.WaitCursor;
 
-            _compare = new Compare(filePathA, filePathB);
-            _compare.RunCompare();
+            RunComparison(filePathA, filePathB);
 
             PopulateGrid();
 
-            SetFileNameLabels(filePathA, filePathB);
+            SetFileNameLabels(_compare.CompareFilePathA, _compare.CompareFilePathB);
 
             Cursor.Current = Cursors.Default;
 
@@ -262,6 +266,31 @@ namespace NAVObjectCompareWinClient
             sw.Stop();
             Console.WriteLine("Elapsed={0}", sw.Elapsed);
             // Testing Stop
+        }
+
+        private void RunComparison(string filePathA, string filePathB)
+        {
+            if (_compare == null)
+            {
+                _compare = new Compare(); // Start New Compare
+                _compare.CompareFilePathA = filePathA;
+                _compare.CompareFilePathB = filePathB;
+            }
+            else
+            {
+                // A Comparison have been done previously Check what to do
+                if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count > 0))
+                {
+                    _compare = new Compare(); // Start a new Compare
+                    _compare.CompareFilePathA = filePathA;
+                }
+                else if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count == 0)) // Compare has been done only for file A then add B
+                {
+                    _compare.CompareFilePathB = filePathA; // Set the A file to path B to add the new one
+                }
+            }
+
+            _compare.RunCompare();
         }
 
         private void PopulateGrid()
