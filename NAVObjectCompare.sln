@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAVObjectCompareWinClient",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAVObjectCompare", "NAVObjectCompare\NAVObjectCompare.csproj", "{63EB0AEB-837A-4687-A279-C418F30E9427}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAVObjectCompareClient", "WpfApplication1\NAVObjectCompareClient.csproj", "{4ACFB603-2C3D-440A-B202-DD2D2EC04774}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{63EB0AEB-837A-4687-A279-C418F30E9427}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63EB0AEB-837A-4687-A279-C418F30E9427}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63EB0AEB-837A-4687-A279-C418F30E9427}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4ACFB603-2C3D-440A-B202-DD2D2EC04774}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4ACFB603-2C3D-440A-B202-DD2D2EC04774}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4ACFB603-2C3D-440A-B202-DD2D2EC04774}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4ACFB603-2C3D-440A-B202-DD2D2EC04774}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
