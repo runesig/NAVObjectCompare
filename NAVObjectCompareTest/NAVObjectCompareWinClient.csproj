@@ -49,10 +49,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>D63C123EC24C3B42919E80727C844866C4B64091</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>C71EF7FEB9F0E5B62069577B796BCCE8CEF7C079</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>NAVObjectCompareWinClient_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>

@@ -18,9 +18,9 @@ using NAVObjectCompare;
 using NAVObjectCompare.Models;
 using NAVObjectCompareWinClient.Helpers;
 using NAVObjectCompare.Editor;
+using System.Configuration;
 
-
-namespace WpfApplication1
+namespace NAVObjectCompareWinClient
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -33,6 +33,7 @@ namespace WpfApplication1
         public MainWindow()
         {
             InitializeComponent();
+            InitApplication();
         }
 
         private void openMenu_Click(object sender, RoutedEventArgs e)
@@ -40,37 +41,23 @@ namespace WpfApplication1
             OpenFileDialog();
         }
 
-        private void OpenFileDialog()
+        private void InitApplication()
         {
-            OpenFileDialog openDialog = new OpenFileDialog();
-            openDialog.Title = "Open NAV Object File(s)";
-            openDialog.Filter = "Txt files|*.txt";
-            openDialog.Multiselect = true;
+            // Sewt Lables
+            // SetFileNameLabels(string.Empty, string.Empty);
 
-            Nullable<bool> result = openDialog.ShowDialog();
+            // Editor
+            string filePathEditor = ConfigurationManager.AppSettings["BeyondComparePath"];
+            _editor = new Editor(filePathEditor);
+            _editor.OnReCompareObject += _editor_OnReCompareObject;
 
-            if (result == true)
-            {
-                try
-                {
-                    if (openDialog.FileNames.Length > 1)
-                    {
-                        // Get the two first ones
-                        string filePathA = openDialog.FileNames[0];
-                        string filePathB = openDialog.FileNames[1];
+            // AddFilterFieldsComboBox();
+            // AddShowItemsComboBox();
+        }
 
-                        CompareAndFillGrid(filePathA, filePathB);
-                    }
-                    else
-                    {
-                        CompareAndFillGrid(openDialog.FileName, string.Empty);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-            }
+        private void _editor_OnReCompareObject(object source, EditorEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void CompareAndFillGrid(string filePathA, string filePathB)
@@ -83,6 +70,10 @@ namespace WpfApplication1
                 PopulateGrid();
 
                 // SetFileNameLabels(_compare.CompareFilePathA, _compare.CompareFilePathB);
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
             }
             finally
             {
@@ -228,5 +219,107 @@ namespace WpfApplication1
         //}
 
         #endregion Filters
+
+        private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                DataGridRow dataGridRow = (DataGridRow)e.Source;
+                DataRowView dataRowView = (DataRowView)dataGridRow.Item;
+
+                string internalId = (string)dataRowView["InternalId"];
+                OpenEditor(internalId);
+            }
+            catch(Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+
+        }
+        #region FileHandling
+        private void OpenEditor(string internalId)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(internalId))
+                {
+                    NavObjectsCompared objectCompared = null;
+                    foreach (NavObjectsCompared searchCompared in _compare.GetList())
+                    {
+                        if (searchCompared.InternalId == internalId)
+                            objectCompared = searchCompared;
+                    }
+
+                    if (objectCompared == null)
+                        return;
+
+                    _editor.ObjectsA = _compare.NavObjectsA;
+                    _editor.ObjectsB = _compare.NavObjectsB;
+
+                    _editor.OpenEditor(objectCompared);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+        }
+
+        private void OpenFileDialog()
+        {
+            OpenFileDialog openDialog = new OpenFileDialog();
+            openDialog.Title = "Open NAV Object File(s)";
+            openDialog.Filter = "Txt files|*.txt";
+            openDialog.Multiselect = true;
+
+            Nullable<bool> result = openDialog.ShowDialog();
+
+            if (result == true)
+            {
+                try
+                {
+                    if (openDialog.FileNames.Length > 1)
+                    {
+                        // Get the two first ones
+                        string filePathA = openDialog.FileNames[0];
+                        string filePathB = openDialog.FileNames[1];
+
+                        CompareAndFillGrid(filePathA, filePathB);
+                    }
+                    else
+                    {
+                        CompareAndFillGrid(openDialog.FileName, string.Empty);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageHelper.ShowError(ex);
+                }
+            }
+        }
+
+        private void OpenSaveFileDialog(Dictionary<string, NavObject> objects, string initFilename, string tag)
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Title = string.Format("Export {0}: NAV Object File(s)", tag);
+            saveDialog.Filter = "Txt files|*.txt";
+            saveDialog.FileName = initFilename;
+
+            Nullable<bool> result = saveDialog.ShowDialog();
+
+            if (result == true)
+            {
+                try
+                {
+                    // ExportObjects(objects, saveDialog.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageHelper.ShowError(ex);
+                }
+            }
+        }
+
+        #endregion FileHandling
     }
 }
