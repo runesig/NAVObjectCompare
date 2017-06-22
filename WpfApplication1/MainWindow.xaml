@@ -28,6 +28,18 @@
                         <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
                     </Style>
                 </DataGrid.Resources>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Equal}" Value="False">
+                                <Setter Property="Background" Value="Red"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding State}" Value="State2">
+                                <Setter Property="Background" Value="Green"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Type" Binding="{Binding Type}" IsReadOnly="True"/>
