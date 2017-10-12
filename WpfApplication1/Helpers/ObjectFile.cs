@@ -39,8 +39,6 @@ namespace NAVObjectCompare
                     currObjectSection = objectSection;
 
                 ProcessLine(lines[i], currObjectSection, ref currNavObject);
-
-                // NB!!! Update Event
             }
 
             return _navObjects;

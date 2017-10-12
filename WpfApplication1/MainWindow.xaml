@@ -4,65 +4,36 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NAVObjectCompareWinClient"
+        xmlns:helpers="clr-namespace:NAVObjectCompareWinClient.Helpers"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="720">
+        <Window.Resources>
+            <helpers:RowColorValue x:Key="RowColorValue" />
+        </Window.Resources>
     <DockPanel>
+        <!--Menu Start-->
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Open" Click="openMenu_Click"/>
                 <MenuItem Header="_Save" />
                 <Separator />
-                <MenuItem Header="_Exit" />
+                <MenuItem Header="_Exit" Click="exitMenu_Click" />
                 <Grid Height="100" Width="100"/>
             </MenuItem>
         </Menu>
+        <!--Menu End-->
 
+        <!--Searchbar Start-->
         <ComboBox x:Name="comboBox" Height="16" DockPanel.Dock="Top" Width="120"/>
+        <!--Searchbar End-->
 
-
-
-        <Grid Margin="2">
-            <DataGrid Name="comparedDataGrid" AutoGenerateColumns="False">
-                <DataGrid.Resources>
-                    <Style TargetType="DataGridRow">
-                        <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
-                    </Style>
-                </DataGrid.Resources>
-                <DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Equal}" Value="False">
-                                <Setter Property="Background" Value="Red"></Setter>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding State}" Value="State2">
-                                <Setter Property="Background" Value="Green"></Setter>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.RowStyle>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Type" Binding="{Binding Type}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Date Object A" Binding="{Binding StringDateA}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Time Object A" Binding="{Binding StringTimeA}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Version List A" Binding="{Binding VersionListA}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="No Of Lines Object A" Binding="{Binding NoOfLinesA}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Date Object B" Binding="{Binding StringDateB}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Time Object B" Binding="{Binding StringTimeB}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Version List B" Binding="{Binding VersionListB}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="No Of Lines Object B" Binding="{Binding NoOfLinesB}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Difference Comment" Binding="{Binding Difference}" IsReadOnly="True" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>
-
+        <!--Statusbar Start-->
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -71,17 +42,157 @@
                     </Grid>
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
-            <StatusBarItem>
-                <TextBlock Name="fileNameA" Text="CrappyFile.txt" />
+            <StatusBarItem Grid.Column="0">
+                <TextBlock Name="statusSourceA" Text="Empty" />
             </StatusBarItem>
             <Separator Grid.Column="1" />
             <StatusBarItem Grid.Column="2">
-                <TextBlock Name="fileNameB" Text="SchweinHundFile.txt" />
+                <TextBlock Name="statusSourceB" Text="Empty" />
             </StatusBarItem>
             <Separator Grid.Column="3" />
             <StatusBarItem Grid.Column="4">
-                <ProgressBar Name="statusBar" Value="50" Width="90" Height="16" />
+                <ProgressBar Name="processProgessBar" Value="50" Width="90" Height="16" />
             </StatusBarItem>
         </StatusBar>
+        <!--Statusbar End-->
+
+        <!--Datagrid Start-->
+        <DataGrid Name="comparedDataGrid" AutoGenerateColumns="False">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridRow">
+                    <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                </Style>
+            </DataGrid.Resources>
+            <!--<DataGrid.CellStyle>
+
+                -->
+            <!--https://stackoverflow.com/questions/18623579/how-to-apply-a-cell-style-to-datagrid-cell-->
+
+            <!--<Style x:Key="MyDataGridCell" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">-->
+            <!--
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="Red"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+
+            </DataGrid.CellStyle>-->
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Equal}" Value="False">
+                            <Setter Property="Background" Value="Salmon"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+
+
+                    <!--<Setter Property="Background" >
+                        <Setter.Value>
+                            <Binding Path="Equal" Converter="{StaticResource  RowColorValue}">
+         
+                                <Binding.ConverterParameter>
+                                    <x:Array Type="SolidColorBrush">
+                                        <SolidColorBrush Color="Red"/>
+                                        <SolidColorBrush Color="Green"/>
+                                    </x:Array>
+                                </Binding.ConverterParameter>
+           
+                            </Binding>
+                        </Setter.Value>
+                    </Setter>-->
+
+                </Style>
+            </DataGrid.RowStyle>
+
+            <DataGrid.Columns>
+                <!-- https://stackoverflow.com/questions/7851066/wpf-datagrid-cell-background-using-binding-->
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="White" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Type" Binding="{Binding Type}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="White" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="White" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Date Object A" Binding="{Binding StringDateA}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="Azure" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Time Object A" Binding="{Binding StringTimeA}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="Azure" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Version List A" Binding="{Binding VersionListA}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="Azure" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="No Of Lines Object A" Binding="{Binding NoOfLinesA}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="Azure" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Date Object B" Binding="{Binding StringDateB}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="OldLace" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Time Object B" Binding="{Binding StringTimeB}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="OldLace" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Version List B" Binding="{Binding VersionListB}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="OldLace" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="No Of Lines Object B" Binding="{Binding NoOfLinesB}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="OldLace" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Difference Comment" Binding="{Binding Difference}" IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <!--Datagrid End-->
+        
     </DockPanel>
 </Window>

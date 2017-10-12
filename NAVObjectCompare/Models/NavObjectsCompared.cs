@@ -25,6 +25,10 @@ namespace NAVObjectCompare.Models
         public int NoOfLinesA { get; set; }
         public int NoOfLinesB { get; set; }
         public bool Equal { get; set; }
+        public string Color
+        {
+            get { return "LightGray";  }  
+        }
         public bool ObjectPropertiesEqual { get; set; }
         public bool CodeEqual { get; set; }
         public string Difference { get; set; }

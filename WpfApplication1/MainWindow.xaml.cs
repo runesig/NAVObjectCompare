@@ -19,6 +19,7 @@ using NAVObjectCompare.Models;
 using NAVObjectCompareWinClient.Helpers;
 using NAVObjectCompare.Editor;
 using System.Configuration;
+using System.Windows.Threading;
 
 namespace NAVObjectCompareWinClient
 {
@@ -36,15 +37,16 @@ namespace NAVObjectCompareWinClient
             InitApplication();
         }
 
-        private void openMenu_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog();
-        }
-
         private void InitApplication()
         {
             // Sewt Lables
             // SetFileNameLabels(string.Empty, string.Empty);
+
+            // Progress Bar
+            this.processProgessBar.Visibility = Visibility.Collapsed;
+            this.processProgessBar.Minimum = 0;
+            this.processProgessBar.Maximum = 100;
+            this.processProgessBar.Value = 0;
 
             // Editor
             string filePathEditor = ConfigurationManager.AppSettings["BeyondComparePath"];
@@ -53,23 +55,26 @@ namespace NAVObjectCompareWinClient
 
             // AddFilterFieldsComboBox();
             // AddShowItemsComboBox();
+
+            // comparedDataGrid.RowStyle.Triggers.Add(new DataTrigger() { Binding = new Binding() { Source = "{Binding Equal}" }, Value = "False", Setters.Add(new Setter() { Property = BackgroundProperty, Value = Color.FromRgb(0,0,0)) } });
         }
 
-        private void _editor_OnReCompareObject(object source, EditorEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
-        private void CompareAndFillGrid(string filePathA, string filePathB)
+
+        async private void CompareAndFillGrid(string filePathA, string filePathB)
         {
             Mouse.OverrideCursor = Cursors.Wait;
             try
             {
+                await HideOrShowProgressBarAsync();
+
                 RunComparison(filePathA, filePathB);
 
                 PopulateGrid();
 
-                // SetFileNameLabels(_compare.CompareFilePathA, _compare.CompareFilePathB);
+                SetSourceLabels(filePathA, filePathB);
+
+                await HideOrShowProgressBarAsync();
             }
             catch (Exception ex)
             {
@@ -81,6 +86,16 @@ namespace NAVObjectCompareWinClient
             }
         }
 
+        private void _compare_OnCompared(object source, CompareEventArgs e)
+        {
+            processProgessBar.Dispatcher.Invoke(() => processProgessBar.Value = e.PercentageDone, DispatcherPriority.Background);
+        }
+
+        private void _editor_OnReCompareObject(object source, EditorEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         private void RunComparison(string filePathA, string filePathB)
         {
             if (_compare == null)
@@ -88,6 +103,7 @@ namespace NAVObjectCompareWinClient
                 _compare = new Compare(); // Start New Compare
                 _compare.CompareFilePathA = filePathA;
                 _compare.CompareFilePathB = filePathB;
+                _compare.OnCompared += _compare_OnCompared;
             }
             else
             {
@@ -236,34 +252,28 @@ namespace NAVObjectCompareWinClient
             }
 
         }
-        #region FileHandling
-        private void OpenEditor(string internalId)
+
+        #region GUI
+
+        private void openMenu_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                if (!string.IsNullOrEmpty(internalId))
-                {
-                    NavObjectsCompared objectCompared = null;
-                    foreach (NavObjectsCompared searchCompared in _compare.GetList())
-                    {
-                        if (searchCompared.InternalId == internalId)
-                            objectCompared = searchCompared;
-                    }
-
-                    if (objectCompared == null)
-                        return;
-
-                    _editor.ObjectsA = _compare.NavObjectsA;
-                    _editor.ObjectsB = _compare.NavObjectsB;
-
-                    _editor.OpenEditor(objectCompared);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageHelper.ShowError(ex);
-            }
+            OpenFileDialog();
         }
+
+        private void exitMenu_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Goodbye");
+        }
+
+        private void SetSourceLabels(string sourceA, string sourceB)
+        {
+            this.statusSourceA.Text = sourceA;
+            this.statusSourceB.Text = sourceB;
+        }
+
+        #endregion GUI
+
+        #region FileHandling
 
         private void OpenFileDialog()
         {
@@ -317,6 +327,48 @@ namespace NAVObjectCompareWinClient
                 {
                     MessageHelper.ShowError(ex);
                 }
+            }
+        }
+
+        private void OpenEditor(string internalId)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(internalId))
+                {
+                    NavObjectsCompared objectCompared = null;
+                    foreach (NavObjectsCompared searchCompared in _compare.GetList())
+                    {
+                        if (searchCompared.InternalId == internalId)
+                            objectCompared = searchCompared;
+                    }
+
+                    if (objectCompared == null)
+                        return;
+
+                    _editor.ObjectsA = _compare.NavObjectsA;
+                    _editor.ObjectsB = _compare.NavObjectsB;
+
+                    _editor.OpenEditor(objectCompared);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+        }
+
+        private async Task HideOrShowProgressBarAsync()
+        {
+            if(processProgessBar.Visibility == Visibility.Visible)
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
+                this.Dispatcher.Invoke(new Action(() => { processProgessBar.Visibility = Visibility.Collapsed; }));
+            }
+            else
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(2)).ConfigureAwait(false);
+                this.Dispatcher.Invoke(new Action(() => { processProgessBar.Visibility = Visibility.Visible; }));
             }
         }
 

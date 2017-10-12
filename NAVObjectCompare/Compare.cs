@@ -9,16 +9,22 @@ using NAVObjectCompare.Helpers;
 
 namespace NAVObjectCompare
 {
+    public delegate void CompareEventHandler(object source, CompareEventArgs e);
+
     public class Compare
     {
-        private enum ObjectPart { Empty, NewObject, ObjectProperties, Properties, Code };
 
+        public event CompareEventHandler OnCompared;
+        public Dictionary<string, NavObject> NavObjectsA { get { return _navObjectsA; } }
+        public Dictionary<string, NavObject> NavObjectsB { get { return _navObjectsB; } }
+
+        private enum ObjectPart { Empty, NewObject, ObjectProperties, Properties, Code };
         private Dictionary<string, NavObject> _navObjectsA = null;
         private Dictionary<string, NavObject> _navObjectsB = null;
         private Dictionary<string, NavObjectsCompared> _objectsComparedDict = new Dictionary<string, NavObjectsCompared>();
 
-        public Dictionary<string, NavObject> NavObjectsA { get { return _navObjectsA; } }
-        public Dictionary<string, NavObject> NavObjectsB { get { return _navObjectsB; } }
+        private int _counter = 0;
+        private int _totalObjectsToCompare = 0;
 
         public void RunCompare()
         {
@@ -27,6 +33,9 @@ namespace NAVObjectCompare
 
             ObjectFile fileB = new ObjectFile(this.CompareFilePathB);
             _navObjectsB = fileB.Run();
+
+            _counter = 0;
+            _totalObjectsToCompare = _navObjectsA.Keys.Count + _navObjectsB.Keys.Count;
 
             FindDifferencesA();
             FindDifferencesB();
@@ -46,8 +55,12 @@ namespace NAVObjectCompare
             foreach (string internalId in _navObjectsA.Keys)
             {
                 FindDifferencesA(internalId);
+
+                _counter++;
+                FireCompareEvent();
             }
         }
+
 
         public void FindDifferencesA(string internalId)
         {
@@ -75,6 +88,9 @@ namespace NAVObjectCompare
             foreach (string internalId in _navObjectsB.Keys)
             {
                 FindDifferencesB(internalId);
+
+                _counter++;
+                FireCompareEvent();
             }
         }
 
@@ -173,6 +189,21 @@ namespace NAVObjectCompare
             }
         }
 
+
+        private void FireCompareEvent()
+        {
+            if (this.OnCompared != null)
+            {
+                double percentageDone = 0;
+                if (_totalObjectsToCompare != 0)
+                    percentageDone = (((double)_counter / (double)_totalObjectsToCompare) * 100);
+                else
+                    percentageDone = 100;
+
+                this.OnCompared(this, new CompareEventArgs(percentageDone));
+            }
+        }
+
         private static void SetAValues(NavObject navObjectA, NavObjectsCompared objectsCompared)
         {
             if (navObjectA != null)
@@ -196,5 +227,14 @@ namespace NAVObjectCompare
         }
 
         #endregion Private Methods
+    }
+
+    public class CompareEventArgs : EventArgs
+    {
+        public CompareEventArgs(double percentageDone)
+        {
+            this.PercentageDone = percentageDone;
+        }
+        public double PercentageDone { get; private set; }
     }
 }
