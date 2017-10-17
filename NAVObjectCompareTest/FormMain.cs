@@ -10,7 +10,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Configuration;
 using System.Diagnostics;
-using NAVObjectCompare;
+using NAVObjectCompare.Compare;
 using NAVObjectCompare.Models;
 using NAVObjectCompareWinClient.Helpers;
 using NAVObjectCompare.Editor;
@@ -20,7 +20,7 @@ namespace NAVObjectCompareWinClient
     public partial class FormMain : Form
     {
         Editor _editor = null;
-        Compare _compare = null;
+        ObjectCompare _compare = null;
 
         #region FormEvents
 
@@ -272,7 +272,7 @@ namespace NAVObjectCompareWinClient
         {
             if (_compare == null)
             {
-                _compare = new Compare(); // Start New Compare
+                _compare = new ObjectCompare(); // Start New Compare
                 _compare.CompareFilePathA = filePathA;
                 _compare.CompareFilePathB = filePathB;
             }
@@ -281,7 +281,7 @@ namespace NAVObjectCompareWinClient
                 // A Comparison have been done previously Check what to do
                 if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count > 0))
                 {
-                    _compare = new Compare(); // Start a new Compare
+                    _compare = new ObjectCompare(); // Start a new Compare
                     _compare.CompareFilePathA = filePathA;
                 }
                 else if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count == 0)) // Compare has been done only for file A then add B

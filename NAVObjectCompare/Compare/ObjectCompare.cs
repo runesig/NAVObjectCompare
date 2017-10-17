@@ -7,11 +7,11 @@ using System.IO;
 using NAVObjectCompare.Models;
 using NAVObjectCompare.Helpers;
 
-namespace NAVObjectCompare
+namespace NAVObjectCompare.Compare
 {
     public delegate void CompareEventHandler(object source, CompareEventArgs e);
 
-    public class Compare
+    public class ObjectCompare
     {
 
         public event CompareEventHandler OnCompared;
@@ -29,9 +29,11 @@ namespace NAVObjectCompare
         public void RunCompare()
         {
             ObjectFile fileA = new ObjectFile(this.CompareFilePathA);
+            fileA.OnFileNewLineRead += FileA_OnFileNewLineRead;
             _navObjectsA = fileA.Run();
 
             ObjectFile fileB = new ObjectFile(this.CompareFilePathB);
+            fileB.OnFileNewLineRead += FileB_OnFileNewLineRead;
             _navObjectsB = fileB.Run();
 
             _counter = 0;
@@ -39,6 +41,16 @@ namespace NAVObjectCompare
 
             FindDifferencesA();
             FindDifferencesB();
+        }
+
+        private void FileB_OnFileNewLineRead(object source, FileReadEventArgs e)
+        {
+            this.OnCompared(this, new CompareEventArgs(e.PercentageDone));
+        }
+
+        private void FileA_OnFileNewLineRead(object source, FileReadEventArgs e)
+        {
+            this.OnCompared(this, new CompareEventArgs(e.PercentageDone));
         }
 
         public List<NavObjectsCompared> GetList()

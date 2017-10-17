@@ -47,13 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compare.cs" />
+    <Compile Include="Compare\ObjectCompare.cs" />
     <Compile Include="Editor\Editor.cs" />
     <Compile Include="Editor\FileWatcher.cs" />
     <Compile Include="Models\NavObjectsCompared.cs" />
     <Compile Include="Helpers\ObjectHelper.cs" />
     <Compile Include="Models\NavObject.cs" />
-    <Compile Include="ObjectFile.cs" />
+    <Compile Include="Compare\ObjectFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

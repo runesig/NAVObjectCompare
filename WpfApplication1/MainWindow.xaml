@@ -7,25 +7,57 @@
         xmlns:helpers="clr-namespace:NAVObjectCompareWinClient.Helpers"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="720">
-        <Window.Resources>
-            <helpers:RowColorValue x:Key="RowColorValue" />
-        </Window.Resources>
-    <DockPanel>
-        <!--Menu Start-->
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="_Open" Click="openMenu_Click"/>
-                <MenuItem Header="_Save" />
-                <Separator />
-                <MenuItem Header="_Exit" Click="exitMenu_Click" />
-                <Grid Height="100" Width="100"/>
-            </MenuItem>
-        </Menu>
-        <!--Menu End-->
+    <Window.Resources>
+        <SolidColorBrush x:Key="BackgroundBrushEqual" Color="Salmon" />
+        <SolidColorBrush x:Key="BackgroundBrushClear" Color="White" />
+        <SolidColorBrush x:Key="BackgroundBrushA" Color="Azure" />
+        <SolidColorBrush x:Key="BackgroundBrushB" Color="OldLace" />
+        <SolidColorBrush x:Key="BackgroundBrushSelected" Color="DodgerBlue" />
+        <SolidColorBrush x:Key="ForegroundBrushClear" Color="White" />
+    </Window.Resources>
 
-        <!--Searchbar Start-->
-        <ComboBox x:Name="comboBox" Height="16" DockPanel.Dock="Top" Width="120"/>
-        <!--Searchbar End-->
+    <DockPanel>
+
+        <StackPanel DockPanel.Dock="Top">
+            <!--Menu Start-->
+            <Menu DockPanel.Dock="Top" Width="Auto" Height="20">
+                <MenuItem Header="_File">
+                    <MenuItem x:Name="Open" Header="_Open" Click="openMenu_Click"/>
+                    <MenuItem Header="_Save" />
+                    <Separator />
+                    <MenuItem Header="_Exit" Click="exitMenu_Click" />
+                </MenuItem>
+                <MenuItem Header="_Tools">
+                    <MenuItem x:Name="Options" Header="_Options" HorizontalAlignment="Left" Width="140"/>
+                </MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem x:Name="About" Header="_About" HorizontalAlignment="Left" Width="140"/>
+                </MenuItem>
+            </Menu>
+            <!--Menu End-->
+
+            <!-- Search Grid Start -->
+            <Grid>
+                <!-- Margin="0,0,20,0"-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="200" />
+                </Grid.ColumnDefinitions>
+
+                <ComboBox x:Name="showComboBox" Grid.Column="0" Grid.Row="0" Margin="3,10,3,10" Style="{DynamicResource ComboBoxStyleWhite}" SelectionChanged="showComboBox_SelectionChanged" />
+                <TextBox x:Name="searchTextBox" Grid.Column="2" Grid.Row="0" Margin="3,10,3,10" />
+                <ComboBox x:Name="fieldsComboBox" Grid.Column="3" Grid.Row="0" Margin="3,10,3,10" Style="{DynamicResource ComboBoxStyleWhite}" />
+
+
+            </Grid>
+            <!-- Search Grid Stop -->
+
+        </StackPanel>
 
         <!--Statusbar Start-->
         <StatusBar DockPanel.Dock="Bottom">
@@ -58,141 +90,211 @@
 
         <!--Datagrid Start-->
         <DataGrid Name="comparedDataGrid" AutoGenerateColumns="False">
-            <DataGrid.Resources>
-                <Style TargetType="DataGridRow">
-                    <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
-                </Style>
-            </DataGrid.Resources>
-            <!--<DataGrid.CellStyle>
-
-                -->
-            <!--https://stackoverflow.com/questions/18623579/how-to-apply-a-cell-style-to-datagrid-cell-->
-
-            <!--<Style x:Key="MyDataGridCell" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">-->
-            <!--
-                <Style TargetType="DataGridCell">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="Red"/>
-                            <Setter Property="Foreground" Value="White"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-
-            </DataGrid.CellStyle>-->
-
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Equal}" Value="False">
-                            <Setter Property="Background" Value="Salmon"></Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-
-
-                    <!--<Setter Property="Background" >
-                        <Setter.Value>
-                            <Binding Path="Equal" Converter="{StaticResource  RowColorValue}">
-         
-                                <Binding.ConverterParameter>
-                                    <x:Array Type="SolidColorBrush">
-                                        <SolidColorBrush Color="Red"/>
-                                        <SolidColorBrush Color="Green"/>
-                                    </x:Array>
-                                </Binding.ConverterParameter>
-           
-                            </Binding>
-                        </Setter.Value>
-                    </Setter>-->
-
+                    <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
                 </Style>
             </DataGrid.RowStyle>
-
             <DataGrid.Columns>
                 <!-- https://stackoverflow.com/questions/7851066/wpf-datagrid-cell-background-using-binding-->
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Equal}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}" />
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Type" Binding="{Binding Type}" IsReadOnly="True">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Equal}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Equal}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
+
                 <DataGridTextColumn Header="Date Object A" Binding="{Binding StringDateA}" IsReadOnly="True">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="Azure" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Equal}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Time Object A" Binding="{Binding StringTimeA}" IsReadOnly="True">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="Azure" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Equal}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Version List A" Binding="{Binding VersionListA}" IsReadOnly="True">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="Azure" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Equal}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="No Of Lines Object A" Binding="{Binding NoOfLinesA}" IsReadOnly="True">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="Azure" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Equal}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Date Object B" Binding="{Binding StringDateB}" IsReadOnly="True">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="OldLace" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Equal}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Time Object B" Binding="{Binding StringTimeB}" IsReadOnly="True">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="OldLace" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Equal}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Version List B" Binding="{Binding VersionListB}" IsReadOnly="True">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="OldLace" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Equal}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="No Of Lines Object B" Binding="{Binding NoOfLinesB}" IsReadOnly="True">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="OldLace" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Equal}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Difference Comment" Binding="{Binding Difference}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Difference Comment" Binding="{Binding Difference}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Equal}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
         <!--Datagrid End-->
-        
+
+
+
     </DockPanel>
 </Window>

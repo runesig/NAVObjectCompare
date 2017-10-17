@@ -7,13 +7,17 @@ using System.IO;
 using NAVObjectCompare.Models;
 using NAVObjectCompare.Helpers;
 
-namespace NAVObjectCompare
+namespace NAVObjectCompare.Compare
 {
+    public delegate void ObjectFileEventHandler(object source, FileReadEventArgs e);
+
     public class ObjectFile
     {
-        private string _filePath = string.Empty;
+        public event ObjectFileEventHandler OnFileNewLineRead;
 
-        private Dictionary<string, NavObject> _navObjects = new Dictionary<string, NavObject>(); 
+        private string _filePath = string.Empty;
+        private Dictionary<string, NavObject> _navObjects = new Dictionary<string, NavObject>();
+        private double _prevPercentageDone = 0;
 
         public ObjectFile(string filePath)
         {
@@ -32,7 +36,9 @@ namespace NAVObjectCompare
             NavObject currNavObject = null;
 
             var lines = File.ReadAllLines(_filePath, Encoding.Default);
-            for (int i = 0; i < lines.Length; i++)
+
+            int totalLineCount = lines.Length;
+            for (int i = 0; i < totalLineCount; i++)
             {
                 ObjectSection objectSection = ObjectHelper.FindObjectSection(lines[i]);
                 if (objectSection != ObjectSection.Unknown)
@@ -40,7 +46,7 @@ namespace NAVObjectCompare
 
                 ProcessLine(lines[i], currObjectSection, ref currNavObject);
 
-                // NB!!! Update Event
+                FireFileReadEvent(i, totalLineCount);
             }
 
             return _navObjects;
@@ -154,5 +160,31 @@ namespace NAVObjectCompare
                 }
             }
         }
+
+        private void FireFileReadEvent(int counter, int totalLineCount)
+        {
+            int percentageRead = 0;
+            if (totalLineCount > 0)
+                percentageRead = (int)(((double)counter / (double)totalLineCount) * 100);
+            else
+                percentageRead = 100;
+
+            if ((percentageRead % 1 == 0) && (percentageRead > _prevPercentageDone))
+            {
+                if (OnFileNewLineRead != null)
+                    OnFileNewLineRead(this, new FileReadEventArgs(percentageRead));
+            }
+
+            _prevPercentageDone = percentageRead;
+        }
+    }
+
+    public class FileReadEventArgs : EventArgs
+    {
+        public FileReadEventArgs(double percentageRead)
+        {
+            this.PercentageDone = percentageRead;
+        }
+        public double PercentageDone { get; private set; }
     }
 }

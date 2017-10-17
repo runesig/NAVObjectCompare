@@ -14,12 +14,12 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
 using Microsoft.Win32;
-using NAVObjectCompare;
+using System.Configuration;
+using System.Windows.Threading;
+using NAVObjectCompare.Compare;
 using NAVObjectCompare.Models;
 using NAVObjectCompareWinClient.Helpers;
 using NAVObjectCompare.Editor;
-using System.Configuration;
-using System.Windows.Threading;
 
 namespace NAVObjectCompareWinClient
 {
@@ -29,7 +29,7 @@ namespace NAVObjectCompareWinClient
     public partial class MainWindow : Window
     {
         Editor _editor = null;
-        Compare _compare = null;
+        ObjectCompare _compare = null;
 
         public MainWindow()
         {
@@ -43,23 +43,31 @@ namespace NAVObjectCompareWinClient
             // SetFileNameLabels(string.Empty, string.Empty);
 
             // Progress Bar
-            this.processProgessBar.Visibility = Visibility.Collapsed;
-            this.processProgessBar.Minimum = 0;
-            this.processProgessBar.Maximum = 100;
-            this.processProgessBar.Value = 0;
+            InitProgressBar();
 
             // Editor
-            string filePathEditor = ConfigurationManager.AppSettings["BeyondComparePath"];
-            _editor = new Editor(filePathEditor);
-            _editor.OnReCompareObject += _editor_OnReCompareObject;
+            InitEditor();
 
             // AddFilterFieldsComboBox();
-            // AddShowItemsComboBox();
+            AddItemsShowComboBox();
 
             // comparedDataGrid.RowStyle.Triggers.Add(new DataTrigger() { Binding = new Binding() { Source = "{Binding Equal}" }, Value = "False", Setters.Add(new Setter() { Property = BackgroundProperty, Value = Color.FromRgb(0,0,0)) } });
         }
 
+        private void InitEditor()
+        {
+            string filePathEditor = ConfigurationManager.AppSettings["BeyondComparePath"];
+            _editor = new Editor(filePathEditor);
+            _editor.OnReCompareObject += _editor_OnReCompareObject;
+        }
 
+        private void InitProgressBar()
+        {
+            this.processProgessBar.Visibility = Visibility.Collapsed;
+            this.processProgessBar.Minimum = 0;
+            this.processProgessBar.Maximum = 100;
+            this.processProgessBar.Value = 0;
+        }
 
         async private void CompareAndFillGrid(string filePathA, string filePathB)
         {
@@ -68,7 +76,11 @@ namespace NAVObjectCompareWinClient
             {
                 await HideOrShowProgressBarAsync();
 
-                RunComparison(filePathA, filePathB);
+
+                await Task.Factory.StartNew(() =>
+                {
+                    RunComparison(filePathA, filePathB);
+                });
 
                 PopulateGrid();
 
@@ -100,7 +112,7 @@ namespace NAVObjectCompareWinClient
         {
             if (_compare == null)
             {
-                _compare = new Compare(); // Start New Compare
+                _compare = new ObjectCompare(); // Start New Compare
                 _compare.CompareFilePathA = filePathA;
                 _compare.CompareFilePathB = filePathB;
                 _compare.OnCompared += _compare_OnCompared;
@@ -110,7 +122,7 @@ namespace NAVObjectCompareWinClient
                 // A Comparison have been done previously Check what to do
                 if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count > 0))
                 {
-                    _compare = new Compare(); // Start a new Compare
+                    _compare = new ObjectCompare(); // Start a new Compare
                     _compare.CompareFilePathA = filePathA;
                 }
                 else if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count == 0)) // Compare has been done only for file A then add B
@@ -128,7 +140,6 @@ namespace NAVObjectCompareWinClient
             DataTable listAsDataTable = DataTableHelper.BuildDataTable<NavObjectsCompared>(_compare.GetList());
             DataView listAsDataView = listAsDataTable.DefaultView;
 
-            // comparedDataGrid.AutoGenerateColumns = false;
             comparedDataGrid.ItemsSource = listAsDataView;
 
             //var bindingList = new BindingList<NavObjectsCompared>(_compare.GetList());
@@ -236,24 +247,7 @@ namespace NAVObjectCompareWinClient
 
         #endregion Filters
 
-        private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                DataGridRow dataGridRow = (DataGridRow)e.Source;
-                DataRowView dataRowView = (DataRowView)dataGridRow.Item;
-
-                string internalId = (string)dataRowView["InternalId"];
-                OpenEditor(internalId);
-            }
-            catch(Exception ex)
-            {
-                MessageHelper.ShowError(ex);
-            }
-
-        }
-
-        #region GUI
+        #region EventHandling
 
         private void openMenu_Click(object sender, RoutedEventArgs e)
         {
@@ -265,15 +259,25 @@ namespace NAVObjectCompareWinClient
             MessageBox.Show("Goodbye");
         }
 
-        private void SetSourceLabels(string sourceA, string sourceB)
+        private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
         {
-            this.statusSourceA.Text = sourceA;
-            this.statusSourceB.Text = sourceB;
+            try
+            {
+                DataGridRow dataGridRow = (DataGridRow)e.Source;
+                DataRowView dataRowView = (DataRowView)dataGridRow.Item;
+
+                string internalId = (string)dataRowView["InternalId"];
+                OpenEditor(internalId);
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
         }
 
-        #endregion GUI
+        #endregion EventHandling
 
-        #region FileHandling
+        #region Private Functions
 
         private void OpenFileDialog()
         {
@@ -372,6 +376,28 @@ namespace NAVObjectCompareWinClient
             }
         }
 
-        #endregion FileHandling
+        private void SetSourceLabels(string sourceA, string sourceB)
+        {
+            this.statusSourceA.Text = sourceA;
+            this.statusSourceB.Text = sourceB;
+        }
+
+        private void AddItemsShowComboBox()
+        {
+            showComboBox.Items.Add("Show all");
+            showComboBox.Items.Add("Show all equal");
+            showComboBox.Items.Add("Show all non equal");
+            showComboBox.Items.Add("Show only date,time differences");
+            showComboBox.Items.Add("Show code differences");
+
+            showComboBox.SelectedIndex = 0;
+        }
+
+        #endregion Private Functions
+
+        private void showComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            MessageBox.Show(showComboBox.SelectedIndex.ToString());
+        }
     }
 }
