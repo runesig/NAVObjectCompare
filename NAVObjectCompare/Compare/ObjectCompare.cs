@@ -9,7 +9,7 @@ using NAVObjectCompare.Helpers;
 
 namespace NAVObjectCompare.Compare
 {
-    public delegate void CompareEventHandler(object source, CompareEventArgs e);
+    public delegate void CompareEventHandler(int percentCompleted);
 
     public class ObjectCompare
     {
@@ -43,15 +43,15 @@ namespace NAVObjectCompare.Compare
             FindDifferencesB();
         }
 
-        private void FileB_OnFileNewLineRead(object source, FileReadEventArgs e)
+        private void FileB_OnFileNewLineRead(int percentCompleted)
         {
             if(OnCompared != null)
-                OnCompared(this, new CompareEventArgs(e.PercentageDone));
+                OnCompared(percentCompleted);
         }
 
-        private void FileA_OnFileNewLineRead(object source, FileReadEventArgs e)
+        private void FileA_OnFileNewLineRead(int percentCompleted)
         {
-            this.OnCompared(this, new CompareEventArgs(e.PercentageDone));
+            this.OnCompared(percentCompleted);
         }
 
         public List<NavObjectsCompared> GetList()
@@ -207,13 +207,13 @@ namespace NAVObjectCompare.Compare
         {
             if (this.OnCompared != null)
             {
-                double percentageDone = 0;
+                double percentageCompleted = 0;
                 if (_totalObjectsToCompare != 0)
-                    percentageDone = (((double)_counter / (double)_totalObjectsToCompare) * 100);
+                    percentageCompleted = (((double)_counter / (double)_totalObjectsToCompare) * 100);
                 else
-                    percentageDone = 100;
+                    percentageCompleted = 100;
 
-                this.OnCompared(this, new CompareEventArgs(percentageDone));
+                this.OnCompared((int)percentageCompleted);
             }
         }
 
@@ -240,14 +240,5 @@ namespace NAVObjectCompare.Compare
         }
 
         #endregion Private Methods
-    }
-
-    public class CompareEventArgs : EventArgs
-    {
-        public CompareEventArgs(double percentageDone)
-        {
-            this.PercentageDone = percentageDone;
-        }
-        public double PercentageDone { get; private set; }
     }
 }

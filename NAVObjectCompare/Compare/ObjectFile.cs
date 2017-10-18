@@ -9,7 +9,7 @@ using NAVObjectCompare.Helpers;
 
 namespace NAVObjectCompare.Compare
 {
-    public delegate void ObjectFileEventHandler(object source, FileReadEventArgs e);
+    public delegate void ObjectFileEventHandler(int percentCompleted);
 
     public class ObjectFile
     {
@@ -172,19 +172,10 @@ namespace NAVObjectCompare.Compare
             if ((percentageRead % 1 == 0) && (percentageRead > _prevPercentageDone))
             {
                 if (OnFileNewLineRead != null)
-                    OnFileNewLineRead(this, new FileReadEventArgs(percentageRead));
+                    OnFileNewLineRead(percentageRead);
             }
 
             _prevPercentageDone = percentageRead;
         }
-    }
-
-    public class FileReadEventArgs : EventArgs
-    {
-        public FileReadEventArgs(double percentageRead)
-        {
-            this.PercentageDone = percentageRead;
-        }
-        public double PercentageDone { get; private set; }
     }
 }

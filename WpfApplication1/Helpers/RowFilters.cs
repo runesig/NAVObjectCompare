@@ -54,6 +54,17 @@ namespace NAVObjectCompareWinClient.Helpers
             return rowFilter;
         }
 
+        public static ComboboxItem GetComboBoxItem(ComboBox comboBox, string value)
+        {
+            foreach(ComboboxItem item in comboBox.Items)
+            {
+                if (item.Value == value)
+                    return item;
+            }
+
+            return null;
+        }
+
         private static void AddToRowFilter(ref string rowFilter, string filterToAdd)
         {
             if (!string.IsNullOrEmpty(filterToAdd))

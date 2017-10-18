@@ -20,6 +20,7 @@ using NAVObjectCompare.Compare;
 using NAVObjectCompare.Models;
 using NAVObjectCompareWinClient.Helpers;
 using NAVObjectCompare.Editor;
+using System.ComponentModel;
 
 namespace NAVObjectCompareWinClient
 {
@@ -73,9 +74,9 @@ namespace NAVObjectCompareWinClient
 
         #region EventHandling
 
-        private void _compare_OnCompared(object source, CompareEventArgs e)
+        private void _compare_OnCompared(int percentCompleted)
         {
-            processProgessBar.Dispatcher.Invoke(() => processProgessBar.Value = e.PercentageDone, DispatcherPriority.Background);
+            processProgessBar.Dispatcher.Invoke(() => processProgessBar.Value = percentCompleted, DispatcherPriority.Background);
         }
 
         private void _editor_OnReCompareObject(object source, EditorEventArgs e)
@@ -94,7 +95,7 @@ namespace NAVObjectCompareWinClient
 
         private void exitMenu_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Goodbye");
+            Application.Current.Shutdown();
         }
 
         private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
@@ -122,6 +123,15 @@ namespace NAVObjectCompareWinClient
         {
             if (e.Key == Key.Return)
                 SetRowFilters();
+        }
+
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedValue = GetSelectedGridValue();
+
+            if(selectedValue != null)
+                Clipboard.SetText(selectedValue.ToString());
+
         }
 
         #endregion EventHandling
@@ -191,12 +201,21 @@ namespace NAVObjectCompareWinClient
                 if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count > 0))
                 {
                     _compare = new ObjectCompare(); // Start a new Compare
-                    _compare.OnCompared += _compare_OnCompared;
                     _compare.CompareFilePathA = filePathA;
+                    _compare.OnCompared += _compare_OnCompared;
                 }
                 else if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count == 0)) // Compare has been done only for file A then add B
                 {
                     _compare.CompareFilePathB = filePathA; // Set the A file to path B to add the new one
+                    _compare.OnCompared += _compare_OnCompared;
+                }
+                else if ((!string.IsNullOrEmpty(filePathA)) && (!string.IsNullOrEmpty(filePathB)))
+                {
+                    // Totally New Compare
+                    _compare = new ObjectCompare();
+                    _compare.CompareFilePathA = filePathA;
+                    _compare.CompareFilePathB = filePathB;
+                    _compare.OnCompared += _compare_OnCompared;
                 }
             }
 
@@ -263,8 +282,47 @@ namespace NAVObjectCompareWinClient
             statusSourceB.Text = string.Format("B: {0}", sourceB);
         }
 
+
         #endregion Private Functions
 
 
+        private object GetSelectedGridValue()
+        {
+            try
+            {
+                var selectedItem = comparedDataGrid.CurrentItem;
+
+                string boundPropertyName = GetSelectedColumn();
+                PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(selectedItem);
+
+                PropertyDescriptor property = properties[boundPropertyName];
+
+                return property.GetValue(selectedItem);
+            }
+            catch(Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+
+            return null;
+        }
+
+        private string GetSelectedColumn()
+        {
+            DataGridBoundColumn currentColumn = comparedDataGrid.CurrentColumn as DataGridBoundColumn;
+            Binding binding = currentColumn.Binding as Binding;
+
+            return binding.Path.Path;
+        }
+
+        private void FilterToValue_Click(object sender, RoutedEventArgs e)
+        {
+            NAVObjectCompareWinClient.Helpers.ComboboxItem selectedItem = RowFilters.GetComboBoxItem(fieldFilterComboBox, GetSelectedColumn());
+
+            fieldFilterComboBox.SelectedItem = selectedItem;
+            fieldFilterTextBox.Text = GetSelectedGridValue().ToString();
+
+            SetRowFilters();
+        }
     }
 }

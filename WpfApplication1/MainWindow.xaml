@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NAVObjectCompareWinClient"
         xmlns:helpers="clr-namespace:NAVObjectCompareWinClient.Helpers"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="720" Background="{DynamicResource BackgroundBrushClear}">
+        Title="MainWindow" Background="{DynamicResource BackgroundBrushClear}">
     <Window.Resources>
         <SolidColorBrush x:Key="BackgroundBrushEqual" Color="Salmon" />
         <SolidColorBrush x:Key="BackgroundBrushClear" Color="White" />
@@ -17,7 +17,6 @@
     </Window.Resources>
 
     <DockPanel>
-
         <StackPanel DockPanel.Dock="Top">
             <!--Menu Start-->
             <Menu DockPanel.Dock="Top" Width="Auto" Height="20" Background="{DynamicResource BackgroundBrushClear}">
@@ -50,7 +49,7 @@
                 </Grid.ColumnDefinitions>
 
                 <ComboBox x:Name="showComboBox" Grid.Column="0" Grid.Row="0" Margin="10,10,3,10" Style="{DynamicResource ComboBoxStyleWhite}" SelectionChanged="showComboBox_SelectionChanged" />
-                <TextBox x:Name="fieldFilterTextBox" Grid.Column="2" Grid.Row="0" Margin="3,10,3,10" KeyDown="fieldFilterTextBox_KeyDown" />
+                <TextBox x:Name="fieldFilterTextBox" Grid.Column="2" Grid.Row="0" Margin="3,10,3,10" KeyDown="fieldFilterTextBox_KeyDown" MinWidth="100" Width="Auto"/>
                 <ComboBox x:Name="fieldFilterComboBox" Grid.Column="3" Grid.Row="0" Margin="3,10,10,10" Style="{DynamicResource ComboBoxStyleWhite}" />
 
 
@@ -89,15 +88,24 @@
         <!--Statusbar End-->
 
         <!--Datagrid Start-->
-        <DataGrid Name="comparedDataGrid" Background="{DynamicResource BackgroundBrushClear}" AutoGenerateColumns="False">
+        <DataGrid Name="comparedDataGrid" Background="{DynamicResource BackgroundBrushClear}" AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
                 </Style>
             </DataGrid.RowStyle>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <ContextMenu.ItemsSource>
+                        <CompositeCollection>
+                            <MenuItem x:Name="Copy" Header="Copy" Click="Copy_Click"/>
+                            <MenuItem x:Name="FilterToValue" Header="Filter To This Value" Click="FilterToValue_Click"/>
+                        </CompositeCollection>
+                    </ContextMenu.ItemsSource>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <!-- https://stackoverflow.com/questions/7851066/wpf-datagrid-cell-background-using-binding-->
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True">
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" Width="80">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
@@ -113,7 +121,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Type" Binding="{Binding Type}" IsReadOnly="True">
+                <DataGridTextColumn Header="Type" Binding="{Binding Type}" IsReadOnly="True" Width="100">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
@@ -129,7 +137,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True">
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
@@ -145,8 +153,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-
-                <DataGridTextColumn Header="Date Object A" Binding="{Binding StringDateA}" IsReadOnly="True">
+                <DataGridTextColumn Header="Date Object A" Binding="{Binding StringDateA}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
@@ -162,7 +169,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Time Object A" Binding="{Binding StringTimeA}" IsReadOnly="True">
+                <DataGridTextColumn Header="Time Object A" Binding="{Binding StringTimeA}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
@@ -178,7 +185,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Version List A" Binding="{Binding VersionListA}" IsReadOnly="True">
+                <DataGridTextColumn Header="Version List A" Binding="{Binding VersionListA}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
@@ -194,7 +201,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="No Of Lines Object A" Binding="{Binding NoOfLinesA}" IsReadOnly="True">
+                <DataGridTextColumn Header="No Of Lines Object A" Binding="{Binding NoOfLinesA}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
@@ -210,7 +217,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Date Object B" Binding="{Binding StringDateB}" IsReadOnly="True">
+                <DataGridTextColumn Header="Date Object B" Binding="{Binding StringDateB}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
@@ -226,7 +233,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Time Object B" Binding="{Binding StringTimeB}" IsReadOnly="True">
+                <DataGridTextColumn Header="Time Object B" Binding="{Binding StringTimeB}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
@@ -242,7 +249,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Version List B" Binding="{Binding VersionListB}" IsReadOnly="True">
+                <DataGridTextColumn Header="Version List B" Binding="{Binding VersionListB}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
@@ -258,7 +265,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="No Of Lines Object B" Binding="{Binding NoOfLinesB}" IsReadOnly="True">
+                <DataGridTextColumn Header="No Of Lines Object B" Binding="{Binding NoOfLinesB}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
@@ -274,7 +281,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Difference Comment" Binding="{Binding Difference}" IsReadOnly="True">
+                <DataGridTextColumn Header="Difference Comment" Binding="{Binding Difference}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
@@ -293,8 +300,5 @@
             </DataGrid.Columns>
         </DataGrid>
         <!--Datagrid End-->
-
-
-
     </DockPanel>
 </Window>
