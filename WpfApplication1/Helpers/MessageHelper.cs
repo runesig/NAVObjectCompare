@@ -32,7 +32,7 @@ namespace NAVObjectCompareWinClient.Helpers
                 if (bool.TryParse(showFullException, out isShowFullException))
                     return isShowFullException;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }

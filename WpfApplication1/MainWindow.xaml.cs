@@ -44,14 +44,10 @@ namespace NAVObjectCompareWinClient
 
             // Progress Bar
             InitProgressBar();
-
             // Editor
             InitEditor();
-
-            // AddFilterFieldsComboBox();
-            AddItemsShowComboBox();
-
-            // comparedDataGrid.RowStyle.Triggers.Add(new DataTrigger() { Binding = new Binding() { Source = "{Binding Equal}" }, Value = "False", Setters.Add(new Setter() { Property = BackgroundProperty, Value = Color.FromRgb(0,0,0)) } });
+            // Filters
+            InitFilters();
         }
 
         private void InitEditor()
@@ -61,13 +57,77 @@ namespace NAVObjectCompareWinClient
             _editor.OnReCompareObject += _editor_OnReCompareObject;
         }
 
+        private void InitFilters()
+        {
+            RowFilters.AddFilterFieldsComboBoxItems(comparedDataGrid, ref fieldFilterComboBox);
+            RowFilters.AddItemsShowComboBoxItems(ref showComboBox);
+        }
+
         private void InitProgressBar()
         {
-            this.processProgessBar.Visibility = Visibility.Collapsed;
-            this.processProgessBar.Minimum = 0;
-            this.processProgessBar.Maximum = 100;
-            this.processProgessBar.Value = 0;
+            processProgessBar.Visibility = Visibility.Collapsed;
+            processProgessBar.Minimum = 0;
+            processProgessBar.Maximum = 100;
+            processProgessBar.Value = 0;
         }
+
+        #region EventHandling
+
+        private void _compare_OnCompared(object source, CompareEventArgs e)
+        {
+            processProgessBar.Dispatcher.Invoke(() => processProgessBar.Value = e.PercentageDone, DispatcherPriority.Background);
+        }
+
+        private void _editor_OnReCompareObject(object source, EditorEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void openMenu_Click(object sender, RoutedEventArgs e)
+        {
+            string filePathA = string.Empty;
+            string filePathB = string.Empty;
+
+            if(Dialogs.OpenFile(ref filePathA, ref filePathB))
+                CompareAndFillGrid(filePathA, filePathB);
+        }
+
+        private void exitMenu_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Goodbye");
+        }
+
+        private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                DataGridRow dataGridRow = (DataGridRow)e.Source;
+                DataRowView dataRowView = (DataRowView)dataGridRow.Item;
+
+                string internalId = (string)dataRowView["InternalId"];
+                OpenEditor(internalId);
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+        }
+
+        private void showComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetRowFilters();
+        }
+
+        private void fieldFilterTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+                SetRowFilters();
+        }
+
+        #endregion EventHandling
+
+
+        #region Async Functions
 
         async private void CompareAndFillGrid(string filePathA, string filePathB)
         {
@@ -98,15 +158,23 @@ namespace NAVObjectCompareWinClient
             }
         }
 
-        private void _compare_OnCompared(object source, CompareEventArgs e)
+        private async Task HideOrShowProgressBarAsync()
         {
-            processProgessBar.Dispatcher.Invoke(() => processProgessBar.Value = e.PercentageDone, DispatcherPriority.Background);
+            if (processProgessBar.Visibility == Visibility.Visible)
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
+                this.Dispatcher.Invoke(new Action(() => { processProgessBar.Visibility = Visibility.Collapsed; }));
+            }
+            else
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(2)).ConfigureAwait(false);
+                this.Dispatcher.Invoke(new Action(() => { processProgessBar.Visibility = Visibility.Visible; }));
+            }
         }
 
-        private void _editor_OnReCompareObject(object source, EditorEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion Async Functions
+
+        #region Private Functions
 
         private void RunComparison(string filePathA, string filePathB)
         {
@@ -123,6 +191,7 @@ namespace NAVObjectCompareWinClient
                 if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count > 0))
                 {
                     _compare = new ObjectCompare(); // Start a new Compare
+                    _compare.OnCompared += _compare_OnCompared;
                     _compare.CompareFilePathA = filePathA;
                 }
                 else if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count == 0)) // Compare has been done only for file A then add B
@@ -136,202 +205,13 @@ namespace NAVObjectCompareWinClient
 
         private void PopulateGrid()
         {
-            // Populate list
             DataTable listAsDataTable = DataTableHelper.BuildDataTable<NavObjectsCompared>(_compare.GetList());
             DataView listAsDataView = listAsDataTable.DefaultView;
 
+            comparedDataGrid.AutoGenerateColumns = false;
             comparedDataGrid.ItemsSource = listAsDataView;
 
-            //var bindingList = new BindingList<NavObjectsCompared>(_compare.GetList());
-            //var source = new BindingSource(bindingList, null);
-
-            //if (InvokeRequired)
-            //{
-            //    // after we've done all the processing, 
-            //    this.Invoke(new MethodInvoker(delegate
-            //    {
-
-            //        comparedDataGridView.AutoGenerateColumns = false;
-            //        comparedDataGridView.DataSource = ListAsDataView;
-
-            //        SetRowFilters();
-            //    }));
-            //    return;
-            //}
-            //else
-            //{
-            //    comparedDataGridView.AutoGenerateColumns = false;
-            //    comparedDataGridView.DataSource = ListAsDataView;
-
-            //    SetRowFilters();
-            //}
-
             SetRowFilters();
-        }
-
-        #region Filters
-        private void SetRowFilters()
-        {
-            if (comparedDataGrid.ItemsSource == null)
-                return;
-
-            (comparedDataGrid.ItemsSource as DataView).RowFilter = CreateRowFilter();
-
-            //int count = (comparedDataGridView.DataSource as DataView).Count;
-            //SetStatus(count);
-        }
-
-        private string CreateRowFilter()
-        {
-            string rowFilter = string.Empty;
-
-            //rowFilter = CreateEqualFilter();
-            //rowFilter = CreateComboRowFilter(rowFilter);
-
-            // return string.Format("Equal = {0}", "False");
-
-            // 
-
-            return rowFilter;
-        }
-
-        //private string CreateEqualFilter()
-        //{
-        //    string rowFilter = string.Empty;
-
-        //    ComboboxItem selectedItem = (ComboboxItem)showComboBox.SelectedItem;
-        //    if (selectedItem == null)
-        //        return string.Empty;
-
-        //    switch (selectedItem.Value)
-        //    {
-        //        case "ALL":
-        //            rowFilter = string.Empty;
-        //            break;
-        //        case "ALLEQUAL":
-        //            rowFilter = string.Format("Equal = {0}", "True");
-        //            break;
-        //        case "ALLNONEQUAL":
-        //            rowFilter = string.Format("Equal = {0}", "False");
-        //            break;
-        //        case "OBJECTPROPERTIES":
-        //            rowFilter = string.Format("Equal = {0} AND CodeEqual = {1} AND ObjectPropertiesEqual = {2}", "False", "True", "False");
-        //            break;
-        //        case "CODEDIFF":
-        //            rowFilter = string.Format("Equal = {0} AND CodeEqual = {1}", "False", "False");
-        //            break;
-        //    }
-
-        //    return rowFilter;
-        //}
-
-        //private string CreateComboRowFilter(string existingFilter)
-        //{
-        //    string rowFilter = existingFilter;
-
-        //    ComboboxItem item = (ComboboxItem)fieldFilterComboBox.SelectedItem;
-        //    string comboFilter = string.Empty;
-
-        //    if (!string.IsNullOrEmpty(filterTextBox.Text) && (item != null))
-        //    {
-        //        if (!string.IsNullOrEmpty(existingFilter))
-        //            comboFilter = string.Format(" AND CONVERT({0}, System.String) LIKE '%{1}%'", item.Value, filterTextBox.Text);
-        //        else
-        //            comboFilter = string.Format("CONVERT({0}, System.String) LIKE '%{1}%'", item.Value, filterTextBox.Text);
-
-        //        rowFilter += comboFilter;
-        //    }
-
-        //    return rowFilter;
-        //}
-
-        #endregion Filters
-
-        #region EventHandling
-
-        private void openMenu_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog();
-        }
-
-        private void exitMenu_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Goodbye");
-        }
-
-        private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                DataGridRow dataGridRow = (DataGridRow)e.Source;
-                DataRowView dataRowView = (DataRowView)dataGridRow.Item;
-
-                string internalId = (string)dataRowView["InternalId"];
-                OpenEditor(internalId);
-            }
-            catch (Exception ex)
-            {
-                MessageHelper.ShowError(ex);
-            }
-        }
-
-        #endregion EventHandling
-
-        #region Private Functions
-
-        private void OpenFileDialog()
-        {
-            OpenFileDialog openDialog = new OpenFileDialog();
-            openDialog.Title = "Open NAV Object File(s)";
-            openDialog.Filter = "Txt files|*.txt";
-            openDialog.Multiselect = true;
-
-            Nullable<bool> result = openDialog.ShowDialog();
-
-            if (result == true)
-            {
-                try
-                {
-                    if (openDialog.FileNames.Length > 1)
-                    {
-                        // Get the two first ones
-                        string filePathA = openDialog.FileNames[0];
-                        string filePathB = openDialog.FileNames[1];
-
-                        CompareAndFillGrid(filePathA, filePathB);
-                    }
-                    else
-                    {
-                        CompareAndFillGrid(openDialog.FileName, string.Empty);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageHelper.ShowError(ex);
-                }
-            }
-        }
-
-        private void OpenSaveFileDialog(Dictionary<string, NavObject> objects, string initFilename, string tag)
-        {
-            SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Title = string.Format("Export {0}: NAV Object File(s)", tag);
-            saveDialog.Filter = "Txt files|*.txt";
-            saveDialog.FileName = initFilename;
-
-            Nullable<bool> result = saveDialog.ShowDialog();
-
-            if (result == true)
-            {
-                try
-                {
-                    // ExportObjects(objects, saveDialog.FileName);
-                }
-                catch (Exception ex)
-                {
-                    MessageHelper.ShowError(ex);
-                }
-            }
         }
 
         private void OpenEditor(string internalId)
@@ -362,42 +242,29 @@ namespace NAVObjectCompareWinClient
             }
         }
 
-        private async Task HideOrShowProgressBarAsync()
+        private void SetRowFilters()
         {
-            if(processProgessBar.Visibility == Visibility.Visible)
-            {
-                await Task.Delay(TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
-                this.Dispatcher.Invoke(new Action(() => { processProgessBar.Visibility = Visibility.Collapsed; }));
-            }
-            else
-            {
-                await Task.Delay(TimeSpan.FromMilliseconds(2)).ConfigureAwait(false);
-                this.Dispatcher.Invoke(new Action(() => { processProgessBar.Visibility = Visibility.Visible; }));
-            }
+            ComboboxItem showComboBoxItem = (ComboboxItem)showComboBox.SelectedItem;
+            ComboboxItem fieldFilterComboboxItem = (ComboboxItem)fieldFilterComboBox.SelectedItem;
+            string fieldFilter = fieldFilterTextBox.Text;
+
+            if (comparedDataGrid.ItemsSource == null)
+                return;
+
+            (comparedDataGrid.ItemsSource as DataView).RowFilter = RowFilters.CreateFilter(showComboBoxItem, fieldFilterComboboxItem, fieldFilter);
+
+            //int count = (comparedDataGridView.DataSource as DataView).Count;
+            //SetStatus(count);
         }
 
         private void SetSourceLabels(string sourceA, string sourceB)
         {
-            this.statusSourceA.Text = sourceA;
-            this.statusSourceB.Text = sourceB;
-        }
-
-        private void AddItemsShowComboBox()
-        {
-            showComboBox.Items.Add("Show all");
-            showComboBox.Items.Add("Show all equal");
-            showComboBox.Items.Add("Show all non equal");
-            showComboBox.Items.Add("Show only date,time differences");
-            showComboBox.Items.Add("Show code differences");
-
-            showComboBox.SelectedIndex = 0;
+            statusSourceA.Text = string.Format("A: {0}", sourceA);
+            statusSourceB.Text = string.Format("B: {0}", sourceB);
         }
 
         #endregion Private Functions
 
-        private void showComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            MessageBox.Show(showComboBox.SelectedIndex.ToString());
-        }
+
     }
 }

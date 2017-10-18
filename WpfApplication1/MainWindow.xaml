@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NAVObjectCompareWinClient"
         xmlns:helpers="clr-namespace:NAVObjectCompareWinClient.Helpers"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="720">
+        Title="MainWindow" Height="350" Width="720" Background="{DynamicResource BackgroundBrushClear}">
     <Window.Resources>
         <SolidColorBrush x:Key="BackgroundBrushEqual" Color="Salmon" />
         <SolidColorBrush x:Key="BackgroundBrushClear" Color="White" />
@@ -20,7 +20,7 @@
 
         <StackPanel DockPanel.Dock="Top">
             <!--Menu Start-->
-            <Menu DockPanel.Dock="Top" Width="Auto" Height="20">
+            <Menu DockPanel.Dock="Top" Width="Auto" Height="20" Background="{DynamicResource BackgroundBrushClear}">
                 <MenuItem Header="_File">
                     <MenuItem x:Name="Open" Header="_Open" Click="openMenu_Click"/>
                     <MenuItem Header="_Save" />
@@ -49,9 +49,9 @@
                     <ColumnDefinition Width="200" />
                 </Grid.ColumnDefinitions>
 
-                <ComboBox x:Name="showComboBox" Grid.Column="0" Grid.Row="0" Margin="3,10,3,10" Style="{DynamicResource ComboBoxStyleWhite}" SelectionChanged="showComboBox_SelectionChanged" />
-                <TextBox x:Name="searchTextBox" Grid.Column="2" Grid.Row="0" Margin="3,10,3,10" />
-                <ComboBox x:Name="fieldsComboBox" Grid.Column="3" Grid.Row="0" Margin="3,10,3,10" Style="{DynamicResource ComboBoxStyleWhite}" />
+                <ComboBox x:Name="showComboBox" Grid.Column="0" Grid.Row="0" Margin="10,10,3,10" Style="{DynamicResource ComboBoxStyleWhite}" SelectionChanged="showComboBox_SelectionChanged" />
+                <TextBox x:Name="fieldFilterTextBox" Grid.Column="2" Grid.Row="0" Margin="3,10,3,10" KeyDown="fieldFilterTextBox_KeyDown" />
+                <ComboBox x:Name="fieldFilterComboBox" Grid.Column="3" Grid.Row="0" Margin="3,10,10,10" Style="{DynamicResource ComboBoxStyleWhite}" />
 
 
             </Grid>
@@ -60,7 +60,7 @@
         </StackPanel>
 
         <!--Statusbar Start-->
-        <StatusBar DockPanel.Dock="Bottom">
+        <StatusBar DockPanel.Dock="Bottom" Background="{DynamicResource BackgroundBrushClear}">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid>
@@ -89,7 +89,7 @@
         <!--Statusbar End-->
 
         <!--Datagrid Start-->
-        <DataGrid Name="comparedDataGrid" AutoGenerateColumns="False">
+        <DataGrid Name="comparedDataGrid" Background="{DynamicResource BackgroundBrushClear}" AutoGenerateColumns="False">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick"/>

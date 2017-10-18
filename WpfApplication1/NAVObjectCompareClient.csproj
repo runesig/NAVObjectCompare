@@ -7,8 +7,8 @@
     <ProjectGuid>{4ACFB603-2C3D-440A-B202-DD2D2EC04774}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WpfApplication1</RootNamespace>
-    <AssemblyName>WpfApplication1</AssemblyName>
+    <RootNamespace>NAVObjectCompareWinClient</RootNamespace>
+    <AssemblyName>NAVObjectCompareWinClient</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -71,12 +71,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helpers\ComboBoxHelper.cs" />
-    <Compile Include="Helpers\DataGridViewHelper.cs" />
     <Compile Include="Helpers\DataTableHelper.cs" />
     <Compile Include="Helpers\ExcelHelper.cs" />
+    <Compile Include="Helpers\FileDialogs.cs" />
     <Compile Include="Helpers\MessageHelper.cs" />
-    <Compile Include="Helpers\ObjectFile.cs" />
-    <Compile Include="Helpers\RowColorValue.cs" />
+    <Compile Include="Helpers\RowFilters.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

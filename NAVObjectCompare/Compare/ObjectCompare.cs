@@ -45,7 +45,8 @@ namespace NAVObjectCompare.Compare
 
         private void FileB_OnFileNewLineRead(object source, FileReadEventArgs e)
         {
-            this.OnCompared(this, new CompareEventArgs(e.PercentageDone));
+            if(OnCompared != null)
+                OnCompared(this, new CompareEventArgs(e.PercentageDone));
         }
 
         private void FileA_OnFileNewLineRead(object source, FileReadEventArgs e)
