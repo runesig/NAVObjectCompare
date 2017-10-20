@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NAVObjectCompare.ExportFinexe;
 
-namespace NAVObjectCompareWinClient.Helpers
+namespace NavObjectCompareTests
 {
-    public class ExportFromFinexeHelper
+    [TestClass]
+    public class ExportFinexeUnitTest
     {
-        public void Export()
+        [TestMethod]
+        public void TestExport()
         {
             FileHandling fileHandeling = new FileHandling();
             fileHandeling.OnExportError += FileHandeling_OnExportError;
@@ -23,7 +22,7 @@ namespace NAVObjectCompareWinClient.Helpers
 
         private void FileHandeling_OnExportError(object source, ExportErrorEventArgs e)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(e.Exception.ToString());
         }
     }
 }

@@ -81,7 +81,36 @@ namespace NAVObjectCompareWinClient
 
         private void _editor_OnReCompareObject(object source, EditorEventArgs e)
         {
-            throw new NotImplementedException();
+            this.Dispatcher.Invoke(() => ReCompare(e.NavObject.InternalId), DispatcherPriority.Background);
+        }
+
+        async private void ReCompare(string internalId)
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            try
+            {
+                await HideOrShowProgressBarAsync();
+
+
+                await Task.Factory.StartNew(() =>
+                {
+                    _compare.FindDifferencesA(internalId);
+                    _compare.FindDifferencesB(internalId);
+                });
+
+                PopulateGrid();
+
+                await HideOrShowProgressBarAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
         }
 
         private void openMenu_Click(object sender, RoutedEventArgs e)

@@ -5,12 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
-using NAVObjectCompare.StatusFiles;
+using NAVObjectCompare.ExportFinexe.StatusFiles;
 
-namespace NAVSourceControl.ObjectFiles
+
+namespace NAVObjectCompare.ExportFinexe
 {
     public delegate void FileExportedEventHandling(object source, FileExportedEventArgs e);
     public delegate void ExportErrorEventHandling(object source, ExportErrorEventArgs e);
+
     public class FileHandling
     {
         public event FileExportedEventHandling OnFileExported;

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace NAVObjectCompare.StatusFiles
+namespace NAVObjectCompare.ExportFinexe.StatusFiles
 {
     public class LogStatus
     {

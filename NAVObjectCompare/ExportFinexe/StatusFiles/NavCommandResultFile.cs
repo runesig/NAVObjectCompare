@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace NAVObjectCompare.StatusFiles
+namespace NAVObjectCompare.ExportFinexe.StatusFiles
 {
     public enum ResultStatus { Unknown, OK, Error }
 
