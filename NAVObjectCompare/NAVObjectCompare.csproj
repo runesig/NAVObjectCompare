@@ -50,11 +50,15 @@
     <Compile Include="Compare\ObjectCompare.cs" />
     <Compile Include="Editor\Editor.cs" />
     <Compile Include="Editor\FileWatcher.cs" />
+    <Compile Include="ExportFinexe\ExportFinexeHandling.cs" />
     <Compile Include="Models\NavObjectsCompared.cs" />
     <Compile Include="Helpers\ObjectHelper.cs" />
     <Compile Include="Models\NavObject.cs" />
     <Compile Include="Compare\ObjectFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StatusFiles\NavCommandResultFile.cs" />
+    <Compile Include="StatusFiles\QueryExportLogFile.cs" />
+    <Compile Include="StatusFiles\StatusFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NAVObjectCompare.pfx" />
