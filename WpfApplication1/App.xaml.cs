@@ -18,7 +18,7 @@ namespace NAVObjectCompareWinClient
             // Create the startup window
             MainWindow wnd = new MainWindow();
             // Do stuff here, e.g. to the window
-            wnd.Title = "Something else";
+            wnd.Title = "Dynamics NAV Object Compare";
             // Show the window
             wnd.Show();
         }

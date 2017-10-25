@@ -13,6 +13,8 @@ namespace NAVObjectCompare.ExportFinexe
     public delegate void FileExportedEventHandling(object source, FileExportedEventArgs e);
     public delegate void ExportErrorEventHandling(object source, ExportErrorEventArgs e);
 
+    public enum QueryExportTag { QueryExportA, QueryExportB }
+
     public class FileHandling
     {
         public event FileExportedEventHandling OnFileExported;
@@ -24,9 +26,13 @@ namespace NAVObjectCompare.ExportFinexe
         public bool NTAuthentication { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public QueryExportTag QueryExportTag { get; set; }
 
-        public void ExportObjects()
+        public bool ExportObjects(out string exportedObjectsPath, out string message)
         {
+            message = string.Empty;
+            exportedObjectsPath = string.Empty;
+
             try
             {
                 ClearFiles();
@@ -41,25 +47,33 @@ namespace NAVObjectCompare.ExportFinexe
                 proc.StartInfo = startInfo;
                 proc.Start();
                 proc.WaitForExit();
+                
+                LogStatus logStatus = GetLogStatus();
+                CheckStatus(logStatus, out message);
 
-                CheckStatus(GetLogStatus());
+                if(logStatus.ResultStatus == ResultStatus.OK)
+                    exportedObjectsPath = ExportFileFullPath();
+
+                return (logStatus.ResultStatus == ResultStatus.OK);                
             }
             catch (Exception ex)
             {
                 if (OnExportError != null)
                     OnExportError(this, new ExportErrorEventArgs(ex));
             }
+
+            return false;
         }
 
-        private void CheckStatus(LogStatus logStatus)
+        private void CheckStatus(LogStatus logStatus, out string message)
         {
             if ((logStatus.ResultStatus == ResultStatus.Error) || (logStatus.ResultStatus == ResultStatus.Unknown))
             {
                 if (!string.IsNullOrEmpty(logStatus.LogId))
-                    throw new Exception(string.Format(@"{0} {1}", logStatus.LogId, logStatus.LogMessage));
-                else
-                    throw new Exception(logStatus.ResultMessage);
+                    message = string.Format(@"{0} {1}", logStatus.LogId, logStatus.LogMessage);                    
             }
+
+            message = logStatus.ResultMessage;
         }
 
         private LogStatus GetLogStatus()
@@ -142,7 +156,7 @@ namespace NAVObjectCompare.ExportFinexe
 
         private string ExportFileFullPath()
         {
-            return Path.Combine(ExporFilesFolder(), "QueryExport.txt");
+            return Path.Combine(ExporFilesFolder(),string.Format("{0}{1}.txt", "QueryExport", GetTag()));
         }
 
         public static string GetObjectFileFolder()
@@ -156,6 +170,26 @@ namespace NAVObjectCompare.ExportFinexe
                 Directory.CreateDirectory(objectFilePath);
             }
             return objectFilePath;
+        }
+
+        private string GetTag()
+        {
+            string tag = string.Empty;
+
+            switch (QueryExportTag)
+            {
+                case QueryExportTag.QueryExportA:
+                    tag = "A";
+                    break;
+                case QueryExportTag.QueryExportB:
+                    tag = "B";
+                    break;
+                default:
+                    tag = "A";
+                    break;
+            }
+
+            return tag;
         }
         // Folders Stop
     }

@@ -9,7 +9,7 @@ namespace NAVObjectCompareWinClient.Helpers
 {
     public class ExportFromFinexeHelper
     {
-        public void Export()
+        public bool Export(out string exportedObjectsPath, out string message)
         {
             FileHandling fileHandeling = new FileHandling();
             fileHandeling.OnExportError += FileHandeling_OnExportError;
@@ -18,7 +18,7 @@ namespace NAVObjectCompareWinClient.Helpers
             fileHandeling.Database = @"Demo Database NAV (7-1)";
             fileHandeling.NTAuthentication = true;
 
-            fileHandeling.ExportObjects();
+            return fileHandeling.ExportObjects(out exportedObjectsPath, out message);
         }
 
         private void FileHandeling_OnExportError(object source, ExportErrorEventArgs e)

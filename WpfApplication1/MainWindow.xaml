@@ -21,7 +21,8 @@
             <!--Menu Start-->
             <Menu DockPanel.Dock="Top" Width="Auto" Height="20" Background="{DynamicResource BackgroundBrushClear}">
                 <MenuItem Header="_File">
-                    <MenuItem x:Name="Open" Header="_Open" Click="openMenu_Click"/>
+                    <MenuItem x:Name="Open" Header="_Open File(s)" Click="openMenu_Click"/>
+                    <MenuItem x:Name="OpenServer" Header="_Open Server(s)" Click="OpenServer_Click"/>
                     <MenuItem Header="_Save" />
                     <Separator />
                     <MenuItem Header="_Exit" Click="exitMenu_Click" />

@@ -19,6 +19,11 @@ namespace NAVObjectCompareWinClient.Helpers
             else
                 message = ex.ToString();
 
+            ShowError(message);
+        }
+
+        public static void ShowError(string message)
+        {
             MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 

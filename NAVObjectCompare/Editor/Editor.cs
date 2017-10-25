@@ -12,6 +12,7 @@ using NAVObjectCompare.Models;
 namespace NAVObjectCompare.Editor
 {
     public delegate void EditorEventHandler(object source, EditorEventArgs e);
+
     public class Editor
     {
         public event EditorEventHandler OnReCompareObject;
@@ -20,6 +21,8 @@ namespace NAVObjectCompare.Editor
         string _editorExePath = string.Empty;
         public Dictionary<string, NavObject> ObjectsA { get; set; }
         public Dictionary<string, NavObject> ObjectsB { get; set; }
+        public const string _tagA = "A";
+        public const string _tagB = "B";
 
         public Editor(string editorExePath)
         {
@@ -33,8 +36,8 @@ namespace NAVObjectCompare.Editor
         {
             _watcher.StopWatching();
 
-            string filePathA = CreateAndExportObject(objectsCompared, this.ObjectsA, "A");
-            string filePathB = CreateAndExportObject(objectsCompared, this.ObjectsB, "B");
+            string filePathA = CreateAndExportObject(objectsCompared, this.ObjectsA, _tagA);
+            string filePathB = CreateAndExportObject(objectsCompared, this.ObjectsB, _tagB);
 
             Start(filePathA, filePathB);
 
@@ -63,11 +66,11 @@ namespace NAVObjectCompare.Editor
             string command = string.Empty;
 
             if(!string.IsNullOrEmpty(filePathA) && string.IsNullOrEmpty(filePathB))
-                command = string.Format("{0}", filePathA);
+                command = string.Format("\"{0}\"", filePathA);
             else if (string.IsNullOrEmpty(filePathA) && !string.IsNullOrEmpty(filePathB))
-                command = string.Format("{0}", filePathB);
+                command = string.Format("\"{0}\"", filePathB);
             else
-                command = string.Format("{0} {1}", filePathA, filePathB);
+                command = string.Format("\"{0}\" \"{1}\"", filePathA, filePathB);
 
             if (!File.Exists(_editorExePath))
                 throw new Exception(string.Format("Beyond Compare is not installed at {0}", _editorExePath));
@@ -123,10 +126,10 @@ namespace NAVObjectCompare.Editor
 
             switch (parts[2])
             {
-                case "A":
+                case _tagA:
                     GetObjectAndImport(ObjectsA, internalId, filePath);
                     break;
-                case "B":
+                case _tagB:
                     GetObjectAndImport(ObjectsB, internalId, filePath);
                     break;
             }
