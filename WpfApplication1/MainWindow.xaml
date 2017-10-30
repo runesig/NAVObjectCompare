@@ -22,7 +22,7 @@
             <Menu DockPanel.Dock="Top" Width="Auto" Height="20" Background="{DynamicResource BackgroundBrushClear}">
                 <MenuItem Header="_File">
                     <MenuItem x:Name="Open" Header="_Open File(s)" Click="openMenu_Click"/>
-                    <MenuItem x:Name="OpenServer" Header="_Open Server(s)" Click="OpenServer_Click"/>
+                    <MenuItem x:Name="Import" Header="_Import" Click="Import_Click"/>
                     <MenuItem Header="_Save" />
                     <Separator />
                     <MenuItem Header="_Exit" Click="exitMenu_Click" />
@@ -43,15 +43,16 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="24.193" />
+                    <ColumnDefinition Width="16.807"/>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="200" />
                 </Grid.ColumnDefinitions>
 
-                <ComboBox x:Name="showComboBox" Grid.Column="0" Grid.Row="0" Margin="10,10,3,10" Style="{DynamicResource ComboBoxStyleWhite}" SelectionChanged="showComboBox_SelectionChanged" />
-                <TextBox x:Name="fieldFilterTextBox" Grid.Column="2" Grid.Row="0" Margin="3,10,3,10" KeyDown="fieldFilterTextBox_KeyDown" MinWidth="100" Width="Auto"/>
-                <ComboBox x:Name="fieldFilterComboBox" Grid.Column="3" Grid.Row="0" Margin="3,10,10,10" Style="{DynamicResource ComboBoxStyleWhite}" />
+                <ComboBox x:Name="showComboBox" Grid.Column="0" Grid.Row="0" Margin="10,10,3,10" Style="{DynamicResource ComboBoxStyleWhite}" SelectionChanged="showComboBox_SelectionChanged" Grid.ColumnSpan="2" />
+                <TextBox x:Name="fieldFilterTextBox" Grid.Column="3" Grid.Row="0" Margin="3,10,3,10" KeyDown="fieldFilterTextBox_KeyDown" MinWidth="100" Width="Auto"/>
+                <ComboBox x:Name="fieldFilterComboBox" Grid.Column="4" Grid.Row="0" Margin="3,10,10,10" Style="{DynamicResource ComboBoxStyleWhite}" />
 
 
             </Grid>

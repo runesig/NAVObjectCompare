@@ -122,17 +122,19 @@ namespace NAVObjectCompareWinClient
                 CompareAndFillGrid(filePathA, filePathB);
         }
 
-        private void OpenServer_Click(object sender, RoutedEventArgs e)
+        private void Import_Click(object sender, RoutedEventArgs e)
         {
-            string filePathA = string.Empty;
-            string filePathB = string.Empty;
-            string message = string.Empty;
+            ImportFiles importFiles = new ImportFiles();
+            importFiles.Show();
+            //string filePathA = string.Empty;
+            //string filePathB = string.Empty;
+            //string message = string.Empty;
 
-            ExportFromFinexeHelper exportFinHelper = new ExportFromFinexeHelper();
-            if (!exportFinHelper.Export(out filePathA, out message))
-                MessageHelper.ShowError(message);
+            //ExportFromFinexeHelper exportFinHelper = new ExportFromFinexeHelper();
+            //if (!exportFinHelper.Export(out filePathA, out message))
+            //    MessageHelper.ShowError(message);
 
-            CompareAndFillGrid(filePathA, filePathB);
+            //CompareAndFillGrid(filePathA, filePathB);
         }
 
         private void exitMenu_Click(object sender, RoutedEventArgs e)
