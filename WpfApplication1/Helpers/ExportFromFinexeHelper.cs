@@ -11,7 +11,7 @@ namespace NAVObjectCompareWinClient.Helpers
     {
         public bool Export(out string exportedObjectsPath, out string message)
         {
-            FileHandling fileHandeling = new FileHandling();
+            ExportFinexeHandling fileHandeling = new ExportFinexeHandling();
             fileHandeling.OnExportError += FileHandeling_OnExportError;
             fileHandeling.FinsqlPath = @"C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe";
             fileHandeling.ServerName = @"DESKTOP-BI4KASN\NAVDEMO";

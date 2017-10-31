@@ -43,14 +43,14 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="24.193" />
-                    <ColumnDefinition Width="16.807"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="200" />
                 </Grid.ColumnDefinitions>
 
-                <ComboBox x:Name="showComboBox" Grid.Column="0" Grid.Row="0" Margin="10,10,3,10" Style="{DynamicResource ComboBoxStyleWhite}" SelectionChanged="showComboBox_SelectionChanged" Grid.ColumnSpan="2" />
+                <ComboBox x:Name="showComboBox" Grid.Column="0" Grid.Row="0" Margin="10,10,3,10" Style="{DynamicResource ComboBoxStyleWhite}" SelectionChanged="showComboBox_SelectionChanged" MinWidth="200" Width="Auto"/>
                 <TextBox x:Name="fieldFilterTextBox" Grid.Column="3" Grid.Row="0" Margin="3,10,3,10" KeyDown="fieldFilterTextBox_KeyDown" MinWidth="100" Width="Auto"/>
                 <ComboBox x:Name="fieldFilterComboBox" Grid.Column="4" Grid.Row="0" Margin="3,10,10,10" Style="{DynamicResource ComboBoxStyleWhite}" />
 

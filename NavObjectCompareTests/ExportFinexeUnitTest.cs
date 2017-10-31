@@ -10,16 +10,17 @@ namespace NavObjectCompareTests
         [TestMethod]
         public void TestExport()
         {
+            string exportedObjectsPath = string.Empty;
             string message = string.Empty;
 
-            FileHandling fileHandeling = new FileHandling();
+            ExportFinexeHandling fileHandeling = new ExportFinexeHandling();
             fileHandeling.OnExportError += FileHandeling_OnExportError;
             fileHandeling.FinsqlPath = @"C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe";
             fileHandeling.ServerName = @"DESKTOP-BI4KASN\NAVDEMO";
             fileHandeling.Database = @"Demo Database NAV (7-1)";
             fileHandeling.NTAuthentication = true;
 
-            fileHandeling.ExportObjects(out message);
+            fileHandeling.ExportObjects(out exportedObjectsPath, out message);
         }
 
         private void FileHandeling_OnExportError(object source, ExportErrorEventArgs e)

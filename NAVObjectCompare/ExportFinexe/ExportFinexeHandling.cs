@@ -15,7 +15,7 @@ namespace NAVObjectCompare.ExportFinexe
 
     public enum QueryExportTag { QueryExportA, QueryExportB }
 
-    public class FileHandling
+    public class ExportFinexeHandling
     {
         public event FileExportedEventHandling OnFileExported;
         public event ExportErrorEventHandling OnExportError;
@@ -27,6 +27,7 @@ namespace NAVObjectCompare.ExportFinexe
         public string Username { get; set; }
         public string Password { get; set; }
         public QueryExportTag QueryExportTag { get; set; }
+        public string Filter { get; set; }
 
         public bool ExportObjects(out string exportedObjectsPath, out string message)
         {
@@ -63,6 +64,33 @@ namespace NAVObjectCompare.ExportFinexe
             }
 
             return false;
+        }
+
+        public static string CreateFilter(bool modified, DateTime dateFrom, DateTime dateTo, string versionList, bool custom, string customString)
+        {
+            // filter=""Type=Table;ID=50000..50100""
+
+            string modifiedFilter = string.Empty;
+            if (modified)
+                modifiedFilter = @"Modified=yes";
+
+            string dateFilter = string.Empty;
+            if ((dateFrom != null) && (dateTo != null))
+            {
+                dateFilter = string.Format("Date={0}..{1}", dateFrom.ToShortDateString(), dateTo.ToShortDateString());
+            }
+            else if ((dateFrom != null) && (dateTo == null))
+            {
+                dateFilter = string.Format("Date={0}", dateFrom.ToShortDateString());
+            }
+            string versionListFilter = string.Empty;
+            if (!string.IsNullOrEmpty(versionList))
+                versionListFilter = string.Format(@"Version List={0}", versionList);
+
+            if (custom)
+                return customString;
+
+            return string.Format(@"{0}{1}{2}", modifiedFilter, dateFilter, versionListFilter);
         }
 
         private void CheckStatus(LogStatus logStatus, out string message)
@@ -114,7 +142,7 @@ namespace NAVObjectCompare.ExportFinexe
                 ExportFileFullPath(),
                 this.ServerName,
                 this.Database,
-                Filter(),
+                this.Filter,
                 Credentials(),
                 ExportLogFullPath());
         }
@@ -122,12 +150,6 @@ namespace NAVObjectCompare.ExportFinexe
         private string ExportCommand()
         {
             return "exportobjects";
-        }
-
-        private string Filter()
-        {            
-            // filter=""Type=Table;ID=50000..50100""
-            return string.Format(@"Date={0}", DateTime.Now.ToShortDateString());
         }
 
         private string Credentials()
