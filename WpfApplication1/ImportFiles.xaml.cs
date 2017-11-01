@@ -58,25 +58,73 @@ namespace NAVObjectCompareWinClient
 
             if (Dialogs.OpenFinsqlexe(ref filePath))
                 finSQLPathTextBoxB.Text = filePath;
-
-            //DateTime? selectedDateFrom = dateFromDatePickerA.SelectedDate;
-            //DateTime? selectedDateTo = dateToDatePickerA.SelectedDate;
         }
 
-        private void modifiedCheckBox_Checked(object sender, RoutedEventArgs e)
+        // A Start
+        private void modifiedCheckBoxA_Click(object sender, RoutedEventArgs e)
         {
-            CreateFilter();
+            CreateFilterA();
         }
 
-        private void CreateFilter()
+        private void dateFromDatePickerA_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CreateFilterA();
+        }
+
+        private void dateToDatePickerA_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CreateFilterA();
+        }
+
+        private void versionListTextBoxA_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CreateFilterA();
+        }
+        // A Stop
+
+        // B Start
+        private void modifiedCheckBoxB_Click(object sender, RoutedEventArgs e)
+        {
+            CreateFilterB();
+        }
+
+        private void dateFromDatePickerB_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CreateFilterB();
+        }
+
+        private void dateToDatePickerB_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CreateFilterB();
+        }
+
+        private void versionListTextBoxB_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CreateFilterB();
+        }
+        // B Stop
+
+        private void CreateFilterA()
         {
             customFilterTextBoxA.Text = ExportFilter.Create(
-                modifiedCheckBox.IsChecked,
+                modifiedCheckBoxA.IsChecked,
                 dateFromDatePickerA.SelectedDate,
                 dateToDatePickerA.SelectedDate,
                 versionListTextBoxA.Text,
                 customCheckBoxA.IsChecked,
                 customFilterTextBoxA.Text);
+        }
+
+
+        private void CreateFilterB()
+        {
+            customFilterTextBoxB.Text = ExportFilter.Create(
+                modifiedCheckBoxB.IsChecked,
+                dateFromDatePickerB.SelectedDate,
+                dateToDatePickerB.SelectedDate,
+                versionListTextBoxB.Text,
+                customCheckBoxB.IsChecked,
+                customFilterTextBoxB.Text);
         }
     }
 }
