@@ -118,7 +118,7 @@ namespace NAVObjectCompareWinClient
             string filePathA = string.Empty;
             string filePathB = string.Empty;
 
-            if(Dialogs.OpenFile(ref filePathA, ref filePathB))
+            if(Dialogs.OpenFile(true, ref filePathA, ref filePathB))
                 CompareAndFillGrid(filePathA, filePathB);
         }
 

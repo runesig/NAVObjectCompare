@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NAVObjectCompareWinClient"
         mc:Ignorable="d"
-        Title="Import Files" Height="850" Width="800">
+        Title="Import Files" Height="850" Width="1024">
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -20,19 +20,20 @@
         </Grid.RowDefinitions>
         
         <!-- Server A Start -->
-        <GroupBox Grid.Column="0" Grid.Row="0" Margin="20,10,10,10" Width="350">
+        <GroupBox Grid.Column="0" Grid.Row="0" Margin="20,10,10,10" MinWidth="350" HorizontalContentAlignment="Stretch" >
             <GroupBox.Header>
-                <RadioButton x:Name="importFromServerA" GroupName="SetA">Import from Server A</RadioButton>
+                <RadioButton x:Name="importFromServerRadioA" GroupName="SetA">Import from Server A</RadioButton>                
             </GroupBox.Header>
 
-            <Grid HorizontalAlignment="Center" Margin="5,5,5,5">
+            <Grid HorizontalAlignment="Left" Margin="5,5,5,5" IsEnabled="{Binding IsChecked, ElementName=importFromServerRadioA, Mode=OneWay}">
+                <!-- -->
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto"  />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -51,19 +52,19 @@
 
                 <Label Grid.Row="1" Grid.Column="0" Margin="10,5,3,5" Content="Finsql.exe Path" Height="25" HorizontalAlignment="Left"/>
                 <Grid Grid.Row="1" Grid.Column="1" Width="Auto">
-                    <TextBox  x:Name="finSQLPathTextBoxA" Margin="3,5,3,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" Height="25" HorizontalContentAlignment="Stretch" />
-                    <Button x:Name="finSQLPathButtonA" Margin="3,5,3,5" Content="..." Width="30" HorizontalAlignment="Right"></Button>
+                    <TextBox  x:Name="finSQLPathTextBoxA" Margin="3,5,30,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" Height="25" HorizontalContentAlignment="Stretch" />
+                    <Button x:Name="finSQLPathButtonA" Margin="3,5,3,5" Content="..." Width="30" HorizontalAlignment="Right" Click="finSQLPathButtonA_Click"></Button>
                 </Grid>
                 <Label Grid.Row="2" Grid.Column="0" Margin="10,5,3,5" Content="Database Server" Height="25" HorizontalAlignment="Left"/>
-                <TextBox Grid.Row="2" Grid.Column="1"  Margin="5,5,3,5" Style="{StaticResource placeHolder}" Tag="e.g. NAVDEMO" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+                <TextBox Grid.Row="2" Grid.Column="1"  Margin="3,5,3,5" x:Name="serverTextBoxA" Style="{StaticResource placeHolder}" Tag="e.g. NAVDEMO" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
 
                 <Label Grid.Row="3" Grid.Column="0" Margin="10,5,3,5" Content="Database Name" Height="25" HorizontalAlignment="Left" />
-                <TextBox Grid.Row="3" Grid.Column="1" Margin="3,5,3,5" Style="{StaticResource placeHolder}" Tag="e.g. Demo Database NAV (7-1)" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+                <TextBox Grid.Row="3" Grid.Column="1" Margin="3,5,3,5" x:Name="databaseTextBoxA" Style="{StaticResource placeHolder}" Tag="e.g. Demo Database NAV (7-1)" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
 
                 <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="15,5,3,5" x:Name="useNTAuthCheckBoxA" Content="Use NT Authentication" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
                 <Label Grid.Row="5" Grid.Column="0" Margin="10,5,3,5" Content="User Name" Height="25" HorizontalAlignment="Left" />
-                <TextBox Grid.Row="5" Grid.Column="1" Margin="3,5,3,5" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center">
+                <TextBox Grid.Row="5" Grid.Column="1" Margin="3,5,3,5" x:Name="userNameTextBoxA" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center">
                     <TextBox.Style>
                         <Style TargetType="{x:Type TextBox}">
                             <Style.Triggers>
@@ -79,7 +80,7 @@
                 </TextBox>
 
                 <Label Grid.Row="6" Grid.Column="0" Margin="10,5,3,5" Content="Password" Height="25" HorizontalAlignment="Left" />
-                <PasswordBox Grid.Row="6" Grid.Column="1" Margin="3,5,3,5"   MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center">
+                <PasswordBox Grid.Row="6" Grid.Column="1" Margin="3,5,3,5" x:Name="passWordTextBoxA" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center">
                     <PasswordBox.Style>
                         <Style TargetType="{x:Type PasswordBox}">
                             <Style.Triggers>
@@ -99,30 +100,30 @@
                 <CheckBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="10,5,3,5" Content="Modified" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
                 <Label Grid.Row="9" Grid.Column="0" Margin="10,5,3,5" Content="Date from" Height="25" HorizontalAlignment="Left" />
-                <DatePicker Grid.Row="9" Grid.Column="1" Margin="3,5,3,5"  MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+                <DatePicker Grid.Row="9" Grid.Column="1" Margin="3,5,3,5"  x:Name="dateFromDatePickerA" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
 
                 <Label Grid.Row="10" Grid.Column="0" Margin="10,5,3,5" Content="Date to" Height="25" HorizontalAlignment="Left" />
-                <DatePicker Grid.Row="10" Grid.Column="1" Margin="3,5,3,5"  MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+                <DatePicker Grid.Row="10" Grid.Column="1" Margin="3,5,3,5"  x:Name="dateToDatePickerA" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
 
                 <Label Grid.Row="11" Grid.Column="0" Margin="10,5,3,5" Content="Version List" Height="25" HorizontalAlignment="Left" />
-                <TextBox Grid.Row="11" Grid.Column="1" Margin="3,5,3,5" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+                <TextBox Grid.Row="11" Grid.Column="1" Margin="3,5,3,5" x:Name="versionListTextBoxA" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
 
-                <CheckBox Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="customCheckBoxA" Content="Custom" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <TextBox Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" IsEnabled="{Binding IsChecked, ElementName=customCheckBoxA, Mode=OneWay}"/>
+                <CheckBox Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="customCheckBoxA" Content="Custom Filter" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <TextBox Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="customFilterTextBoxA" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" IsEnabled="{Binding IsChecked, ElementName=customCheckBoxA, Mode=OneWay}"/>
                 
             </Grid>
         </GroupBox>
         <!-- Server A Stop -->
 
         <!-- File A Start -->
-        <GroupBox Grid.Column="0" Grid.Row="1" Margin="20,10,10,10" Width="350">
+        <GroupBox Grid.Column="0" Grid.Row="1" Margin="20,10,10,10" MinWidth="350" HorizontalContentAlignment="Stretch">
             <GroupBox.Header>
                 <RadioButton x:Name="importFromFileA" GroupName="SetA">File A</RadioButton>
             </GroupBox.Header>
-            <Grid HorizontalAlignment="Center" Margin="5,5,5,5">
+            <Grid HorizontalAlignment="Left" Margin="5,5,5,5" IsEnabled="{Binding IsChecked, ElementName=importFromFileA, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -130,8 +131,8 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="1" Grid.Column="0" Margin="10,5,3,5" Content="Objects File Path" Height="25" HorizontalAlignment="Left"/>
                 <Grid Grid.Row="1" Grid.Column="1" Width="Auto">
-                    <TextBox  x:Name="filePathTextBoxA" Margin="3,5,3,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" Height="25" HorizontalContentAlignment="Stretch" />
-                    <Button x:Name="filePathButtonA" Margin="3,5,3,5" Content="..." Width="30" HorizontalAlignment="Right"></Button>
+                    <TextBox  x:Name="filePathTextBoxA" Margin="3,5,30,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" Height="25" HorizontalContentAlignment="Stretch" />
+                    <Button x:Name="filePathButtonA" Margin="3,5,3,5" Content="..." Width="30" HorizontalAlignment="Right" Click="filePathButtonA_Click"></Button>
                 </Grid>
             </Grid>
         </GroupBox>
@@ -139,15 +140,15 @@
 
 
         <!-- Server B Start -->
-        <GroupBox Grid.Column="2" Grid.Row="0" Margin="10,10,20,10" Width="350">
+        <GroupBox Grid.Column="2" Grid.Row="0" Margin="10,10,20,10" MinWidth="350" HorizontalContentAlignment="Stretch">
             <GroupBox.Header>
-                <RadioButton x:Name="importFromServerB" GroupName="SetB">Import from Server B</RadioButton>
+                <RadioButton x:Name="importFromServerRadioB" GroupName="SetB">Import from Server B</RadioButton>
             </GroupBox.Header>
 
-            <Grid HorizontalAlignment="Center" Margin="5,5,5,5">
+            <Grid HorizontalAlignment="Left" Margin="5,5,5,5" IsEnabled="{Binding IsChecked, ElementName=importFromServerRadioB, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -170,19 +171,19 @@
 
                 <Label Grid.Row="1" Grid.Column="0" Margin="10,5,3,5" Content="Finsql.exe Path" Height="25" HorizontalAlignment="Left"/>
                 <Grid Grid.Row="1" Grid.Column="1" Width="Auto">
-                    <TextBox  x:Name="finSQLPathTextBoxB" Margin="3,5,3,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" Height="25" HorizontalContentAlignment="Stretch" />
-                    <Button x:Name="finSQLPathButtonB" Margin="3,5,3,5" Content="..." Width="30" HorizontalAlignment="Right"></Button>
+                    <TextBox  x:Name="finSQLPathTextBoxB" Margin="3,5,30,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" Height="25" HorizontalContentAlignment="Stretch" />
+                    <Button x:Name="finSQLPathButtonB" Margin="3,5,3,5" Content="..." Width="30" HorizontalAlignment="Right" Click="finSQLPathButtonB_Click"></Button>
                 </Grid>
                 <Label Grid.Row="2" Grid.Column="0" Margin="10,5,3,5" Content="Database Server" Height="25" HorizontalAlignment="Left"/>
-                <TextBox Grid.Row="2" Grid.Column="1"  Margin="5,5,3,5" Style="{StaticResource placeHolder}" Tag="e.g. NAVDEMO" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+                <TextBox Grid.Row="2" Grid.Column="1"  Margin="3,5,3,5" x:Name="serverTextBoxB" Style="{StaticResource placeHolder}" Tag="e.g. NAVDEMO" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
 
                 <Label Grid.Row="3" Grid.Column="0" Margin="10,5,3,5" Content="Database Name" Height="25" HorizontalAlignment="Left" />
-                <TextBox Grid.Row="3" Grid.Column="1" Margin="3,5,3,5" Style="{StaticResource placeHolder}" Tag="e.g. Demo Database NAV (7-1)" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+                <TextBox Grid.Row="3" Grid.Column="1" Margin="3,5,3,5" x:Name="databaseTextBoxB" Style="{StaticResource placeHolder}" Tag="e.g. Demo Database NAV (7-1)" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
 
                 <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="15,5,3,5" x:Name="useNTAuthCheckBoxB" Content="Use NT Authentication" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
                 <Label Grid.Row="5" Grid.Column="0" Margin="10,5,3,5" Content="User Name" Height="25" HorizontalAlignment="Left" />
-                <TextBox Grid.Row="5" Grid.Column="1" Margin="3,5,3,5" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center">
+                <TextBox Grid.Row="5" Grid.Column="1" Margin="3,5,3,5" x:Name="userNameTextBoxB" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center">
                     <TextBox.Style>
                         <Style TargetType="{x:Type TextBox}">
                             <Style.Triggers>
@@ -198,7 +199,7 @@
                 </TextBox>
 
                 <Label Grid.Row="6" Grid.Column="0" Margin="10,5,3,5" Content="Password" Height="25" HorizontalAlignment="Left" />
-                <PasswordBox Grid.Row="6" Grid.Column="1" Margin="3,5,3,5"   MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center">
+                <PasswordBox Grid.Row="6" Grid.Column="1" Margin="3,5,3,5" x:Name="passWordTextBoxB" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center">
                     <PasswordBox.Style>
                         <Style TargetType="{x:Type PasswordBox}">
                             <Style.Triggers>
@@ -218,29 +219,29 @@
                 <CheckBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="10,5,3,5" Content="Modified" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
                 <Label Grid.Row="9" Grid.Column="0" Margin="10,5,3,5" Content="Date from" Height="25" HorizontalAlignment="Left" />
-                <DatePicker Grid.Row="9" Grid.Column="1" Margin="3,5,3,5"  MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+                <DatePicker Grid.Row="9" Grid.Column="1" Margin="3,5,3,5"  x:Name="dateFromDatePickerB" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
 
                 <Label Grid.Row="10" Grid.Column="0" Margin="10,5,3,5" Content="Date to" Height="25" HorizontalAlignment="Left" />
-                <DatePicker Grid.Row="10" Grid.Column="1" Margin="3,5,3,5"  MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+                <DatePicker Grid.Row="10" Grid.Column="1" Margin="3,5,3,5"  x:Name="dateToDatePickerB" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
 
                 <Label Grid.Row="11" Grid.Column="0" Margin="10,5,3,5" Content="Version List" Height="25" HorizontalAlignment="Left" />
-                <TextBox Grid.Row="11" Grid.Column="1" Margin="3,5,3,5" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+                <TextBox Grid.Row="11" Grid.Column="1" Margin="3,5,3,5" x:Name="versionListTextBoxB" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
 
-                <CheckBox Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="customCheckBoxB" Content="Custom" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <TextBox Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" IsEnabled="{Binding IsChecked, ElementName=customCheckBoxB, Mode=OneWay}"/>
+                <CheckBox Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="customCheckBoxB" Content="Custom Filter" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <TextBox Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="customFilterTextBoxB" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" IsEnabled="{Binding IsChecked, ElementName=customCheckBoxB, Mode=OneWay}"/>
 
             </Grid>
         </GroupBox>
         <!-- Server A Stop -->
         <!-- File B Start -->
-        <GroupBox Grid.Column="2" Grid.Row="1" Margin="10,10,20,10" Width="350">
+        <GroupBox Grid.Column="2" Grid.Row="1" Margin="10,10,20,10" MinWidth="350" HorizontalContentAlignment="Stretch">
             <GroupBox.Header>
                 <RadioButton x:Name="importFromFileB" GroupName="SetB">File B</RadioButton>
             </GroupBox.Header>
-            <Grid HorizontalAlignment="Center" Margin="5,5,5,5">
+            <Grid HorizontalAlignment="Left" Margin="5,5,5,5" IsEnabled="{Binding IsChecked, ElementName=importFromFileB, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -248,8 +249,8 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="1" Grid.Column="0" Margin="10,5,3,5" Content="Objects File Path" Height="25" HorizontalAlignment="Left"/>
                 <Grid Grid.Row="1" Grid.Column="1" Width="Auto">
-                    <TextBox  x:Name="filePathTextBoxB" Margin="3,5,3,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" Height="25" HorizontalContentAlignment="Stretch" />
-                    <Button x:Name="filePathButtonB" Margin="3,5,3,5" Content="..." Width="30" HorizontalAlignment="Right"></Button>
+                    <TextBox  x:Name="filePathTextBoxB" Margin="3,5,30,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" Height="25" HorizontalContentAlignment="Stretch" />
+                    <Button x:Name="filePathButtonB" Margin="3,5,3,5" Content="..." Width="30" HorizontalAlignment="Right" Click="filePathButtonB_Click"></Button>
                 </Grid>
             </Grid>
         </GroupBox>

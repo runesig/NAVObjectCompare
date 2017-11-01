@@ -10,18 +10,20 @@ namespace NAVObjectCompareWinClient.Helpers
 {
     public class Dialogs
     {
-        public static bool OpenFile(ref string filePathA, ref string filePathB)
+        public static bool OpenFile(bool multiSelect, ref string filePathA, ref string filePathB)
         {
-            OpenFileDialog openDialog = new OpenFileDialog();
-            openDialog.Title = "Open NAV Object File(s)";
-            openDialog.Filter = "Txt files|*.txt";
-            openDialog.Multiselect = true;
-
-            Nullable<bool> result = openDialog.ShowDialog();
-
-            if (result == true)
+            try
             {
-                try
+                OpenFileDialog openDialog = new OpenFileDialog();
+                openDialog.CheckFileExists = true;
+                openDialog.CheckPathExists = true;
+                openDialog.Title = "Open NAV Object File(s)";
+                openDialog.Filter = "Txt files|*.txt";
+                openDialog.Multiselect = true;
+
+                Nullable<bool> result = openDialog.ShowDialog();
+
+                if (result == true)
                 {
                     if (openDialog.FileNames.Length > 1)
                     {
@@ -34,16 +36,57 @@ namespace NAVObjectCompareWinClient.Helpers
                         filePathA = openDialog.FileName;
                         filePathB = string.Empty;
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageHelper.ShowError(ex);
-                }
 
-                return true;
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
             }
 
             return false;
+        }
+
+        public static bool OpenFinsqlexe(ref string finsqlexePath)
+        {
+            try
+            {
+                OpenFileDialog openDialog = new OpenFileDialog();
+                openDialog.InitialDirectory = ProgramFilesx86();
+                openDialog.CheckFileExists = true;
+                openDialog.CheckPathExists = true;
+                openDialog.Title = "finsql.exe Path";
+                openDialog.Filter = "exe files|*.exe";
+                openDialog.Multiselect = false;
+
+                Nullable<bool> result = openDialog.ShowDialog();
+
+                if (result == true)
+                {
+                    finsqlexePath = openDialog.FileName;
+
+                    if (!string.IsNullOrEmpty(finsqlexePath))
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+
+            return false;
+        }
+
+        private static string ProgramFilesx86()
+        {
+            if (8 == IntPtr.Size
+                || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+            {
+                return Environment.GetEnvironmentVariable("ProgramFiles(x86)");
+            }
+
+            return Environment.GetEnvironmentVariable("ProgramFiles");
         }
 
         public static bool SaveFile(Dictionary<string, NavObject> objects, string initFilename, string tag)
