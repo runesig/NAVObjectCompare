@@ -50,6 +50,7 @@
     <Compile Include="Compare\ObjectCompare.cs" />
     <Compile Include="Editor\Editor.cs" />
     <Compile Include="Editor\FileWatcher.cs" />
+    <Compile Include="ExportFinexe\ExportFilter.cs" />
     <Compile Include="ExportFinexe\ExportFinexeHandling.cs" />
     <Compile Include="Models\NavObjectsCompared.cs" />
     <Compile Include="Helpers\ObjectHelper.cs" />

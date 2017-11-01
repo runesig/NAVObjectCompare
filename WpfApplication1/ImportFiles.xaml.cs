@@ -1,4 +1,5 @@
-﻿using NAVObjectCompareWinClient.Helpers;
+﻿using NAVObjectCompare.ExportFinexe;
+using NAVObjectCompareWinClient.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,22 @@ namespace NAVObjectCompareWinClient
 
             //DateTime? selectedDateFrom = dateFromDatePickerA.SelectedDate;
             //DateTime? selectedDateTo = dateToDatePickerA.SelectedDate;
+        }
+
+        private void modifiedCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            CreateFilter();
+        }
+
+        private void CreateFilter()
+        {
+            customFilterTextBoxA.Text = ExportFilter.Create(
+                modifiedCheckBox.IsChecked,
+                dateFromDatePickerA.SelectedDate,
+                dateToDatePickerA.SelectedDate,
+                versionListTextBoxA.Text,
+                customCheckBoxA.IsChecked,
+                customFilterTextBoxA.Text);
         }
     }
 }

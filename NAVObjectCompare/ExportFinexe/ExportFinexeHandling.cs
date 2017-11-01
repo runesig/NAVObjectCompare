@@ -66,32 +66,6 @@ namespace NAVObjectCompare.ExportFinexe
             return false;
         }
 
-        public static string CreateFilter(bool modified, DateTime dateFrom, DateTime dateTo, string versionList, bool custom, string customString)
-        {
-            // filter=""Type=Table;ID=50000..50100""
-
-            string modifiedFilter = string.Empty;
-            if (modified)
-                modifiedFilter = @"Modified=yes";
-
-            string dateFilter = string.Empty;
-            if ((dateFrom != null) && (dateTo != null))
-            {
-                dateFilter = string.Format("Date={0}..{1}", dateFrom.ToShortDateString(), dateTo.ToShortDateString());
-            }
-            else if ((dateFrom != null) && (dateTo == null))
-            {
-                dateFilter = string.Format("Date={0}", dateFrom.ToShortDateString());
-            }
-            string versionListFilter = string.Empty;
-            if (!string.IsNullOrEmpty(versionList))
-                versionListFilter = string.Format(@"Version List={0}", versionList);
-
-            if (custom)
-                return customString;
-
-            return string.Format(@"{0}{1}{2}", modifiedFilter, dateFilter, versionListFilter);
-        }
 
         private void CheckStatus(LogStatus logStatus, out string message)
         {
