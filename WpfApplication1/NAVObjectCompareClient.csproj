@@ -62,6 +62,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="ServerSetup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ImportFiles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -81,6 +85,9 @@
     <Compile Include="Helpers\FileDialogs.cs" />
     <Compile Include="Helpers\MessageHelper.cs" />
     <Compile Include="Helpers\RowFilters.cs" />
+    <Compile Include="ServerSetup.xaml.cs">
+      <DependentUpon>ServerSetup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ImportFiles.xaml.cs">
       <DependentUpon>ImportFiles.xaml</DependentUpon>
     </Compile>

@@ -36,12 +36,11 @@ namespace NAVObjectCompare.Helpers
         {
             stringValue = RemoveIllChar(stringValue);
 
-            DateTime date;
             if (!DateTime.TryParseExact(stringValue,
                                    "dd.MM.yy hh:mm:ss",
                                    CultureInfo.InvariantCulture,
                                    DateTimeStyles.None,
-                                   out date))
+                                   out DateTime date))
                 throw new Exception(string.Format("{0} could not be converted to 'DateTime'", stringValue));
 
             return date;
@@ -51,8 +50,7 @@ namespace NAVObjectCompare.Helpers
         {
             stringValue = RemoveIllChar(stringValue);
 
-            int intValue = 0;
-            if (!int.TryParse(stringValue, out intValue))
+            if (!int.TryParse(stringValue, out int intValue))
                 throw new Exception(string.Format("{0} could not be converted to 'Int'", stringValue));
 
             return intValue;
@@ -74,8 +72,7 @@ namespace NAVObjectCompare.Helpers
                     return false;
             }
 
-            bool boolValue = false;
-            if (!bool.TryParse(stringValue, out boolValue))
+            if (!bool.TryParse(stringValue, out bool boolValue))
                 throw new Exception(string.Format("{0} could not be converted to 'Bool'", stringValue));
 
             return boolValue;
@@ -119,8 +116,7 @@ namespace NAVObjectCompare.Helpers
 
         public static NavObject GetDictValue(Dictionary<string, NavObject> dict, string key)
         {
-            NavObject navObject = null;
-            if (!dict.TryGetValue(key, out navObject))
+            if (!dict.TryGetValue(key, out NavObject navObject))
                 return null;
 
             return navObject;

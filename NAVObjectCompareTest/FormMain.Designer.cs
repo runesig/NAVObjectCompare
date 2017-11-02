@@ -95,8 +95,8 @@
             this.comparedDataGridView.Name = "comparedDataGridView";
             this.comparedDataGridView.Size = new System.Drawing.Size(1428, 504);
             this.comparedDataGridView.TabIndex = 0;
-            this.comparedDataGridView.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.comparedDataGridView_CellMouseDoubleClick);
-            this.comparedDataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.comparedDataGridView_CellPainting);
+            this.comparedDataGridView.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ComparedDataGridView_CellMouseDoubleClick);
+            this.comparedDataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.ComparedDataGridView_CellPainting);
             // 
             // Id
             // 
@@ -228,7 +228,7 @@
             this.showComboBox.Name = "showComboBox";
             this.showComboBox.Size = new System.Drawing.Size(364, 21);
             this.showComboBox.TabIndex = 7;
-            this.showComboBox.SelectedIndexChanged += new System.EventHandler(this.showComboBox_SelectedIndexChanged);
+            this.showComboBox.SelectedIndexChanged += new System.EventHandler(this.ShowComboBox_SelectedIndexChanged);
             // 
             // filePanel
             // 
@@ -269,7 +269,7 @@
             this.filterTextBox.Name = "filterTextBox";
             this.filterTextBox.Size = new System.Drawing.Size(230, 20);
             this.filterTextBox.TabIndex = 5;
-            this.filterTextBox.TextChanged += new System.EventHandler(this.filterTextBox_TextChanged);
+            this.filterTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             // 
             // fieldFilterComboBox
             // 
@@ -278,7 +278,7 @@
             this.fieldFilterComboBox.Name = "fieldFilterComboBox";
             this.fieldFilterComboBox.Size = new System.Drawing.Size(121, 21);
             this.fieldFilterComboBox.TabIndex = 4;
-            this.fieldFilterComboBox.SelectedValueChanged += new System.EventHandler(this.fieldFilterComboBox_SelectedValueChanged);
+            this.fieldFilterComboBox.SelectedValueChanged += new System.EventHandler(this.FieldFilterComboBox_SelectedValueChanged);
             // 
             // menuStrip1
             // 
@@ -306,7 +306,7 @@
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
@@ -322,14 +322,14 @@
             this.exportAFileToolStripMenuItem.Name = "exportAFileToolStripMenuItem";
             this.exportAFileToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.exportAFileToolStripMenuItem.Text = "Save Edited File A";
-            this.exportAFileToolStripMenuItem.Click += new System.EventHandler(this.saveAFileToolStripMenuItem_Click);
+            this.exportAFileToolStripMenuItem.Click += new System.EventHandler(this.SaveAFileToolStripMenuItem_Click);
             // 
             // exportBFileToolStripMenuItem
             // 
             this.exportBFileToolStripMenuItem.Name = "exportBFileToolStripMenuItem";
             this.exportBFileToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.exportBFileToolStripMenuItem.Text = "Save Edited File B";
-            this.exportBFileToolStripMenuItem.Click += new System.EventHandler(this.saveBFileToolStripMenuItem_Click);
+            this.exportBFileToolStripMenuItem.Click += new System.EventHandler(this.SaveBFileToolStripMenuItem_Click);
             // 
             // statusStrip
             // 
@@ -364,7 +364,7 @@
             this.gridToExcelToolStripMenuItem.Name = "gridToExcelToolStripMenuItem";
             this.gridToExcelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.gridToExcelToolStripMenuItem.Text = "Grid to Excel";
-            this.gridToExcelToolStripMenuItem.Click += new System.EventHandler(this.gridToExcelToolStripMenuItem_Click_1);
+            this.gridToExcelToolStripMenuItem.Click += new System.EventHandler(this.GridToExcelToolStripMenuItem_Click_1);
             // 
             // FormMain
             // 

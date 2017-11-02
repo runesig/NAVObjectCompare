@@ -21,11 +21,11 @@
             <!--Menu Start-->
             <Menu DockPanel.Dock="Top" Width="Auto" Height="20" Background="{DynamicResource BackgroundBrushClear}">
                 <MenuItem Header="_File">
-                    <MenuItem x:Name="Open" Header="_Open File(s)" Click="openMenu_Click"/>
+                    <MenuItem x:Name="Open" Header="_Open File(s)" Click="OpenMenu_Click"/>
                     <MenuItem x:Name="Import" Header="_Import" Click="Import_Click"/>
                     <MenuItem Header="_Save" />
                     <Separator />
-                    <MenuItem Header="_Exit" Click="exitMenu_Click" />
+                    <MenuItem Header="_Exit" Click="ExitMenu_Click" />
                 </MenuItem>
                 <MenuItem Header="_Tools">
                     <MenuItem x:Name="Options" Header="_Options" HorizontalAlignment="Left" Width="140"/>
@@ -50,8 +50,8 @@
                     <ColumnDefinition Width="200" />
                 </Grid.ColumnDefinitions>
 
-                <ComboBox x:Name="showComboBox" Grid.Column="0" Grid.Row="0" Margin="10,10,3,10" Style="{DynamicResource ComboBoxStyleWhite}" SelectionChanged="showComboBox_SelectionChanged" MinWidth="200" Width="Auto"/>
-                <TextBox x:Name="fieldFilterTextBox" Grid.Column="3" Grid.Row="0" Margin="3,10,3,10" KeyDown="fieldFilterTextBox_KeyDown" MinWidth="100" Width="Auto"/>
+                <ComboBox x:Name="showComboBox" Grid.Column="0" Grid.Row="0" Margin="10,10,3,10" Style="{DynamicResource ComboBoxStyleWhite}" SelectionChanged="ShowComboBox_SelectionChanged" MinWidth="200" Width="Auto"/>
+                <TextBox x:Name="fieldFilterTextBox" Grid.Column="3" Grid.Row="0" Margin="3,10,3,10" KeyDown="FieldFilterTextBox_KeyDown" MinWidth="100" Width="Auto"/>
                 <ComboBox x:Name="fieldFilterComboBox" Grid.Column="4" Grid.Row="0" Margin="3,10,10,10" Style="{DynamicResource ComboBoxStyleWhite}" />
 
 

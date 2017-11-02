@@ -45,13 +45,12 @@ namespace NAVObjectCompare.Compare
 
         private void FileB_OnFileNewLineRead(int percentCompleted)
         {
-            if(OnCompared != null)
-                OnCompared(percentCompleted);
+            OnCompared?.Invoke(percentCompleted);
         }
 
         private void FileA_OnFileNewLineRead(int percentCompleted)
         {
-            this.OnCompared(percentCompleted);
+            OnCompared?.Invoke(percentCompleted);
         }
 
         public List<NavObjectsCompared> GetList()
@@ -80,10 +79,12 @@ namespace NAVObjectCompare.Compare
             NavObject navObjectA = ObjectHelper.GetDictValue(_navObjectsA, internalId);
             NavObject navObjectB = ObjectHelper.GetDictValue(_navObjectsB, internalId);
 
-            NavObjectsCompared objectsCompared = new NavObjectsCompared(internalId);
-            objectsCompared.Id = navObjectA.Id;
-            objectsCompared.Type = navObjectA.Type;
-            objectsCompared.Name = navObjectA.Name;
+            NavObjectsCompared objectsCompared = new NavObjectsCompared(internalId)
+            {
+                Id = navObjectA.Id,
+                Type = navObjectA.Type,
+                Name = navObjectA.Name
+            };
 
             GetDifference(navObjectA, navObjectB, objectsCompared);
 
@@ -112,10 +113,13 @@ namespace NAVObjectCompare.Compare
             NavObject navObjectB = ObjectHelper.GetDictValue(_navObjectsB, internalId);
             NavObject navObjectA = ObjectHelper.GetDictValue(_navObjectsA, internalId);
 
-            NavObjectsCompared objectsCompared = new NavObjectsCompared(internalId);
-            objectsCompared.Id = navObjectB.Id;
-            objectsCompared.Type = navObjectB.Type;
-            objectsCompared.Name = navObjectB.Name;
+            NavObjectsCompared objectsCompared = new NavObjectsCompared(internalId)
+            {
+                Id = navObjectB.Id,
+                Type = navObjectB.Type,
+                Name = navObjectB.Name
+            };
+
 
             GetDifference(navObjectB, navObjectA, objectsCompared);
 

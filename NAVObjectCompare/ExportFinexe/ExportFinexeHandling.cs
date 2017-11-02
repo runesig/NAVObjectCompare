@@ -17,7 +17,7 @@ namespace NAVObjectCompare.ExportFinexe
 
     public class ExportFinexeHandling
     {
-        public event FileExportedEventHandling OnFileExported;
+        // public event FileExportedEventHandling OnFileExported;
         public event ExportErrorEventHandling OnExportError;
 
         public string FinsqlPath { get; set; }
@@ -40,11 +40,17 @@ namespace NAVObjectCompare.ExportFinexe
 
                 string command = CreateCommand();
 
-                ProcessStartInfo startInfo = new ProcessStartInfo(this.FinsqlPath, command);
-                startInfo.UseShellExecute = true;
-                startInfo.CreateNoWindow = true;
+                ProcessStartInfo startInfo = new ProcessStartInfo(this.FinsqlPath, command)
+                {
+                    UseShellExecute = true,
+                    CreateNoWindow = true
+                };
 
-                Process proc = new Process();
+                Process proc = new Process()
+                {
+                    StartInfo = startInfo
+                };
+
                 proc.StartInfo = startInfo;
                 proc.Start();
                 proc.WaitForExit();
@@ -59,8 +65,7 @@ namespace NAVObjectCompare.ExportFinexe
             }
             catch (Exception ex)
             {
-                if (OnExportError != null)
-                    OnExportError(this, new ExportErrorEventArgs(ex));
+                OnExportError?.Invoke(this, new ExportErrorEventArgs(ex));
             }
 
             return false;

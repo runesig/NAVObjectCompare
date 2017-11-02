@@ -26,7 +26,7 @@ namespace NAVObjectCompareWinClient
             InitializeComponent();
         }
 
-        private void filePathButtonA_Click(object sender, RoutedEventArgs e)
+        private void FilePathButtonA_Click(object sender, RoutedEventArgs e)
         {
             string filePath = string.Empty;
             string emptyFilePath = string.Empty;
@@ -35,7 +35,7 @@ namespace NAVObjectCompareWinClient
                 filePathTextBoxA.Text = filePath;
         }
 
-        private void filePathButtonB_Click(object sender, RoutedEventArgs e)
+        private void FilePathButtonB_Click(object sender, RoutedEventArgs e)
         {
             string filePath = string.Empty;
             string emptyFilePath = string.Empty;
@@ -44,26 +44,7 @@ namespace NAVObjectCompareWinClient
                 filePathTextBoxB.Text = filePath;
         }
 
-        private void finSQLPathButtonA_Click(object sender, RoutedEventArgs e)
-        {
-            string filePath = string.Empty;
-
-            if (Dialogs.OpenFinsqlexe(ref filePath))
-                finSQLPathTextBoxA.Text = filePath;
-        }
-
-        private void finSQLPathButtonB_Click(object sender, RoutedEventArgs e)
-        {
-            string filePath = string.Empty;
-
-            if (Dialogs.OpenFinsqlexe(ref filePath))
-                finSQLPathTextBoxB.Text = filePath;
-
-            //DateTime? selectedDateFrom = dateFromDatePickerA.SelectedDate;
-            //DateTime? selectedDateTo = dateToDatePickerA.SelectedDate;
-        }
-
-        private void modifiedCheckBox_Checked(object sender, RoutedEventArgs e)
+        private void ModifiedCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             CreateFilter();
         }
@@ -77,6 +58,11 @@ namespace NAVObjectCompareWinClient
                 versionListTextBoxA.Text,
                 customCheckBoxA.IsChecked,
                 customFilterTextBoxA.Text);
+        }
+
+        private void EditServerButtonA_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

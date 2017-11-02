@@ -113,7 +113,7 @@ namespace NAVObjectCompareWinClient
             }
         }
 
-        private void openMenu_Click(object sender, RoutedEventArgs e)
+        private void OpenMenu_Click(object sender, RoutedEventArgs e)
         {
             string filePathA = string.Empty;
             string filePathB = string.Empty;
@@ -124,8 +124,14 @@ namespace NAVObjectCompareWinClient
 
         private void Import_Click(object sender, RoutedEventArgs e)
         {
-            ImportFiles importFiles = new ImportFiles();
-            importFiles.Show();
+            ImportFiles importFiles = new ImportFiles() { Owner = this };
+            importFiles.ShowDialog();
+
+            //ServerSetup serverSetup = new ServerSetup();
+            //serverSetup.Owner = this;
+            //serverSetup.ShowDialog();
+
+
             //string filePathA = string.Empty;
             //string filePathB = string.Empty;
             //string message = string.Empty;
@@ -137,7 +143,7 @@ namespace NAVObjectCompareWinClient
             //CompareAndFillGrid(filePathA, filePathB);
         }
 
-        private void exitMenu_Click(object sender, RoutedEventArgs e)
+        private void ExitMenu_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
@@ -158,12 +164,12 @@ namespace NAVObjectCompareWinClient
             }
         }
 
-        private void showComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ShowComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SetRowFilters();
         }
 
-        private void fieldFilterTextBox_KeyDown(object sender, KeyEventArgs e)
+        private void FieldFilterTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
                 SetRowFilters();
@@ -234,9 +240,12 @@ namespace NAVObjectCompareWinClient
         {
             if (_compare == null)
             {
-                _compare = new ObjectCompare(); // Start New Compare
-                _compare.CompareFilePathA = filePathA;
-                _compare.CompareFilePathB = filePathB;
+                _compare = new ObjectCompare()
+                {
+                    CompareFilePathA = filePathA,
+                    CompareFilePathB = filePathB
+                }; // Start New Compare
+;
                 _compare.OnCompared += _compare_OnCompared;
             }
             else
@@ -244,8 +253,7 @@ namespace NAVObjectCompareWinClient
                 // A Comparison have been done previously Check what to do
                 if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count > 0))
                 {
-                    _compare = new ObjectCompare(); // Start a new Compare
-                    _compare.CompareFilePathA = filePathA;
+                    _compare = new ObjectCompare() { CompareFilePathA = filePathA }; // Start a new Compare
                     _compare.OnCompared += _compare_OnCompared;
                 }
                 else if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count == 0)) // Compare has been done only for file A then add B
@@ -256,9 +264,7 @@ namespace NAVObjectCompareWinClient
                 else if ((!string.IsNullOrEmpty(filePathA)) && (!string.IsNullOrEmpty(filePathB)))
                 {
                     // Totally New Compare
-                    _compare = new ObjectCompare();
-                    _compare.CompareFilePathA = filePathA;
-                    _compare.CompareFilePathB = filePathB;
+                    _compare = new ObjectCompare() { CompareFilePathA = filePathA, CompareFilePathB = filePathB };
                     _compare.OnCompared += _compare_OnCompared;
                 }
             }

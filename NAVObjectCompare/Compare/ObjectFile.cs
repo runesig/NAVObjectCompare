@@ -112,12 +112,12 @@ namespace NAVObjectCompare.Compare
             if (parts[0] != "OBJECT")
                 return null;
 
-            NavObject navObject = new NavObject();
-            navObject.Type = parts[1];
-            navObject.Id = ObjectHelper.GetInt(parts[2]);
-            navObject.Name = ObjectHelper.GetObjectName(line);
-
-            return navObject;
+            return new NavObject()
+            {
+                Type = parts[1],
+                Id = ObjectHelper.GetInt(parts[2]),
+                Name = ObjectHelper.GetObjectName(line)
+            };
         }
 
         private void SetObjectProperties(string line, ObjectSection objectSection, ref NavObject navObject)
@@ -171,8 +171,7 @@ namespace NAVObjectCompare.Compare
 
             if ((percentageRead % 1 == 0) && (percentageRead > _prevPercentageDone))
             {
-                if (OnFileNewLineRead != null)
-                    OnFileNewLineRead(percentageRead);
+                OnFileNewLineRead?.Invoke(percentageRead);
             }
 
             _prevPercentageDone = percentageRead;

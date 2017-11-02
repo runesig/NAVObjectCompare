@@ -48,8 +48,7 @@ namespace NAVObjectCompare.Editor
         { 
             string filePath = GetObjectFilePath(objectsCompared, tag);
 
-            NavObject navObject = null;
-            if (objects.TryGetValue(objectsCompared.InternalId, out navObject))
+            if (objects.TryGetValue(objectsCompared.InternalId, out NavObject navObject))
             {
                 ExportFile(navObject.ObjectLines, filePath);
             }
@@ -162,8 +161,7 @@ namespace NAVObjectCompare.Editor
                     prevObjects.Add(internalId, newObject);
                 }
                 // Fire Event
-                if (OnReCompareObject != null)
-                    OnReCompareObject(this, new EditorEventArgs(newObject));
+                OnReCompareObject?.Invoke(this, new EditorEventArgs(newObject));
             }
         }
     }

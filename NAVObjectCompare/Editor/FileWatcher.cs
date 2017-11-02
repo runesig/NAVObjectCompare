@@ -81,10 +81,7 @@ namespace NAVObjectCompare.Editor
 
         private void RaiseEventFileChanged(string filePath)
         {
-            if(this.OnFileChanged != null)
-            {
-                this.OnFileChanged(this, new FileWatcherEventArgs(filePath));
-            }
+            this.OnFileChanged?.Invoke(this, new FileWatcherEventArgs(filePath));
         }
     }
 
