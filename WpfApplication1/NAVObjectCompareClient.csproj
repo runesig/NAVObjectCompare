@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NAVObjectCompareWinClient</RootNamespace>
     <AssemblyName>NAVObjectCompareWinClient</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -78,6 +79,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Configuration\ServerSetupConfiguration.cs" />
+    <Compile Include="Configuration\ServerSetupElement.cs" />
+    <Compile Include="ViewModel\ImportFilesViewModel.cs" />
+    <Compile Include="ViewModel\ServerSetupViewModel.cs" />
     <Compile Include="Helpers\ComboBoxHelper.cs" />
     <Compile Include="Helpers\DataTableHelper.cs" />
     <Compile Include="Helpers\ExcelHelper.cs" />
@@ -85,6 +90,7 @@
     <Compile Include="Helpers\FileDialogs.cs" />
     <Compile Include="Helpers\MessageHelper.cs" />
     <Compile Include="Helpers\RowFilters.cs" />
+    <Compile Include="Model\ServerSetupModel.cs" />
     <Compile Include="ServerSetup.xaml.cs">
       <DependentUpon>ServerSetup.xaml</DependentUpon>
     </Compile>

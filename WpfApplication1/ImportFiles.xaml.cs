@@ -1,6 +1,4 @@
-﻿using NAVObjectCompare.ExportFinexe;
-using NAVObjectCompareWinClient.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +11,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using NAVObjectCompare.ExportFinexe;
+using NAVObjectCompareWinClient.Configuration;
+using NAVObjectCompareWinClient.Helpers;
+using NAVObjectCompareWinClient.Model;
 
 namespace NAVObjectCompareWinClient
 {
@@ -21,6 +23,8 @@ namespace NAVObjectCompareWinClient
     /// </summary>
     public partial class ImportFiles : Window
     {
+        public List<ServerSetupModel> ServerSetups = ServerSetupConfiguration.GetServerSetups();
+
         public ImportFiles()
         {
             InitializeComponent();
@@ -32,7 +36,7 @@ namespace NAVObjectCompareWinClient
             string emptyFilePath = string.Empty;
 
             if (Dialogs.OpenFile(false, ref filePath, ref emptyFilePath))
-                filePathTextBoxA.Text = filePath;
+                FilePathTextBoxA.Text = filePath;
         }
 
         private void FilePathButtonB_Click(object sender, RoutedEventArgs e)
@@ -41,28 +45,50 @@ namespace NAVObjectCompareWinClient
             string emptyFilePath = string.Empty;
 
             if (Dialogs.OpenFile(false, ref filePath, ref emptyFilePath))
-                filePathTextBoxB.Text = filePath;
+                FilePathTextBoxB.Text = filePath;
         }
 
-        private void ModifiedCheckBox_Checked(object sender, RoutedEventArgs e)
+        private void ModifiedCheckBoxA_Checked(object sender, RoutedEventArgs e)
         {
-            CreateFilter();
+            CreateFilterA();
         }
 
-        private void CreateFilter()
+        private void CreateFilterA()
         {
-            customFilterTextBoxA.Text = ExportFilter.Create(
-                modifiedCheckBox.IsChecked,
-                dateFromDatePickerA.SelectedDate,
-                dateToDatePickerA.SelectedDate,
-                versionListTextBoxA.Text,
-                customCheckBoxA.IsChecked,
-                customFilterTextBoxA.Text);
+            CustomFilterTextBoxA.Text = ExportFilter.Create(
+                ModifiedCheckBoxA.IsChecked,
+                DateFromDatePickerA.SelectedDate,
+                DateToDatePickerA.SelectedDate,
+                VersionListTextBoxA.Text,
+                CustomCheckBoxA.IsChecked,
+                CustomFilterTextBoxA.Text);
         }
 
         private void EditServerButtonA_Click(object sender, RoutedEventArgs e)
         {
+            ServerSetup serverSetup = new ServerSetup();
+            serverSetup.ShowDialog();
+
+            if ((serverSetup.DialogResult.HasValue) && (serverSetup.DialogResult.Value))
+            {
+                MessageBox.Show("User clicked OK");
+            }
+            else
+            {
+                MessageBox.Show("User clicked Cancel");
+            }
 
         }
+
+        private void EditServerButtonB_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ModifiedCheckBoxB_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
     }
 }

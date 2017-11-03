@@ -14,12 +14,15 @@ namespace NAVObjectCompareWinClient.Helpers
         {
             try
             {
-                OpenFileDialog openDialog = new OpenFileDialog();
-                openDialog.CheckFileExists = true;
-                openDialog.CheckPathExists = true;
-                openDialog.Title = "Open NAV Object File(s)";
-                openDialog.Filter = "Txt files|*.txt";
-                openDialog.Multiselect = true;
+                OpenFileDialog openDialog = new OpenFileDialog()
+                {
+                    CheckFileExists = true,
+                    CheckPathExists = true,
+                    Title = "Open NAV Object File(s)",
+                    Filter = "Txt files|*.txt",
+                    Multiselect = true
+                };
+
 
                 Nullable<bool> result = openDialog.ShowDialog();
 
@@ -52,13 +55,15 @@ namespace NAVObjectCompareWinClient.Helpers
         {
             try
             {
-                OpenFileDialog openDialog = new OpenFileDialog();
-                openDialog.InitialDirectory = ProgramFilesx86();
-                openDialog.CheckFileExists = true;
-                openDialog.CheckPathExists = true;
-                openDialog.Title = "finsql.exe Path";
-                openDialog.Filter = "exe files|*.exe";
-                openDialog.Multiselect = false;
+                OpenFileDialog openDialog = new OpenFileDialog()
+                {
+                    InitialDirectory = ProgramFilesx86(),
+                    CheckFileExists = true,
+                    CheckPathExists = true,
+                    Title = "finsql.exe Path",
+                    Filter = "exe files|*.exe",
+                    Multiselect = false
+                };
 
                 Nullable<bool> result = openDialog.ShowDialog();
 
@@ -91,10 +96,12 @@ namespace NAVObjectCompareWinClient.Helpers
 
         public static bool SaveFile(Dictionary<string, NavObject> objects, string initFilename, string tag)
         {
-            SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Title = string.Format("Export {0}: NAV Object File(s)", tag);
-            saveDialog.Filter = "Txt files|*.txt";
-            saveDialog.FileName = initFilename;
+            SaveFileDialog saveDialog = new SaveFileDialog()
+            {
+                Title = string.Format("Export {0}: NAV Object File(s)", tag),
+                Filter = "Txt files|*.txt",
+                FileName = initFilename
+            };
 
             Nullable<bool> result = saveDialog.ShowDialog();
 

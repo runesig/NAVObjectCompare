@@ -1,5 +1,7 @@
 ﻿using NAVObjectCompare.ExportFinexe;
+using NAVObjectCompareWinClient.Configuration;
 using NAVObjectCompareWinClient.Helpers;
+using NAVObjectCompareWinClient.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,13 +28,22 @@ namespace NAVObjectCompareWinClient
             InitializeComponent();
         }
 
-
         private void FinSQLPathButton_Click(object sender, RoutedEventArgs e)
         {
             string filePath = string.Empty;
 
             if (Dialogs.OpenFinsqlexe(ref filePath))
                 finSQLPathTextBox.Text = filePath;
+        }
+
+        private void OkButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
         }
     }
 }
