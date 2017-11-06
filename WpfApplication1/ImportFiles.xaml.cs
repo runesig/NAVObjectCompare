@@ -12,9 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using NAVObjectCompare.ExportFinexe;
-using NAVObjectCompareWinClient.Configuration;
+using NAVObjectCompareWinClient.Configurations;
 using NAVObjectCompareWinClient.Helpers;
 using NAVObjectCompareWinClient.Model;
+using NAVObjectCompareWinClient.ViewModel;
 
 namespace NAVObjectCompareWinClient
 {
@@ -23,10 +24,12 @@ namespace NAVObjectCompareWinClient
     /// </summary>
     public partial class ImportFiles : Window
     {
-        public List<ServerSetupModel> ServerSetups = ServerSetupConfiguration.GetServerSetups();
+        private ImportFilesViewModel _importFilesViewModel;
 
         public ImportFiles()
         {
+            _importFilesViewModel = new ImportFilesViewModel();
+            DataContext = _importFilesViewModel;
             InitializeComponent();
         }
 
@@ -48,46 +51,42 @@ namespace NAVObjectCompareWinClient
                 FilePathTextBoxB.Text = filePath;
         }
 
-        private void ModifiedCheckBoxA_Checked(object sender, RoutedEventArgs e)
-        {
-            CreateFilterA();
-        }
-
-        private void CreateFilterA()
-        {
-            CustomFilterTextBoxA.Text = ExportFilter.Create(
-                ModifiedCheckBoxA.IsChecked,
-                DateFromDatePickerA.SelectedDate,
-                DateToDatePickerA.SelectedDate,
-                VersionListTextBoxA.Text,
-                CustomCheckBoxA.IsChecked,
-                CustomFilterTextBoxA.Text);
-        }
-
         private void EditServerButtonA_Click(object sender, RoutedEventArgs e)
         {
-            ServerSetup serverSetup = new ServerSetup();
-            serverSetup.ShowDialog();
-
-            if ((serverSetup.DialogResult.HasValue) && (serverSetup.DialogResult.Value))
-            {
-                MessageBox.Show("User clicked OK");
-            }
-            else
-            {
-                MessageBox.Show("User clicked Cancel");
-            }
-
+            EditServerSetup(ServerComboBoxA);
         }
 
         private void EditServerButtonB_Click(object sender, RoutedEventArgs e)
         {
-
+            EditServerSetup(ServerComboBoxB);
         }
 
-        private void ModifiedCheckBoxB_Checked(object sender, RoutedEventArgs e)
+        private void EditServerSetup(ComboBox serverSetupCombobox)
         {
+            ServerSetupModel serverSetupModel = (ServerSetupModel)serverSetupCombobox.SelectedItem;
 
+            ServerSetup serverSetup = InitServerSetup(serverSetupModel);
+            serverSetup.ShowDialog();
+
+            // Refresh
+            _importFilesViewModel.RefreshServerSetups();
+
+            if ((serverSetup.DialogResult.HasValue) && (serverSetup.DialogResult.Value))
+            {
+                serverSetupCombobox.SelectedItem = serverSetup.SelectedServerSetup;
+            }
+        }
+
+        private static ServerSetup InitServerSetup(ServerSetupModel serverSetupModel)
+        {
+            ServerSetup serverSetup;
+
+            if (serverSetupModel != null)
+                serverSetup = new ServerSetup(serverSetupModel.Name);
+            else
+                serverSetup = new ServerSetup();
+
+            return serverSetup;
         }
 
     }

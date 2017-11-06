@@ -1,7 +1,8 @@
 ﻿using NAVObjectCompare.ExportFinexe;
-using NAVObjectCompareWinClient.Configuration;
+using NAVObjectCompareWinClient.Configurations;
 using NAVObjectCompareWinClient.Helpers;
 using NAVObjectCompareWinClient.Model;
+using NAVObjectCompareWinClient.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,20 @@ namespace NAVObjectCompareWinClient
     /// </summary>
     public partial class ServerSetup : Window
     {
+        private ServerSetupViewModel _serverSetupViewModel;
+
+        public ServerSetupModel SelectedServerSetup { get; private set; }
+
         public ServerSetup()
         {
             InitializeComponent();
+            _serverSetupViewModel = new ServerSetupViewModel(true);
+            DataContext = _serverSetupViewModel;
+        }
+
+        public ServerSetup(string name) : this()
+        {
+            _serverSetupViewModel.GetModel(name);
         }
 
         private void FinSQLPathButton_Click(object sender, RoutedEventArgs e)
@@ -33,17 +45,35 @@ namespace NAVObjectCompareWinClient
             string filePath = string.Empty;
 
             if (Dialogs.OpenFinsqlexe(ref filePath))
-                finSQLPathTextBox.Text = filePath;
+                _serverSetupViewModel.ServerSetup.FinSQLPath = filePath;
         }
 
-        private void OkButton_Click(object sender, RoutedEventArgs e)
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            if(string.IsNullOrEmpty(_serverSetupViewModel.ServerSetup.Name))
+            {
+                DialogResult = false;
+                SelectedServerSetup = null;
+                return;
+            }
+
+            _serverSetupViewModel.Save();
+            SelectedServerSetup = _serverSetupViewModel.ServerSetup;
             DialogResult = true;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+            SelectedServerSetup = null;
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Ask first?
+            _serverSetupViewModel.Delete();
+            DialogResult = false;
+            SelectedServerSetup = null;
         }
     }
 }

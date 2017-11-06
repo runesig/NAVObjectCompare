@@ -79,8 +79,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Configuration\ServerSetupConfiguration.cs" />
-    <Compile Include="Configuration\ServerSetupElement.cs" />
+    <Compile Include="Configurations\ConfigurationAppSettings.cs" />
+    <Compile Include="Configurations\ServerSetupConfiguration.cs" />
+    <Compile Include="Configurations\ServerSetupElement.cs" />
+    <Compile Include="Helpers\XamlHelpers.cs" />
+    <Compile Include="Model\ImportFilesModel.cs" />
     <Compile Include="ViewModel\ImportFilesViewModel.cs" />
     <Compile Include="ViewModel\ServerSetupViewModel.cs" />
     <Compile Include="Helpers\ComboBoxHelper.cs" />

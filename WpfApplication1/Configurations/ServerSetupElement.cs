@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NAVObjectCompareWinClient.Configuration
+namespace NAVObjectCompareWinClient.Configurations
 {
     public class ServerSetupElement : ConfigurationElement
     {
@@ -69,16 +69,27 @@ namespace NAVObjectCompareWinClient.Configuration
 
         public ServerSetupModel ToServerSetupModel()
         {
-            return new ServerSetupModel
+            return new ServerSetupModel(false)
             {
                 Name = Name,
                 FinSQLPath = FinSQLPath,
-                Server = this.FinSQLPath,
-                Database = this.Database,
+                Server = Server,
+                Database = Database,
                 UseNTAuthentication = UseNTAuthentication,
                 UserName = UserName,
                 Password = Password
             };
+        }
+
+        public void Fill(ServerSetupModel serverSetup)
+        {
+            Name = serverSetup.Name;
+            FinSQLPath = serverSetup.FinSQLPath;
+            Server = serverSetup.Server;
+            Database = serverSetup.Database;
+            UseNTAuthentication = serverSetup.UseNTAuthentication;
+            UserName = serverSetup.UserName;
+            Password = serverSetup.Password;
         }
     }
 
@@ -108,11 +119,21 @@ namespace NAVObjectCompareWinClient.Configuration
         {
             get { return base.BaseGet(index) as ServerSetupElement; }
         }
+
+        public void Add(ServerSetupElement serverSetupElement)
+        {
+            base.BaseAdd(serverSetupElement);
+        }
+
+        public void Remove(ServerSetupElement serverSetupElement)
+        {
+            base.BaseRemove(serverSetupElement.Name);
+        }
     }
 
     public class ServerSetupSection : ConfigurationSection
     {
-        public const string _sectionName = "ServerSetups";
+        public const string SectionName = "ServerSetupGroup/ServerSetups";
 
         [ConfigurationProperty("", IsDefaultCollection = true)]
         public ServerSetupElementCollection ServerSetups
@@ -125,7 +146,22 @@ namespace NAVObjectCompareWinClient.Configuration
 
         public static ServerSetupSection GetSection()
         {
-            return (ServerSetupSection)ConfigurationManager.GetSection(_sectionName);
+            return (ServerSetupSection)ConfigurationManager.GetSection(SectionName);
         }
+
+        //public static void SetSection(ServerSetupSection serverSetupSection)
+        //{
+        //    // ConfigurationManager
+        //    // return (ServerSetupSection)ConfigurationManager.GetSection(_sectionName);
+        //}
+
+        //public static void SaveSection(ServerSetupElement element)
+        //{
+        //    System.Configuration.Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+        //    ServerSetupSection section = GetSection();
+
+        //    configuration.Save(ConfigurationSaveMode.Full, true);
+        //    ConfigurationManager.RefreshSection(_sectionName);
+        //}
     }
 }

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NAVObjectCompareWinClient"
+        xmlns:xaml="clr-namespace:XamlHelpers"
         mc:Ignorable="d"
         Title="Server Setup" Height="450" Width="600">
 
@@ -33,25 +34,43 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0" Content="Server" Height="25" HorizontalAlignment="Left" />
 
-                <Label Grid.Row="1" Grid.Column="0" Margin="10,5,3,5" Content="Finsql.exe Path" Height="25" HorizontalAlignment="Left"/>
-                <Grid Grid.Row="1" Grid.Column="1" Width="Auto">
-                    <TextBox  x:Name="finSQLPathTextBox" Margin="3,5,30,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" Height="25" HorizontalContentAlignment="Stretch" />
+                <Label Grid.Row="1" Grid.Column="0" Margin="10,5,3,5" Content="Name" Height="25" HorizontalAlignment="Left"/>
+                <TextBox Grid.Row="1" Grid.Column="1"  Margin="3,5,3,5" x:Name="nameTextBox" DataContext="{Binding ServerSetup}" Text ="{Binding Name, Mode = TwoWay}" Style="{StaticResource placeHolder}" Tag="e.g. a Unique Name" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+
+                <Label Grid.Row="2" Grid.Column="0" Margin="10,5,3,5" Content="Finsql.exe Path" Height="25" HorizontalAlignment="Left"/>
+                <Grid Grid.Row="2" Grid.Column="1" Width="Auto">
+                    <TextBox  x:Name="finSQLPathTextBox" Margin="3,5,30,5" DataContext="{Binding ServerSetup}" Text ="{Binding FinSQLPath, Mode = TwoWay}" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" Height="25" HorizontalContentAlignment="Stretch" />
                     <Button x:Name="finSQLPathButton" Margin="3,5,3,5" Content="..." Width="30" HorizontalAlignment="Right" Click="FinSQLPathButton_Click"></Button>
                 </Grid>
-                <Label Grid.Row="2" Grid.Column="0" Margin="10,5,3,5" Content="Database Server" Height="25" HorizontalAlignment="Left"/>
-                <TextBox Grid.Row="2" Grid.Column="1"  Margin="3,5,3,5" x:Name="serverTextBox" Style="{StaticResource placeHolder}" Tag="e.g. NAVDEMO" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+                
+                <Label Grid.Row="3" Grid.Column="0" Margin="10,5,3,5" Content="Database Server" Height="25" HorizontalAlignment="Left"/>
+                <TextBox Grid.Row="3" Grid.Column="1"  Margin="3,5,3,5" x:Name="serverTextBox" DataContext="{Binding ServerSetup}" Text ="{Binding Server, Mode = TwoWay}" Style="{StaticResource placeHolder}" Tag="e.g. NAVDEMO" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
 
-                <Label Grid.Row="3" Grid.Column="0" Margin="10,5,3,5" Content="Database Name" Height="25" HorizontalAlignment="Left" />
-                <TextBox Grid.Row="3" Grid.Column="1" Margin="3,5,3,5" x:Name="databaseTextBox" Style="{StaticResource placeHolder}" Tag="e.g. Demo Database NAV (7-1)" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
+                <Label Grid.Row="4" Grid.Column="0" Margin="10,5,3,5" Content="Database Name" Height="25" HorizontalAlignment="Left" />
+                <TextBox Grid.Row="4" Grid.Column="1" Margin="3,5,3,5" x:Name="databaseTextBox" DataContext="{Binding ServerSetup}" Text ="{Binding Database, Mode = TwoWay}" Style="{StaticResource placeHolder}" Tag="e.g. Demo Database NAV (7-1)" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center" />
 
-                <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="15,5,3,5" x:Name="useNTAuthCheckBox" Content="Use NT Authentication" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <CheckBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Margin="15,5,3,5" x:Name="useNTAuthCheckBox"  DataContext="{Binding ServerSetup}" IsChecked ="{Binding UseNTAuthentication, Mode = TwoWay}" Content="Use NT Authentication" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-                <Label Grid.Row="5" Grid.Column="0" Margin="10,5,3,5" Content="User Name" Height="25" HorizontalAlignment="Left" />
-                <TextBox Grid.Row="5" Grid.Column="1" Margin="3,5,3,5" x:Name="userNameTextBox" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center">
+                <Label Grid.Row="6" Grid.Column="0" Margin="10,5,3,5" Content="User Name" Height="25" HorizontalAlignment="Left">
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=useNTAuthCheckBox, Mode=OneWay}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=useNTAuthCheckBox, Mode=OneWay}" Value="False">
+                                    <Setter Property="IsEnabled" Value="True" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <TextBox Grid.Row="6" Grid.Column="1" Margin="3,5,3,5" x:Name="userNameTextBox" DataContext="{Binding ServerSetup}" Text ="{Binding UserName, Mode = TwoWay}" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center">
                     <TextBox.Style>
                         <Style TargetType="{x:Type TextBox}">
                             <Style.Triggers>
@@ -66,8 +85,21 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <Label Grid.Row="6" Grid.Column="0" Margin="10,5,3,5" Content="Password" Height="25" HorizontalAlignment="Left" />
-                <PasswordBox Grid.Row="6" Grid.Column="1" Margin="3,5,3,5" x:Name="passWordTextBox" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center">
+                <Label Grid.Row="7" Grid.Column="0" Margin="10,5,3,5" Content="Password" Height="25" HorizontalAlignment="Left">
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=useNTAuthCheckBox, Mode=OneWay}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=useNTAuthCheckBox, Mode=OneWay}" Value="False">
+                                    <Setter Property="IsEnabled" Value="True" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <PasswordBox Grid.Row="7" Grid.Column="1" Margin="3,5,3,5" x:Name="passWordTextBox" DataContext="{Binding ServerSetup}" xaml:Secure.Password="{Binding Password}" MinWidth="100" Width="Auto" Height="25" VerticalContentAlignment="Center">
                     <PasswordBox.Style>
                         <Style TargetType="{x:Type PasswordBox}">
                             <Style.Triggers>
@@ -89,6 +121,7 @@
         <!-- Buttons Start -->
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -97,8 +130,9 @@
                 <RowDefinition Height="45" />
             </Grid.RowDefinitions>
 
-            <Button x:Name="OkButton" Grid.Column="1" Grid.Row="0" Margin="10,10,5,10" Width="80" IsDefault="True" Click="OkButton_Click">OK</Button>
-            <Button x:Name="CancelButton" Grid.Column="2" Grid.Row="0" Margin="5,10,10,10" Width="80" Click="CancelButton_Click">Cancel</Button>
+            <Button x:Name="DeleteButton" Grid.Column="0" Grid.Row="0" Margin="15,10,5,10" Width="80" IsDefault="False" Click="DeleteButton_Click">Delete</Button>
+            <Button x:Name="SaveButton" Grid.Column="2" Grid.Row="0" Margin="10,10,5,10" Width="80" IsDefault="True" Click="SaveButton_Click">Save</Button>
+            <Button x:Name="CancelButton" Grid.Column="3" Grid.Row="0" Margin="5,10,15,10" Width="80" IsDefault="False" Click="CancelButton_Click">Cancel</Button>
         </Grid>
         <!-- Buttons Stop -->
     </Grid>

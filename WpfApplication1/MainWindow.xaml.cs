@@ -21,6 +21,7 @@ using NAVObjectCompare.Models;
 using NAVObjectCompareWinClient.Helpers;
 using NAVObjectCompare.Editor;
 using System.ComponentModel;
+using NAVObjectCompareWinClient.Configurations;
 
 namespace NAVObjectCompareWinClient
 {
@@ -53,8 +54,9 @@ namespace NAVObjectCompareWinClient
 
         private void InitEditor()
         {
-            string filePathEditor = ConfigurationManager.AppSettings["BeyondComparePath"];
-            _editor = new Editor(filePathEditor);
+            ConfigurationAppSettings appSettings = new ConfigurationAppSettings();
+
+            _editor = new Editor(appSettings.EditorPath);
             _editor.OnReCompareObject += _editor_OnReCompareObject;
         }
 
