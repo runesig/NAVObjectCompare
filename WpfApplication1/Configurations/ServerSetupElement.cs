@@ -148,20 +148,5 @@ namespace NAVObjectCompareWinClient.Configurations
         {
             return (ServerSetupSection)ConfigurationManager.GetSection(SectionName);
         }
-
-        //public static void SetSection(ServerSetupSection serverSetupSection)
-        //{
-        //    // ConfigurationManager
-        //    // return (ServerSetupSection)ConfigurationManager.GetSection(_sectionName);
-        //}
-
-        //public static void SaveSection(ServerSetupElement element)
-        //{
-        //    System.Configuration.Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-        //    ServerSetupSection section = GetSection();
-
-        //    configuration.Save(ConfigurationSaveMode.Full, true);
-        //    ConfigurationManager.RefreshSection(_sectionName);
-        //}
     }
 }

@@ -69,7 +69,7 @@ namespace NAVObjectCompareWinClient
             serverSetup.ShowDialog();
 
             // Refresh
-            _importFilesViewModel.RefreshServerSetups();
+            _importFilesViewModel.SetServerSetups();
 
             if ((serverSetup.DialogResult.HasValue) && (serverSetup.DialogResult.Value))
             {

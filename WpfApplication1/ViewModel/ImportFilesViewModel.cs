@@ -17,11 +17,19 @@ namespace NAVObjectCompareWinClient.ViewModel
         public ImportFilesViewModel()
         {
             ImportFiles = new ImportFilesModel();
+            SetServerSetups();
         }
 
-        public void RefreshServerSetups()
+        //public void GetModel(string name)
+        //{
+        //    ImportFiles.InitImportSetups()
+        //    ImportFiles.ImportSetupA = ImportSetupConfiguration.GetImportSetup(name);
+        //}
+
+        public void SetServerSetups()
         {
-            ImportFiles.RefreshServerSetups();
+            ObservableCollection<ServerSetupModel> serverSetups = ServerSetupConfiguration.GetServerSetups();
+            ImportFiles.SetServerSetups(serverSetups);
         }
 
         public void AddNewServerSetup(ServerSetupModel serverSetupModel)
