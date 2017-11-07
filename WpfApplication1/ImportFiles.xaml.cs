@@ -24,6 +24,9 @@ namespace NAVObjectCompareWinClient
     /// </summary>
     public partial class ImportFiles : Window
     {
+        public ImportSetupModel SelectedImportSetupModelA { get; private set; }
+        public ImportSetupModel SelectedImportSetupModelB { get; private set; }
+
         private ImportFilesViewModel _importFilesViewModel;
 
         public ImportFiles()
@@ -35,30 +38,81 @@ namespace NAVObjectCompareWinClient
 
         private void FilePathButtonA_Click(object sender, RoutedEventArgs e)
         {
-            string filePath = string.Empty;
-            string emptyFilePath = string.Empty;
+            try
+            {
+                string filePath = string.Empty;
+                string emptyFilePath = string.Empty;
 
-            if (Dialogs.OpenFile(false, ref filePath, ref emptyFilePath))
-                FilePathTextBoxA.Text = filePath;
+                if (Dialogs.OpenFile(false, ref filePath, ref emptyFilePath))
+                    _importFilesViewModel.ImportFiles.ImportSetupA.ImportFileName = filePath;
+            }
+            catch(Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
         }
 
         private void FilePathButtonB_Click(object sender, RoutedEventArgs e)
         {
-            string filePath = string.Empty;
-            string emptyFilePath = string.Empty;
+            try
+            {
+                string filePath = string.Empty;
+                string emptyFilePath = string.Empty;
 
-            if (Dialogs.OpenFile(false, ref filePath, ref emptyFilePath))
-                FilePathTextBoxB.Text = filePath;
+                if (Dialogs.OpenFile(false, ref filePath, ref emptyFilePath))
+                    _importFilesViewModel.ImportFiles.ImportSetupB.ImportFileName = filePath;
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
         }
 
         private void EditServerButtonA_Click(object sender, RoutedEventArgs e)
         {
-            EditServerSetup(ServerComboBoxA);
+            try
+            {
+                EditServerSetup(ServerComboBoxA);
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }            
         }
 
         private void EditServerButtonB_Click(object sender, RoutedEventArgs e)
         {
-            EditServerSetup(ServerComboBoxB);
+            try
+            {
+                EditServerSetup(ServerComboBoxB);
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }            
+        }
+
+        private void ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // First Save Everything
+                _importFilesViewModel.SaveImportSetup();
+
+                SelectedImportSetupModelA = _importFilesViewModel.ImportFiles.ImportSetupA;
+                SelectedImportSetupModelB = _importFilesViewModel.ImportFiles.ImportSetupB;
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+
+            DialogResult = true;
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
         }
 
         private void EditServerSetup(ComboBox serverSetupCombobox)
@@ -73,7 +127,7 @@ namespace NAVObjectCompareWinClient
 
             if ((serverSetup.DialogResult.HasValue) && (serverSetup.DialogResult.Value))
             {
-                serverSetupCombobox.SelectedItem = serverSetup.SelectedServerSetup;
+                serverSetupCombobox.SelectedItem = serverSetup.SelectedServerSetup; // Set to view model
             }
         }
 
@@ -88,6 +142,18 @@ namespace NAVObjectCompareWinClient
 
             return serverSetup;
         }
+    }
 
+    public class EnumToBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return value.Equals(parameter);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return value.Equals(true) ? parameter : Binding.DoNothing;
+        }
     }
 }

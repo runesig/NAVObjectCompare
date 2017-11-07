@@ -12,19 +12,31 @@ namespace NAVObjectCompareWinClient.ViewModel
 {
     public class ImportFilesViewModel
     {
+        private const string ImportSetupNameA = "A";
+        private const string ImportSetupNameB = "B";
+
         public ImportFilesModel ImportFiles { get; set; }
 
         public ImportFilesViewModel()
         {
             ImportFiles = new ImportFilesModel();
             SetServerSetups();
+            SetImportSetups();
         }
 
-        //public void GetModel(string name)
-        //{
-        //    ImportFiles.InitImportSetups()
-        //    ImportFiles.ImportSetupA = ImportSetupConfiguration.GetImportSetup(name);
-        //}
+        public void SetImportSetups()
+        {
+            ImportSetupModel importSetupModelA = ImportSetupConfiguration.GetImportSetup(ImportSetupNameA);
+            ImportSetupModel importSetupModelB = ImportSetupConfiguration.GetImportSetup(ImportSetupNameB);
+
+            ImportFiles.SetImportSetups(importSetupModelA, importSetupModelB);
+        }
+
+        public void SaveImportSetup()
+        {
+            ImportSetupConfiguration.Save(ImportFiles.ImportSetupA);
+            ImportSetupConfiguration.Save(ImportFiles.ImportSetupB);
+        }
 
         public void SetServerSetups()
         {

@@ -4,10 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NAVObjectCompareWinClient"
+        xmlns:model="clr-namespace:NAVObjectCompareWinClient.Model"
         mc:Ignorable="d"
-        Title="Import Files" Height="850" Width="1024">
+        Title="Import Files" Height="550" Width="900">
     <Grid>
-
+        <Grid.Resources>
+            <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="10" />
@@ -23,7 +26,7 @@
         <!-- Server A Start -->
         <GroupBox Grid.Column="0" Grid.Row="0" Margin="20,10,10,10" MinWidth="350" >
             <GroupBox.Header>
-                <RadioButton x:Name="ImportFromServerRadioA" GroupName="SetA">Import from Server A</RadioButton>                
+                <RadioButton x:Name="ImportFromServerRadioA" GroupName="SetA" DataContext="{Binding ImportFiles.ImportSetupA}" IsChecked="{Binding Path=ImportType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:ImportTypes.Server}}">Import from Server A</RadioButton>                
             </GroupBox.Header>
 
             <Grid Margin="5,5,5,5" IsEnabled="{Binding IsChecked, ElementName=ImportFromServerRadioA, Mode=OneWay}">
@@ -56,7 +59,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <ComboBox Grid.Row="0" Grid.Column="0" x:Name="ServerComboBoxA" Margin="3,5,5,5" Height="25" DataContext="{Binding ImportFiles}" ItemsSource="{Binding ServerSetups}" SelectedItem="{Binding SelectedServerSetupA}" />
+                    <ComboBox Grid.Row="0" Grid.Column="0" x:Name="ServerComboBoxA" Margin="3,5,5,5" Height="25" ItemsSource="{Binding Path=ImportFiles.ServerSetups}" DisplayMemberPath="Name" SelectedValuePath="Name" SelectedValue="{Binding Path=ImportFiles.ImportSetupA.ServerSetupName}"/>
                     <Button Grid.Row="0" Grid.Column="1" x:Name="EditServerButtonA" Margin="5,5,5,5" Content="Edit" Height="25" Width="50" Click="EditServerButtonA_Click"></Button>
                 </Grid>
 
@@ -73,7 +76,7 @@
                 <Label Grid.Row="6" Grid.Column="0" Margin="10,5,3,5" Content="Version List" Height="25" />
                 <TextBox Grid.Row="6" Grid.Column="1" Margin="3,5,3,5" x:Name="VersionListTextBoxA" MinWidth="100" Width="Auto" Height="25" DataContext="{Binding ImportFiles.ImportSetupA}" Text="{Binding VersionList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <CheckBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="CustomCheckBoxA" Content="Custom Filter" DataContext="{Binding ImportFiles.ImportSetupA}" IsChecked="{Binding CustomFilter, Mode = TwoWay}" />
+                <CheckBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="CustomCheckBoxA" Content="Custom Filter" DataContext="{Binding ImportFiles.ImportSetupA}" IsChecked="{Binding CustomFilter, Mode=TwoWay}" />
                 <TextBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="CustomFilterTextBoxA" Height="25" IsEnabled="{Binding IsChecked, ElementName=CustomCheckBoxA, Mode=OneWay}" DataContext="{Binding ImportFiles.ImportSetupA}" Text="{Binding Filter, Mode = TwoWay}"/>
                 
             </Grid>
@@ -83,7 +86,7 @@
         <!-- File A Start -->
         <GroupBox Grid.Column="0" Grid.Row="1" Margin="20,10,10,10" MinWidth="350" Height="80" VerticalAlignment="Top">
             <GroupBox.Header>
-                <RadioButton x:Name="ImportFromFileA" GroupName="SetA">File A</RadioButton>
+                <RadioButton x:Name="ImportFromFileA" GroupName="SetA" DataContext="{Binding ImportFiles.ImportSetupA}" IsChecked="{Binding Path=ImportType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:ImportTypes.File}}">Import From File A</RadioButton>
             </GroupBox.Header>
             <Grid Margin="5,5,5,5" IsEnabled="{Binding IsChecked, ElementName=ImportFromFileA, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
@@ -95,7 +98,7 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" Margin="10,5,3,5" Content="Objects File Path" Height="25" />
                 <Grid Grid.Row="0" Grid.Column="1">
-                    <TextBox  x:Name="FilePathTextBoxA" Height="25" Margin="3,5,30,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" />
+                    <TextBox  x:Name="FilePathTextBoxA" Height="25" Margin="3,5,30,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" DataContext="{Binding ImportFiles.ImportSetupA}" Text="{Binding ImportFileName, Mode=TwoWay}" />
                     <Button x:Name="FilePathButtonA" Height="25" Margin="3,5,3,5" Content="..." Width="30" HorizontalAlignment="Right" Click="FilePathButtonA_Click"></Button>
                 </Grid>
             </Grid>
@@ -106,7 +109,7 @@
         <!-- Server B Start -->
         <GroupBox Grid.Column="2" Grid.Row="0" Margin="10,10,20,10" MinWidth="350">
             <GroupBox.Header>
-                <RadioButton x:Name="ImportFromServerRadioB" GroupName="SetB">Import from Server B</RadioButton>
+                <RadioButton x:Name="ImportFromServerRadioB" GroupName="SetB" DataContext="{Binding ImportFiles.ImportSetupB}" IsChecked="{Binding Path=ImportType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:ImportTypes.Server}}">Import from Server B</RadioButton>
             </GroupBox.Header>
 
             <Grid Margin="5,5,5,5" IsEnabled="{Binding IsChecked, ElementName=ImportFromServerRadioB, Mode=OneWay}">
@@ -137,25 +140,25 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <ComboBox Grid.Row="0" Grid.Column="0" x:Name="ServerComboBoxB" Margin="3,5,5,5" Height="25" DataContext="{Binding ImportFiles}" ItemsSource="{Binding ServerSetups}" SelectedItem="{Binding SelectedServerSetupB}" />
+                    <ComboBox Grid.Row="0" Grid.Column="0" x:Name="ServerComboBoxB" Margin="3,5,5,5" Height="25" ItemsSource="{Binding Path=ImportFiles.ServerSetups}" DisplayMemberPath="Name" SelectedValuePath="Name" SelectedValue="{Binding Path=ImportFiles.ImportSetupB.ServerSetupName}"/>
                     <Button Grid.Row="0" Grid.Column="1" x:Name="EditServerButtonB" Margin="5,5,5,5" Content="Edit" Height="25" Width="50" Click="EditServerButtonB_Click"></Button>
                 </Grid>
 
                 <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0" Content="Object Filters" Height="25" />
 
-                <CheckBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="ModifiedCheckBoxB" Margin="10,5,3,5" Height="25" Content="Modified" DataContext="{Binding ImportFiles}" IsChecked="{Binding ModifiedB, Mode=TwoWay}" />
+                <CheckBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="ModifiedCheckBoxB" Margin="10,5,3,5" Height="25" Content="Modified" DataContext="{Binding ImportFiles.ImportSetupB}" IsChecked="{Binding Modified, Mode=TwoWay}" />
 
                 <Label Grid.Row="4" Grid.Column="0" Margin="10,5,3,5" Content="Date from" Height="25" />
-                <DatePicker Grid.Row="4" Grid.Column="1" Margin="3,5,3,5"  x:Name="DateFromDatePickerB" MinWidth="100" Width="Auto" Height="25" DataContext="{Binding ImportFiles}" SelectedDate="{Binding DateFromB, Mode=TwoWay}"  />
+                <DatePicker Grid.Row="4" Grid.Column="1" Margin="3,5,3,5"  x:Name="DateFromDatePickerB" MinWidth="100" Width="Auto" Height="25" DataContext="{Binding ImportFiles.ImportSetupB}" SelectedDate="{Binding DateFrom, Mode=TwoWay}"  />
 
                 <Label Grid.Row="5" Grid.Column="0" Margin="10,5,3,5" Content="Date to" Height="25" />
-                <DatePicker Grid.Row="5" Grid.Column="1" Margin="3,5,3,5"  x:Name="DateToDatePickerB" MinWidth="100" Width="Auto" Height="25" DataContext="{Binding ImportFiles}" SelectedDate="{Binding DateToB, Mode=TwoWay}" />
+                <DatePicker Grid.Row="5" Grid.Column="1" Margin="3,5,3,5"  x:Name="DateToDatePickerB" MinWidth="100" Width="Auto" Height="25" DataContext="{Binding ImportFiles.ImportSetupB}" SelectedDate="{Binding DateTo, Mode=TwoWay}" />
 
                 <Label Grid.Row="6" Grid.Column="0" Margin="10,5,3,5" Content="Version List" Height="25" />
-                <TextBox Grid.Row="6" Grid.Column="1" Margin="3,5,3,5" x:Name="VersionListTextBoxB" MinWidth="100" Width="Auto" Height="25" DataContext="{Binding ImportFiles}" Text="{Binding VersionListB, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Grid.Row="6" Grid.Column="1" Margin="3,5,3,5" x:Name="VersionListTextBoxB" MinWidth="100" Width="Auto" Height="25" DataContext="{Binding ImportFiles.ImportSetupB}" Text="{Binding VersionList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                <CheckBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="CustomCheckBoxB" Content="Custom Filter" DataContext="{Binding ImportFiles}" IsChecked="{Binding CustomFilterB, Mode = TwoWay}" />
-                <TextBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="CustomFilterTextBoxB" Height="25" IsEnabled="{Binding IsChecked, ElementName=CustomCheckBoxB, Mode=OneWay}" DataContext="{Binding ImportFiles}" Text="{Binding FilterB, Mode = TwoWay}" />
+                <CheckBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="CustomCheckBoxB" Content="Custom Filter" DataContext="{Binding ImportFiles.ImportSetupB}" IsChecked="{Binding CustomFilter, Mode=TwoWay}" />
+                <TextBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,5,3,5" x:Name="CustomFilterTextBoxB" Height="25" IsEnabled="{Binding IsChecked, ElementName=CustomCheckBoxB, Mode=OneWay}" DataContext="{Binding ImportFiles.ImportSetupB}" Text="{Binding Filter, Mode=TwoWay}" />
 
             </Grid>
         </GroupBox>
@@ -164,7 +167,7 @@
         <!-- File B Start -->
         <GroupBox Grid.Column="2" Grid.Row="1" Margin="10,10,20,10" MinWidth="350" Height="80" VerticalAlignment="Top">
             <GroupBox.Header>
-                <RadioButton x:Name="ImportFromFileB" GroupName="SetB">File B</RadioButton>
+                <RadioButton x:Name="ImportFromFileB" GroupName="SetB" DataContext="{Binding ImportFiles.ImportSetupB}" IsChecked="{Binding Path=ImportType, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:ImportTypes.File}}">Import From File B</RadioButton>
             </GroupBox.Header>
             <Grid Margin="5,5,5,5" IsEnabled="{Binding IsChecked, ElementName=ImportFromFileB, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
@@ -176,7 +179,7 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" Margin="10,5,3,5" Content="Objects File Path" Height="25" />
                 <Grid Grid.Row="0" Grid.Column="1">
-                    <TextBox  x:Name="FilePathTextBoxB" Height="25" Margin="3,5,30,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" />
+                    <TextBox  x:Name="FilePathTextBoxB" Height="25" Margin="3,5,30,5" Style="{StaticResource placeHolder}" Tag="e.g. C:\Program Files (x86)\Microsoft Dynamics NAV\71\RoleTailored Client\finsql.exe" DataContext="{Binding ImportFiles.ImportSetupB}" Text="{Binding ImportFileName, Mode=TwoWay}" />
                     <Button x:Name="FilePathButtonB" Height="25" Margin="3,5,3,5" Content="..." Width="30" HorizontalAlignment="Right" Click="FilePathButtonB_Click"></Button>
                 </Grid>
             </Grid>
@@ -194,8 +197,8 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Button x:Name="ImportButton" Grid.Column="1" Grid.Row="0" Margin="10,10,5,20" Height="25" Width="80" IsDefault="True">Import</Button>
-            <Button x:Name="CancelButton" Grid.Column="2" Grid.Row="0" Margin="5,10,20,20" Height="25" Width="80">Cancel</Button>
+            <Button x:Name="ImportButton" Grid.Column="1" Grid.Row="0" Margin="10,10,5,20" Height="25" Width="80" IsDefault="True" Click="ImportButton_Click">Import</Button>
+            <Button x:Name="CancelButton" Grid.Column="2" Grid.Row="0" Margin="5,10,20,20" Height="25" Width="80" Click="CancelButton_Click">Cancel</Button>
         </Grid>
         <!-- Buttons Stop -->
 

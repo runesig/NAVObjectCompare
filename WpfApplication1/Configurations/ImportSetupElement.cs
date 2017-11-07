@@ -18,6 +18,8 @@ namespace NAVObjectCompareWinClient.Configurations
         private const string VersionListElement = "VersionList";
         private const string CustomFilterElement = "CustomFilter";
         private const string FilterElement = "Filter";
+        private const string ImportFileNameElement = "ImportFileName";
+        private const string ImportTypeElement = "ImportType";
 
         [ConfigurationProperty(NameKey, IsRequired = true, IsKey = true)]
         public string Name
@@ -26,78 +28,97 @@ namespace NAVObjectCompareWinClient.Configurations
             set { this[NameKey] = value; }
         }
 
-        [ConfigurationProperty(ServerSetupNameElement, IsRequired = true, IsKey = false)]
+        [ConfigurationProperty(ImportTypeElement, IsRequired = true, IsKey = false)]
+        public int ImportType
+        {
+            get { return (int)this[ImportTypeElement]; }
+            set { this[ImportTypeElement] = value; }
+        }
+
+        [ConfigurationProperty(ServerSetupNameElement, IsRequired = false, IsKey = false)]
         public string ServerSetupName
         {
             get { return (string)this[ServerSetupNameElement]; }
             set { this[ServerSetupNameElement] = value; }
         }
 
-        [ConfigurationProperty(ModifiedElement, IsRequired = true, IsKey = false)]
+        [ConfigurationProperty(ModifiedElement, IsRequired = false, IsKey = false)]
         public bool Modified
         {
             get { return (bool)this[ModifiedElement]; }
             set { this[ModifiedElement] = value; }
         }
 
-        [ConfigurationProperty(DateFromElement, IsRequired = true, IsKey = false)]
+        [ConfigurationProperty(DateFromElement, IsRequired = false, IsKey = false)]
         public DateTime? DateFrom
         {
-            get { return (DateTime)this[DateFromElement]; }
+            get { return (DateTime?)this[DateFromElement]; }
             set { this[DateFromElement] = value; }
         }
 
-        [ConfigurationProperty(DateToElement, IsRequired = true, IsKey = false)]
+        [ConfigurationProperty(DateToElement, IsRequired = false, IsKey = false)]
         public DateTime? DateTo
         {
-            get { return (DateTime)this[DateToElement]; }
+            get { return (DateTime?)this[DateToElement]; }
             set { this[DateToElement] = value; }
         }
 
-        [ConfigurationProperty(VersionListElement, IsRequired = true, IsKey = false)]
+        [ConfigurationProperty(VersionListElement, IsRequired = false, IsKey = false)]
         public string VersionList
         {
             get { return (string)this[VersionListElement]; }
             set { this[VersionListElement] = value; }
         }
 
-        [ConfigurationProperty(CustomFilterElement, IsRequired = true, IsKey = false)]
+        [ConfigurationProperty(CustomFilterElement, IsRequired = false, IsKey = false)]
         public bool CustomFilter
         {
             get { return (bool)this[CustomFilterElement]; }
             set { this[CustomFilterElement] = value; }
         }
 
-        [ConfigurationProperty(FilterElement, IsRequired = true, IsKey = false)]
+        [ConfigurationProperty(FilterElement, IsRequired = false, IsKey = false)]
         public string Filter
         {
             get { return (string)this[FilterElement]; }
             set { this[FilterElement] = value; }
         }
 
+        [ConfigurationProperty(ImportFileNameElement, IsRequired = false, IsKey = false)]
+        public string ImportFileName
+        {
+            get { return (string)this[ImportFileNameElement]; }
+            set { this[ImportFileNameElement] = value; }
+        }
+
         public ImportSetupModel ToImportSetupModel()
         {
-            return new ImportSetupModel()
+            return new ImportSetupModel(Name)
             {
-                Name = Name,
+                ImportType = (ImportTypes)ImportType,
                 ServerSetupName = ServerSetupName,
                 Modified = Modified,
                 DateFrom = DateFrom,
                 DateTo = DateTo,
+                VersionList = VersionList,
                 CustomFilter = CustomFilter,
-                Filter = Filter
+                Filter = Filter,
+                ImportFileName = ImportFileName
             };
         }
 
         public void Fill(ImportSetupModel importSetup)
         {
             Name = importSetup.Name;
+            ImportType = (int)importSetup.ImportType;
             ServerSetupName = importSetup.ServerSetupName;
             Modified = importSetup.Modified;
             DateFrom = importSetup.DateFrom;
             DateTo = importSetup.DateTo;
+            VersionList = importSetup.VersionList;
             CustomFilter = importSetup.CustomFilter;
             Filter = importSetup.Filter;
+            ImportFileName = importSetup.ImportFileName;
         }
     }
 

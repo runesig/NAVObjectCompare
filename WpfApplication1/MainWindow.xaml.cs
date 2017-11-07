@@ -22,6 +22,8 @@ using NAVObjectCompareWinClient.Helpers;
 using NAVObjectCompare.Editor;
 using System.ComponentModel;
 using NAVObjectCompareWinClient.Configurations;
+using NAVObjectCompareWinClient.Model;
+using NAVObjectCompare.ExportFinexe;
 
 namespace NAVObjectCompareWinClient
 {
@@ -129,20 +131,85 @@ namespace NAVObjectCompareWinClient
             ImportFiles importFiles = new ImportFiles() { Owner = this };
             importFiles.ShowDialog();
 
-            //ServerSetup serverSetup = new ServerSetup();
-            //serverSetup.Owner = this;
-            //serverSetup.ShowDialog();
+            if ((importFiles.DialogResult.HasValue) && (importFiles.DialogResult.Value))
+            {
+                ImportSetupModel importSetupModelA = importFiles.SelectedImportSetupModelA;
+                ImportSetupModel importSetupModelB = importFiles.SelectedImportSetupModelB;
+
+                ExportAndCompare(importSetupModelA, importSetupModelB);
+            }
+        }
+
+        private void ExportAndCompare(ImportSetupModel importSetupModelA, ImportSetupModel importSetupModelB)
+        {
+            string filePathA = string.Empty;
+            string filePathB = string.Empty;
+
+            switch(importSetupModelA.ImportType)
+            {
+                case ImportTypes.Server:
+                    ExportFromFinExe(QueryExportTag.QueryExportA, importSetupModelA, out filePathA);
+                    break;
+                case ImportTypes.File:
+                    filePathA = importSetupModelA.ImportFileName;
+                    break;
+            }
+
+            switch (importSetupModelB.ImportType)
+            {
+                case ImportTypes.Server:
+                    ExportFromFinExe(QueryExportTag.QueryExportB, importSetupModelB, out filePathB);
+                    break;
+                case ImportTypes.File:
+                    filePathB = importSetupModelB.ImportFileName;
+                    break;
+            }
+
+            CompareAndFillGrid(filePathA, filePathB);
+        }
+
+        private bool ExportFromFinExe(QueryExportTag exportTag, ImportSetupModel importSetupModel, out string exportedObjectsPath)
+        {
+            exportedObjectsPath = string.Empty;
+
+            try
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+
+                ServerSetupModel serverSetup = ServerSetupConfiguration.GetServerSetup(importSetupModel.ServerSetupName);
+
+                ExportFinexeHandling fileHandeling = new ExportFinexeHandling();
+                // fileHandeling.OnExportError += FileHandeling_OnExportError;
+                fileHandeling.FinsqlPath = serverSetup.FinSQLPath;
+                fileHandeling.ServerName = serverSetup.Server;
+                fileHandeling.Database = serverSetup.Database;
+                fileHandeling.NTAuthentication = serverSetup.UseNTAuthentication;
+                fileHandeling.QueryExportTag = exportTag;
+                if (!serverSetup.UseNTAuthentication)
+                {
+                    fileHandeling.Username = serverSetup.UserName;
+                    fileHandeling.Password = serverSetup.Password;
+                }
+                fileHandeling.Filter = importSetupModel.Filter;
 
 
-            //string filePathA = string.Empty;
-            //string filePathB = string.Empty;
-            //string message = string.Empty;
+                if (!fileHandeling.ExportObjects(out exportedObjectsPath, out string message))
+                {
+                    MessageHelper.ShowError(message);
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
 
-            //ExportFromFinexeHelper exportFinHelper = new ExportFromFinexeHelper();
-            //if (!exportFinHelper.Export(out filePathA, out message))
-            //    MessageHelper.ShowError(message);
-
-            //CompareAndFillGrid(filePathA, filePathB);
+            return false;
         }
 
         private void ExitMenu_Click(object sender, RoutedEventArgs e)

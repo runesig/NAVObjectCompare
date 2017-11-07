@@ -8,15 +8,33 @@ using System.Threading.Tasks;
 
 namespace NAVObjectCompareWinClient.Model
 {
+    public enum ImportTypes
+    {
+        Server = 0,
+        File = 1
+    }
+
     public class ImportSetupModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public ImportSetupModel(string name)
+        {
+            _name = name;
+        }
 
         private string _name;
         public string Name
         {
             get { return _name; }
             set { _name = value; RaisePropertyChanged("Name"); }
+        }
+
+        private ImportTypes _importType = ImportTypes.Server;
+        public ImportTypes ImportType
+        {
+            get { return _importType; }
+            set { _importType = value; }
         }
 
         private string _serverSetupName;
@@ -66,6 +84,13 @@ namespace NAVObjectCompareWinClient.Model
         {
             get { return _filter; }
             set { _filter = value; RaisePropertyChanged("Filter"); }
+        }
+
+        private string _importFileName;
+        public string ImportFileName
+        {
+            get { return _importFileName; }
+            set { _importFileName = value; RaisePropertyChanged("ImportFileName"); }
         }
 
         private void CreateFilter()

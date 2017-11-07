@@ -13,9 +13,9 @@ namespace NAVObjectCompareWinClient.ViewModel
     {
         public ServerSetupModel ServerSetup { get; set; }
 
-        public ServerSetupViewModel(bool isNew)
+        public ServerSetupViewModel()
         {
-            ServerSetup = new ServerSetupModel(isNew);
+            ServerSetup = new ServerSetupModel(string.Empty);
         }
 
         public void GetModel(string name)

@@ -31,7 +31,7 @@ namespace NAVObjectCompareWinClient
         public ServerSetup()
         {
             InitializeComponent();
-            _serverSetupViewModel = new ServerSetupViewModel(true);
+            _serverSetupViewModel = new ServerSetupViewModel();
             DataContext = _serverSetupViewModel;
         }
 

@@ -11,9 +11,12 @@ namespace NAVObjectCompareWinClient.Model
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ServerSetupModel(bool isNew)
+        public ServerSetupModel(string name)
         {
-            IsNew = isNew;
+            _name = name;
+
+            if (string.IsNullOrEmpty(name))
+                IsNew = true;
         }
 
         private string _name = string.Empty;
@@ -80,10 +83,10 @@ namespace NAVObjectCompareWinClient.Model
             }
         }
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        //public override string ToString()
+        //{
+        //    return Name;
+        //}
 
         public override bool Equals(object obj)
         {

@@ -69,9 +69,8 @@ namespace NAVObjectCompareWinClient.Configurations
 
         public ServerSetupModel ToServerSetupModel()
         {
-            return new ServerSetupModel(false)
+            return new ServerSetupModel(Name)
             {
-                Name = Name,
                 FinSQLPath = FinSQLPath,
                 Server = Server,
                 Database = Database,
