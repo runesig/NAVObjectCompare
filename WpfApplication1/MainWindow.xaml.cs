@@ -140,65 +140,36 @@ namespace NAVObjectCompareWinClient
             }
         }
 
-        private void ExportAndCompare(ImportSetupModel importSetupModelA, ImportSetupModel importSetupModelB)
+        async private void ExportAndCompare(ImportSetupModel importSetupModelA, ImportSetupModel importSetupModelB)
         {
             string filePathA = string.Empty;
             string filePathB = string.Empty;
 
-            switch(importSetupModelA.ImportType)
-            {
-                case ImportTypes.Server:
-                    ExportFromFinExe(QueryExportTag.QueryExportA, importSetupModelA, out filePathA);
-                    break;
-                case ImportTypes.File:
-                    filePathA = importSetupModelA.ImportFileName;
-                    break;
-            }
-
-            switch (importSetupModelB.ImportType)
-            {
-                case ImportTypes.Server:
-                    ExportFromFinExe(QueryExportTag.QueryExportB, importSetupModelB, out filePathB);
-                    break;
-                case ImportTypes.File:
-                    filePathB = importSetupModelB.ImportFileName;
-                    break;
-            }
-
-            CompareAndFillGrid(filePathA, filePathB);
-        }
-
-        private bool ExportFromFinExe(QueryExportTag exportTag, ImportSetupModel importSetupModel, out string exportedObjectsPath)
-        {
-            exportedObjectsPath = string.Empty;
+            Mouse.OverrideCursor = Cursors.Wait;
 
             try
             {
-                Mouse.OverrideCursor = Cursors.Wait;
+                await HideOrShowProgressBarAsync();
 
-                ServerSetupModel serverSetup = ServerSetupConfiguration.GetServerSetup(importSetupModel.ServerSetupName);
+                ExportFinexeHelper finExeHelper = new ExportFinexeHelper();
 
-                ExportFinexeHandling fileHandeling = new ExportFinexeHandling();
-                // fileHandeling.OnExportError += FileHandeling_OnExportError;
-                fileHandeling.FinsqlPath = serverSetup.FinSQLPath;
-                fileHandeling.ServerName = serverSetup.Server;
-                fileHandeling.Database = serverSetup.Database;
-                fileHandeling.NTAuthentication = serverSetup.UseNTAuthentication;
-                fileHandeling.QueryExportTag = exportTag;
-                if (!serverSetup.UseNTAuthentication)
-                {
-                    fileHandeling.Username = serverSetup.UserName;
-                    fileHandeling.Password = serverSetup.Password;
-                }
-                fileHandeling.Filter = importSetupModel.Filter;
+                ExportResult resultA = await finExeHelper.ExportObjectsFromFinExe(QueryExportTag.QueryExportA, importSetupModelA);
+                ExportResult resultB = await finExeHelper.ExportObjectsFromFinExe(QueryExportTag.QueryExportB, importSetupModelB);
 
+                if (resultA.Success)
+                    filePathA = resultA.ExportedObjectsPath;
+                else
+                    MessageHelper.ShowError(resultA.Message);
 
-                if (!fileHandeling.ExportObjects(out exportedObjectsPath, out string message))
-                {
-                    MessageHelper.ShowError(message);
-                    return false;
-                }
-                return true;
+                if (resultB.Success)
+                    filePathB = resultB.ExportedObjectsPath;
+                else
+                    MessageHelper.ShowError(resultB.Message);
+
+                await HideOrShowProgressBarAsync();
+
+                if ((!resultA.Success) || (!resultB.Success))
+                    return;
             }
             catch (Exception ex)
             {
@@ -209,7 +180,8 @@ namespace NAVObjectCompareWinClient
                 Mouse.OverrideCursor = null;
             }
 
-            return false;
+
+            CompareAndFillGrid(filePathA, filePathB);
         }
 
         private void ExitMenu_Click(object sender, RoutedEventArgs e)

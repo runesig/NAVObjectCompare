@@ -77,7 +77,10 @@ namespace NAVObjectCompare.ExportFinexe
             if ((logStatus.ResultStatus == ResultStatus.Error) || (logStatus.ResultStatus == ResultStatus.Unknown))
             {
                 if (!string.IsNullOrEmpty(logStatus.LogId))
-                    message = string.Format(@"{0} {1}", logStatus.LogId, logStatus.LogMessage);                    
+                {
+                    message = string.Format(@"{0} {1}", logStatus.LogId, logStatus.LogMessage);
+                    return;
+                }
             }
 
             message = logStatus.ResultMessage;

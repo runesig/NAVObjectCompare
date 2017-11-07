@@ -92,7 +92,7 @@
     <Compile Include="Helpers\ComboBoxHelper.cs" />
     <Compile Include="Helpers\DataTableHelper.cs" />
     <Compile Include="Helpers\ExcelHelper.cs" />
-    <Compile Include="Helpers\ExportFromFinexeHelper.cs" />
+    <Compile Include="Helpers\ExportFinexeHelper.cs" />
     <Compile Include="Helpers\FileDialogs.cs" />
     <Compile Include="Helpers\MessageHelper.cs" />
     <Compile Include="Helpers\RowFilters.cs" />
