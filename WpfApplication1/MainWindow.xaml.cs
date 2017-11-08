@@ -153,23 +153,41 @@ namespace NAVObjectCompareWinClient
 
                 ExportFinexeHelper finExeHelper = new ExportFinexeHelper();
 
-                ExportResult resultA = await finExeHelper.ExportObjectsFromFinExe(QueryExportTag.QueryExportA, importSetupModelA);
-                ExportResult resultB = await finExeHelper.ExportObjectsFromFinExe(QueryExportTag.QueryExportB, importSetupModelB);
+                if (importSetupModelA.ImportType == ImportTypes.Server)
+                {
+                    ExportResult resultA = await finExeHelper.ExportObjectsFromFinExe(QueryExportTag.QueryExportA, importSetupModelA);
 
-                if (resultA.Success)
-                    filePathA = resultA.ExportedObjectsPath;
-                else
-                    MessageHelper.ShowError(resultA.Message);
+                    if (resultA.Success)
+                        filePathA = resultA.ExportedObjectsPath;
+                    else
+                        MessageHelper.ShowError(resultA.Message);
 
-                if (resultB.Success)
-                    filePathB = resultB.ExportedObjectsPath;
+                    if (!resultA.Success)
+                        return;
+                }
                 else
-                    MessageHelper.ShowError(resultB.Message);
+                {
+                    filePathA = importSetupModelA.ImportFileName;
+                }
+
+                // B Start
+                if (importSetupModelB.ImportType == ImportTypes.Server)
+                {
+                    ExportResult resultB = await finExeHelper.ExportObjectsFromFinExe(QueryExportTag.QueryExportB, importSetupModelB);
+                    if (resultB.Success)
+                        filePathB = resultB.ExportedObjectsPath;
+                    else
+                        MessageHelper.ShowError(resultB.Message);
+
+                    if (!resultB.Success)
+                        return;
+                }
+                else
+                {
+                    filePathB = importSetupModelB.ImportFileName;
+                }
 
                 await HideOrShowProgressBarAsync();
-
-                if ((!resultA.Success) || (!resultB.Success))
-                    return;
             }
             catch (Exception ex)
             {
