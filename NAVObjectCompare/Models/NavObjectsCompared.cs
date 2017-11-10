@@ -8,10 +8,13 @@ namespace NAVObjectCompare.Models
 {
     public class NavObjectsCompared
     {
+        public enum Staus { Equal = 0, Unequal = 1, Unexisting = 2 }
+
         public NavObjectsCompared(string internalId)
         {
             this.InternalId = internalId;
         }
+        public bool Selected { get; set; }
         public string InternalId { get; private set; }
         public int Id { get; set; }
         public string Type { get; set; }
@@ -24,9 +27,9 @@ namespace NAVObjectCompare.Models
         public string VersionListB { get; set; }
         public int NoOfLinesA { get; set; }
         public int NoOfLinesB { get; set; }
-        public bool Equal { get; set; }
+        public Staus Status { get; set; }
         public bool ObjectPropertiesEqual { get; set; }
         public bool CodeEqual { get; set; }
-        public string Difference { get; set; }
+        public string Comment { get; set; }
     }
 }

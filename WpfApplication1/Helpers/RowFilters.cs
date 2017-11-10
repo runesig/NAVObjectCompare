@@ -30,12 +30,16 @@ namespace NAVObjectCompareWinClient.Helpers
 
         public static void AddFilterFieldsComboBoxItems(DataGrid comparedDataGrid, ref ComboBox fieldFilterComboBox)
         {
-            foreach (DataGridTextColumn column in comparedDataGrid.Columns)
+            foreach (DataGridColumn column in comparedDataGrid.Columns)
             {
-                Binding binding = (Binding)column.Binding;
-                string path = binding.Path.Path;
+                if(column is DataGridTextColumn)
+                {
+                    DataGridTextColumn textColumn = column as DataGridTextColumn;
+                    Binding binding = (Binding)textColumn.Binding;
+                    string path = binding.Path.Path;
 
-                fieldFilterComboBox.Items.Add(new ComboboxItem { Text = column.Header.ToString(), Value = path });
+                    fieldFilterComboBox.Items.Add(new ComboboxItem { Text = column.Header.ToString(), Value = path });
+                }
             }
 
             fieldFilterComboBox.SelectedIndex = 0;

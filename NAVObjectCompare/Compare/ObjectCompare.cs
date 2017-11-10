@@ -173,37 +173,102 @@ namespace NAVObjectCompare.Compare
 
         private void GetDifference(NavObject navObject1, NavObject navObject2, NavObjectsCompared objectsCompared)
         {
+            //objectsCompared.CodeEqual = true;
+            //objectsCompared.ObjectPropertiesEqual = true;
+            //objectsCompared.Status = NavObjectsCompared.Staus.Equal;
+
+            //if(!navObject1.IsExisting(navObject2))
+            //{
+            //    objectsCompared.CodeEqual = false;
+            //    objectsCompared.ObjectPropertiesEqual = false;
+            //    objectsCompared.Status = NavObjectsCompared.Staus.Unexisting;
+            //    objectsCompared.Comment = "Object does not exists";
+            //    return;
+            //}
+
+            if (!ObjectExists(navObject1, navObject2, ref objectsCompared))
+                return;
+
+            if (!ObjectIsEqual(navObject1, navObject2, ref objectsCompared))
+                return;
+
+                //if (!navObject1.IsEqualTo(navObject2))
+                //{
+                //    string comment = string.Empty;
+
+                //    objectsCompared.Status = NavObjectsCompared.Staus.Unequal;
+
+                //    // Do More Analysis
+                //    if (!navObject1.IsObjectPropertiesEqual(navObject2))
+                //    {
+                //        objectsCompared.ObjectPropertiesEqual = false;
+                //        AddToComment(ref comment, "Date and/or Time");
+                //    }
+
+                //    if (!navObject1.IsCodeEqual(navObject2))
+                //    {
+                //        objectsCompared.CodeEqual = false;
+                //        AddToComment(ref comment, "Code");
+                //    }
+                //    objectsCompared.Comment = comment;
+
+                //    return;
+                //}
+
             objectsCompared.CodeEqual = true;
             objectsCompared.ObjectPropertiesEqual = true;
-            objectsCompared.Equal = true;
+            objectsCompared.Status = NavObjectsCompared.Staus.Equal;
+        }
+
+        private bool ObjectExists(NavObject navObject1, NavObject navObject2, ref NavObjectsCompared objectsCompared)
+        {
+            if (!navObject1.IsExisting(navObject2))
+            {
+                objectsCompared.CodeEqual = false;
+                objectsCompared.ObjectPropertiesEqual = false;
+                objectsCompared.Status = NavObjectsCompared.Staus.Unexisting;
+                objectsCompared.Comment = "Object does not exists";
+
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ObjectIsEqual(NavObject navObject1, NavObject navObject2, ref NavObjectsCompared objectsCompared)
+        {
+            string comment = string.Empty;
 
             if (!navObject1.IsEqualTo(navObject2))
             {
-                objectsCompared.Equal = false;
+                objectsCompared.Status = NavObjectsCompared.Staus.Unequal;
 
                 // Do More Analysis
                 if (!navObject1.IsObjectPropertiesEqual(navObject2))
                 {
                     objectsCompared.ObjectPropertiesEqual = false;
-                    objectsCompared.Difference = "Date or Time";
+                    AddToComment(ref comment, "Date and/or Time");
                 }
-
-                //if (!navObject1.IsPropertiesEqual(navObject2))
-                //{
-                //    objectsCompared.PropertiesEqual = false;
-                //    if (!string.IsNullOrEmpty(objectsCompared.Difference))
-                //        objectsCompared.Difference += ", ";
-                //    objectsCompared.Difference = objectsCompared.Difference += "Properties";
-                //}
 
                 if (!navObject1.IsCodeEqual(navObject2))
                 {
                     objectsCompared.CodeEqual = false;
-                    if (!string.IsNullOrEmpty(objectsCompared.Difference))
-                        objectsCompared.Difference += ", ";
-                    objectsCompared.Difference = objectsCompared.Difference += "Code";
+                    AddToComment(ref comment, "Code");
                 }
+                objectsCompared.Comment = comment;
+
+                return false;
             }
+
+            return true;
+        }
+
+        private void AddToComment(ref string comment, string value)
+        {
+            if (!string.IsNullOrEmpty(comment))
+                comment = string.Format("{1}, {0}", comment, value);
+            else
+                comment = value;
         }
 
 

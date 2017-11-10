@@ -67,7 +67,15 @@ namespace NAVObjectCompare.Models
         public List<string> Code { get { return _code; } }
         public bool IsEdited { get; set; }
 
-        public bool IsEqualTo(NavObject objectToCompare)
+        public bool IsExisting(NavObject objectToCompare)
+        {
+            if (objectToCompare == null)
+                return false;
+
+            return true;
+        }
+
+            public bool IsEqualTo(NavObject objectToCompare)
         {
             if (objectToCompare == null)
                 return false;

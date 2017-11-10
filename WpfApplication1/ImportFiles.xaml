@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NAVObjectCompareWinClient"
         xmlns:model="clr-namespace:NAVObjectCompareWinClient.Model"
+        xmlns:helpers="clr-namespace:NAVObjectCompareWinClient.Helpers"
         mc:Ignorable="d"
         Title="Import Files" Height="550" Width="900">
     <Grid>
         <Grid.Resources>
-            <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+            <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />

@@ -8,12 +8,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Background="{DynamicResource BackgroundBrushClear}">
     <Window.Resources>
-        <SolidColorBrush x:Key="BackgroundBrushEqual" Color="Salmon" />
         <SolidColorBrush x:Key="BackgroundBrushClear" Color="White" />
+        <SolidColorBrush x:Key="BackgroundBrushUnequal" Color="Salmon" />
+        <SolidColorBrush x:Key="BackgroundBrushUnexisting" Color="LemonChiffon" />
         <SolidColorBrush x:Key="BackgroundBrushA" Color="Azure" />
         <SolidColorBrush x:Key="BackgroundBrushB" Color="OldLace" />
-        <SolidColorBrush x:Key="BackgroundBrushSelected" Color="DodgerBlue" />
-        <SolidColorBrush x:Key="ForegroundBrushClear" Color="White" />
+        <SolidColorBrush x:Key="BackgroundBrushSelected" Color="DodgerBlue" Opacity=".4"/>
+        <SolidColorBrush x:Key="ForegroundBrushClear" Color="Black" />
     </Window.Resources>
 
     <DockPanel>
@@ -91,6 +92,9 @@
 
         <!--Datagrid Start-->
         <DataGrid Name="comparedDataGrid" Background="{DynamicResource BackgroundBrushClear}" AutoGenerateColumns="False" CanUserAddRows="False">
+            <DataGrid.Resources>
+                <helpers:EnumToStringConverter x:Key="EnumToStringConverter" />
+            </DataGrid.Resources>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
@@ -107,13 +111,41 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header="Select" Binding="{Binding Selected}" IsReadOnly="False" Width="60">
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+                </DataGridCheckBoxColumn>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" Width="80">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Equal}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}" />
@@ -128,8 +160,14 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Equal}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
@@ -144,8 +182,14 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Equal}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
@@ -160,8 +204,14 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Equal}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
@@ -176,8 +226,14 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Equal}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
@@ -192,8 +248,14 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Equal}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
@@ -208,8 +270,14 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Equal}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
@@ -224,8 +292,14 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Equal}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
@@ -240,8 +314,14 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Equal}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
@@ -256,8 +336,14 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Equal}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
@@ -272,8 +358,14 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Equal}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
@@ -283,13 +375,19 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Difference Comment" Binding="{Binding Difference}" IsReadOnly="True" Width="*">
+                <DataGridTextColumn Header="Comment" Binding="{Binding Comment}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Equal}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEqual}" />
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
