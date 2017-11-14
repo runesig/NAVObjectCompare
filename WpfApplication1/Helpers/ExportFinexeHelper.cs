@@ -41,13 +41,16 @@ namespace NAVObjectCompareWinClient.Helpers
             {
                 ServerSetupModel serverSetup = ServerSetupConfiguration.GetServerSetup(importSetupModel.ServerSetupName);
 
-                ExportFinexeHandling fileHandeling = new ExportFinexeHandling();
-                // fileHandeling.OnExportError += FileHandeling_OnExportError;
-                fileHandeling.FinsqlPath = serverSetup.FinSQLPath;
-                fileHandeling.ServerName = serverSetup.Server;
-                fileHandeling.Database = serverSetup.Database;
-                fileHandeling.NTAuthentication = serverSetup.UseNTAuthentication;
-                fileHandeling.QueryExportTag = exportTag;
+                ExportFinexeHandling fileHandeling = new ExportFinexeHandling()
+                {
+                    // fileHandeling.OnExportError += FileHandeling_OnExportError;
+                    FinsqlPath = serverSetup.FinSQLPath,
+                    ServerName = serverSetup.Server,
+                    Database = serverSetup.Database,
+                    NTAuthentication = serverSetup.UseNTAuthentication,
+                    QueryExportTag = exportTag
+                };
+
                 if (!serverSetup.UseNTAuthentication)
                 {
                     fileHandeling.Username = serverSetup.UserName;

@@ -66,21 +66,23 @@ namespace NAVObjectCompareWinClient
         {
             RowFilters.AddFilterFieldsComboBoxItems(comparedDataGrid, ref fieldFilterComboBox);
             RowFilters.AddItemsShowComboBoxItems(ref showComboBox);
+
+            SetGridRowCountStatus();
         }
 
         private void InitProgressBar()
         {
-            processProgessBar.Visibility = Visibility.Collapsed;
-            processProgessBar.Minimum = 0;
-            processProgessBar.Maximum = 100;
-            processProgessBar.Value = 0;
+            ProcessProgessBar.Visibility = Visibility.Collapsed;
+            ProcessProgessBar.Minimum = 0;
+            ProcessProgessBar.Maximum = 100;
+            ProcessProgessBar.Value = 0;
         }
 
         #region EventHandling
 
         private void _compare_OnCompared(int percentCompleted)
         {
-            processProgessBar.Dispatcher.Invoke(() => processProgessBar.Value = percentCompleted, DispatcherPriority.Background);
+            ProcessProgessBar.Dispatcher.Invoke(() => ProcessProgessBar.Value = percentCompleted, DispatcherPriority.Background);
         }
 
         private void _editor_OnReCompareObject(object source, EditorEventArgs e)
@@ -117,16 +119,26 @@ namespace NAVObjectCompareWinClient
             }
         }
 
-        private void OpenMenu_Click(object sender, RoutedEventArgs e)
+        private void Open_Click(object sender, RoutedEventArgs e)
         {
-            string filePathA = string.Empty;
-            string filePathB = string.Empty;
+            string filePathWorkspace = string.Empty;
 
-            if(Dialogs.OpenFile(true, ref filePathA, ref filePathB))
-                CompareAndFillGrid(filePathA, filePathB);
+            if (Dialogs.OpenWorkspace(ref filePathWorkspace))
+                ReadWorkspaceFile(filePathWorkspace);
         }
 
-        private void Import_Click(object sender, RoutedEventArgs e)
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            if (Dialogs.SaveWorkspace(out string filePathWorkspace))
+                SaveWorkspaceFile(filePathWorkspace);
+        }
+
+        private void SaveAs_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ImportSheet_Click(object sender, RoutedEventArgs e)
         {
             ImportFiles importFiles = new ImportFiles() { Owner = this };
             importFiles.ShowDialog();
@@ -139,6 +151,22 @@ namespace NAVObjectCompareWinClient
                 ExportAndCompare(importSetupModelA, importSetupModelB);
             }
         }
+
+        private void ImportFiles_Click(object sender, RoutedEventArgs e)
+        {
+            string filePathA = string.Empty;
+            string filePathB = string.Empty;
+
+            if (Dialogs.OpenFile(true, ref filePathA, ref filePathB))
+                CompareAndFillGrid(filePathA, filePathB);
+        }
+
+        private void ExitMenu_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        // Menu Stop
 
         async private void ExportAndCompare(ImportSetupModel importSetupModelA, ImportSetupModel importSetupModelB)
         {
@@ -200,11 +228,6 @@ namespace NAVObjectCompareWinClient
 
 
             CompareAndFillGrid(filePathA, filePathB);
-        }
-
-        private void ExitMenu_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
         }
 
         private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
@@ -279,15 +302,23 @@ namespace NAVObjectCompareWinClient
 
         private async Task HideOrShowProgressBarAsync()
         {
-            if (processProgessBar.Visibility == Visibility.Visible)
+            if (ProcessProgessBar.Visibility == Visibility.Visible)
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
-                this.Dispatcher.Invoke(new Action(() => { processProgessBar.Visibility = Visibility.Collapsed; }));
+                this.Dispatcher.Invoke(new Action(() => 
+                {
+                    ProcessProgessBar.Visibility = Visibility.Collapsed;
+                    GridRowCountTextBox.Visibility = Visibility.Visible;
+                }));
             }
             else
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(2)).ConfigureAwait(false);
-                this.Dispatcher.Invoke(new Action(() => { processProgessBar.Visibility = Visibility.Visible; }));
+                this.Dispatcher.Invoke(new Action(() => 
+                {
+                    ProcessProgessBar.Visibility = Visibility.Visible;
+                    GridRowCountTextBox.Visibility = Visibility.Collapsed;
+                }));                
             }
         }
 
@@ -342,6 +373,32 @@ namespace NAVObjectCompareWinClient
             SetRowFilters();
         }
 
+        private void SetRowFilters()
+        {
+            ComboboxItem showComboBoxItem = (ComboboxItem)showComboBox.SelectedItem;
+            ComboboxItem fieldFilterComboboxItem = (ComboboxItem)fieldFilterComboBox.SelectedItem;
+            string fieldFilter = fieldFilterTextBox.Text;
+
+            if (comparedDataGrid.ItemsSource == null)
+                return;
+
+            (comparedDataGrid.ItemsSource as DataView).RowFilter = RowFilters.CreateFilter(showComboBoxItem, fieldFilterComboboxItem, fieldFilter);
+
+            SetGridRowCountStatus();
+        }
+
+        private void SetSourceLabels(string sourceA, string sourceB)
+        {
+            StatusSourceA.Text = string.Format("A: {0}", sourceA);
+            StatusSourceB.Text = string.Format("B: {0}", sourceB);
+        }
+
+        private void SetGridRowCountStatus()
+        {
+            int count = (comparedDataGrid.ItemsSource as DataView)?.Count == null ? 0 : (comparedDataGrid.ItemsSource as DataView).Count;
+            GridRowCountTextBox.Text = string.Format("No of Rows: {0}", count);
+        }
+
         private void OpenEditor(string internalId)
         {
             try
@@ -368,27 +425,6 @@ namespace NAVObjectCompareWinClient
             {
                 MessageHelper.ShowError(ex);
             }
-        }
-
-        private void SetRowFilters()
-        {
-            ComboboxItem showComboBoxItem = (ComboboxItem)showComboBox.SelectedItem;
-            ComboboxItem fieldFilterComboboxItem = (ComboboxItem)fieldFilterComboBox.SelectedItem;
-            string fieldFilter = fieldFilterTextBox.Text;
-
-            if (comparedDataGrid.ItemsSource == null)
-                return;
-
-            (comparedDataGrid.ItemsSource as DataView).RowFilter = RowFilters.CreateFilter(showComboBoxItem, fieldFilterComboboxItem, fieldFilter);
-
-            //int count = (comparedDataGridView.DataSource as DataView).Count;
-            //SetStatus(count);
-        }
-
-        private void SetSourceLabels(string sourceA, string sourceB)
-        {
-            statusSourceA.Text = string.Format("A: {0}", sourceA);
-            statusSourceB.Text = string.Format("B: {0}", sourceB);
         }
 
 
@@ -432,6 +468,51 @@ namespace NAVObjectCompareWinClient
             fieldFilterTextBox.Text = GetSelectedGridValue().ToString();
 
             SetRowFilters();
+        }
+
+        private void SaveWorkspaceFile(string filepath)
+        {
+            try
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+
+                using (System.IO.FileStream writeStream = System.IO.File.OpenWrite(filepath))
+                {
+                    _compare.Serialize(writeStream);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
+        }
+
+        private void ReadWorkspaceFile(string filepath)
+        {
+            try
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+
+                using (System.IO.FileStream readStream = System.IO.File.OpenRead(filepath))
+                {
+                    _compare = new ObjectCompare();
+                    _compare.Deserialize(readStream);
+                }
+
+                PopulateGrid();
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
         }
 
 

@@ -33,8 +33,7 @@ namespace NAVObjectCompareWinClient.Helpers
             {
                 string showFullException = ConfigurationManager.AppSettings["ShowFullException"];
 
-                bool isShowFullException = false;
-                if (bool.TryParse(showFullException, out isShowFullException))
+                if (bool.TryParse(showFullException, out bool isShowFullException))
                     return isShowFullException;
             }
             catch (Exception ex)

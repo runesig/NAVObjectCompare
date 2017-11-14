@@ -4,20 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NAVObjectCompare.Helpers;
+using System.IO;
 
 namespace NAVObjectCompare.Models
 {
     public enum ObjectSection { Unknown, Object, ObjectProperties, Properties, Fields, Keys, FieldGroups, Code };
+
     public class NavObject
     {
-        private List<string> _objectLines = new List<string>();
-        private List<string> _objectProperties = new List<string>();
-        private List<string> _properties = new List<string>();
-        private List<string> _fields = new List<string>();
-        private List<string> _keys = new List<string>();
-        private List<string> _fieldGroups = new List<string>();
-        private List<string> _code = new List<string>();
-
         public string InternalId
         {
             get
@@ -58,13 +52,27 @@ namespace NAVObjectCompare.Models
             return string.Empty;
         }
 
-        public List<string> ObjectLines { get { return _objectLines; } }
-        public List<string> ObjectProperties { get { return _objectProperties; } }
-        public List<string> Properties { get { return _properties; } }
-        public List<string> Fields { get { return _fields; } }
-        public List<string> Keys { get { return _keys; } }
-        public List<string> FieldGroups { get { return _fieldGroups; } }
-        public List<string> Code { get { return _code; } }
+        private List<string> _objectLines = new List<string>();
+        public List<string> ObjectLines { get { return _objectLines; }  set { _objectLines = value; } }
+
+        private List<string> _objectProperties = new List<string>();
+        public List<string> ObjectProperties { get { return _objectProperties; } set { _objectProperties = value; } }
+
+        private List<string> _properties = new List<string>();
+        public List<string> Properties { get { return _properties; } set { _properties = value; } }
+
+        private List<string> _fields = new List<string>();
+        public List<string> Fields { get { return _fields; } set { _fields = value; } }
+
+        private List<string> _keys = new List<string>();
+        public List<string> Keys { get { return _keys; } set { _keys = value; } }
+
+        private List<string> _fieldGroups = new List<string>();
+        public List<string> FieldGroups { get { return _fieldGroups; } set { _fieldGroups = value; } }
+
+        private List<string> _code = new List<string>();
+        public List<string> Code { get { return _code; } set { _code = value; } }
+
         public bool IsEdited { get; set; }
 
         public bool IsExisting(NavObject objectToCompare)
@@ -186,5 +194,70 @@ namespace NAVObjectCompare.Models
         {
             return base.GetHashCode();
         }
+
+        #region Serialize
+        public void Serialize(ref BinaryWriter writer)
+        {
+            WriteGenericList(ObjectLines, ref writer);
+            WriteGenericList(ObjectProperties, ref writer);
+            WriteGenericList(Properties, ref writer);
+            WriteGenericList(Fields, ref writer);
+            WriteGenericList(Keys, ref writer);
+            WriteGenericList(FieldGroups, ref writer);
+            WriteGenericList(Code, ref writer);
+
+            writer.Write(Type);
+            writer.Write(Id);
+            writer.Write(Name);
+            writer.Write(Modified);
+            writer.Write(VersionList);
+            writer.Write(StringTime);
+            writer.Write(StringDate);
+        }
+
+        private void WriteGenericList(List<string> list, ref BinaryWriter writer)
+        {
+            writer.Write(list.Count);
+            foreach (string line in list)
+            {
+                writer.Write(line);
+            }
+        }
+
+        public static NavObject Desserialize(ref BinaryReader reader)
+        {
+            return new NavObject()
+            {
+                ObjectLines = ReadGenericList(ref reader),
+                ObjectProperties = ReadGenericList(ref reader),
+                Properties = ReadGenericList(ref reader),
+                Fields = ReadGenericList(ref reader),
+                Keys = ReadGenericList(ref reader),
+                FieldGroups = ReadGenericList(ref reader),
+                Code = ReadGenericList(ref reader),
+
+                Type = reader.ReadString(),
+                Id = reader.ReadInt32(),
+                Name = reader.ReadString(),
+                Modified = reader.ReadBoolean(),
+                VersionList = reader.ReadString(),
+                StringTime = reader.ReadString(),
+                StringDate = reader.ReadString()
+            };
+        }
+
+        private static List<string> ReadGenericList(ref BinaryReader reader)
+        {
+            int count = reader.ReadInt32();
+            var list = new List<string>(count);
+            for(int i = 0; i < count; i++)
+            {
+                var line = reader.ReadString();
+                list.Add(line);
+            }
+            return list;
+        }
+
+        #endregion Serialize
     }
 }

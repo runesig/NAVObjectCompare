@@ -51,6 +51,67 @@ namespace NAVObjectCompareWinClient.Helpers
             return false;
         }
 
+        public static bool OpenWorkspace(ref string finsqlexePath)
+        {
+            try
+            {
+                OpenFileDialog openDialog = new OpenFileDialog()
+                {
+                    Title = "NAV Object Compare Workspace Path",
+                    Filter = "Wob files|*.wob",
+                    Multiselect = false,
+                    CheckFileExists = true,
+                    CheckPathExists = true,
+                };
+
+                Nullable<bool> result = openDialog.ShowDialog();
+
+                if (result == true)
+                {
+                    finsqlexePath = openDialog.FileName;
+
+                    if (!string.IsNullOrEmpty(finsqlexePath))
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+
+            return false;
+        }
+
+        public static bool SaveWorkspace(out string filePath)
+        {
+            filePath = string.Empty;
+
+            try
+            {
+                SaveFileDialog saveDialog = new SaveFileDialog()
+                {
+                    Title = "NAV Object Compare Workspace Path",
+                    Filter = "Wob files|*.wob",
+                    CheckPathExists = true,
+                };
+
+                Nullable<bool> result = saveDialog.ShowDialog();
+
+                if (result == true)
+                {
+                    filePath = saveDialog.FileName;
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
+
+            return false;
+        }
+
         public static bool OpenFinsqlexe(ref string finsqlexePath)
         {
             try

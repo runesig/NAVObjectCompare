@@ -7,7 +7,7 @@
         xmlns:model="clr-namespace:NAVObjectCompareWinClient.Model"
         xmlns:helpers="clr-namespace:NAVObjectCompareWinClient.Helpers"
         mc:Ignorable="d"
-        Title="Import Files" Height="550" Width="900">
+        Title="Import Sheet" Height="550" Width="900">
     <Grid>
         <Grid.Resources>
             <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />

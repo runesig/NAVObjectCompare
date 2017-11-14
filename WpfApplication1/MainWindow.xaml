@@ -22,9 +22,14 @@
             <!--Menu Start-->
             <Menu DockPanel.Dock="Top" Width="Auto" Height="20" Background="{DynamicResource BackgroundBrushClear}">
                 <MenuItem Header="_File">
-                    <MenuItem x:Name="Open" Header="_Open File(s)" Click="OpenMenu_Click"/>
-                    <MenuItem x:Name="Import" Header="_Import" Click="Import_Click"/>
-                    <MenuItem Header="_Save" />
+                    <MenuItem x:Name="Open" Header="_Open" Click="Open_Click"/>
+                    <MenuItem x:Name="Save" Header="_Save" Click="Save_Click"/>
+                    <MenuItem x:Name="SaveAs" Header="Save _As" Click="Save_Click"/>
+                    <Separator />
+                    <MenuItem Header="_Import">
+                        <MenuItem x:Name="ImportSheet" Header="Import _Sheet" Click="ImportSheet_Click"/>
+                        <MenuItem x:Name="ImportFiles" Header="_Object File(s)" Click="ImportFiles_Click"/>
+                    </MenuItem>
                     <Separator />
                     <MenuItem Header="_Exit" Click="ExitMenu_Click" />
                 </MenuItem>
@@ -77,15 +82,18 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem Grid.Column="0">
-                <TextBlock Name="statusSourceA" Text="Empty" />
+                <TextBlock x:Name="StatusSourceA" Text="Empty" />
             </StatusBarItem>
             <Separator Grid.Column="1" />
             <StatusBarItem Grid.Column="2">
-                <TextBlock Name="statusSourceB" Text="Empty" />
+                <TextBlock x:Name="StatusSourceB" Text="Empty" />
             </StatusBarItem>
             <Separator Grid.Column="3" />
             <StatusBarItem Grid.Column="4">
-                <ProgressBar Name="processProgessBar" Value="50" Width="90" Height="16" />
+                <ProgressBar x:Name="ProcessProgessBar" Value="50" Width="90" Height="16" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="4">
+                <TextBlock x:Name="GridRowCountTextBox" Text="Empty" />
             </StatusBarItem>
         </StatusBar>
         <!--Statusbar End-->
