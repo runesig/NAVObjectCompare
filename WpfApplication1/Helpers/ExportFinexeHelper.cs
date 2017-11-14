@@ -18,7 +18,7 @@ namespace NAVObjectCompareWinClient.Helpers
 
     public class ExportFinexeHelper
     {
-        async private Task<ExportResult> CheckImportType(ImportSetupModel importSetupModel)
+        async private Task<ExportResult> CheckImportType(ImportSheetModel importSetupModel)
         {
             ExportResult result = new ExportResult { Success = false, ExportedObjectsPath = string.Empty, Message = string.Empty };
 
@@ -35,7 +35,7 @@ namespace NAVObjectCompareWinClient.Helpers
             return result;
         }
 
-        async public Task<ExportResult> ExportObjectsFromFinExe(QueryExportTag exportTag, ImportSetupModel importSetupModel)
+        async public Task<ExportResult> ExportObjectsFromFinExe(QueryExportTag exportTag, ImportSheetModel importSetupModel)
         {
             var result = await Task.Factory.StartNew(() =>
             {

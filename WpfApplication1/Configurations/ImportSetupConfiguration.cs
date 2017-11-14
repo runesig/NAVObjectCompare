@@ -12,9 +12,9 @@ namespace NAVObjectCompareWinClient.Configurations
 {
     public class ImportSetupConfiguration
     {
-        public static ObservableCollection<ImportSetupModel> GetImportSetups()
+        public static ObservableCollection<ImportSheetModel> GetImportSetups()
         {
-            ObservableCollection<ImportSetupModel> importSetups = new ObservableCollection<ImportSetupModel>();
+            ObservableCollection<ImportSheetModel> importSetups = new ObservableCollection<ImportSheetModel>();
 
             ImportSetupSection importSetupElements = ConfigurationManager.GetSection(ImportSetupSection.SectionName) as ImportSetupSection;
 
@@ -26,7 +26,7 @@ namespace NAVObjectCompareWinClient.Configurations
             return importSetups;
         }
 
-        public static ImportSetupModel GetImportSetup(string name)
+        public static ImportSheetModel GetImportSetup(string name)
         {
             ImportSetupSection importSetupElements = ConfigurationManager.GetSection(ImportSetupSection.SectionName) as ImportSetupSection;
 
@@ -34,10 +34,10 @@ namespace NAVObjectCompareWinClient.Configurations
             if(importSetupElement != null)
                 return importSetupElement.ToImportSetupModel();
 
-            return new ImportSetupModel(name);
+            return new ImportSheetModel(name);
         }
 
-        public static void Save(ImportSetupModel importSetup)
+        public static void Save(ImportSheetModel importSetup)
         {
             System.Configuration.Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             ImportSetupSection importSetupSection = configuration.GetSection(ImportSetupSection.SectionName) as ImportSetupSection;
@@ -53,7 +53,7 @@ namespace NAVObjectCompareWinClient.Configurations
                 SaveExisting(importSetup, configuration, importSetupElement);
         }
 
-        private static void SaveNew(ImportSetupModel importSetup, System.Configuration.Configuration configuration, ImportSetupSection importSetupSection)
+        private static void SaveNew(ImportSheetModel importSetup, System.Configuration.Configuration configuration, ImportSetupSection importSetupSection)
         {
             ImportSetupElement importSetupElement = new ImportSetupElement();
             importSetupElement.Fill(importSetup);
@@ -63,7 +63,7 @@ namespace NAVObjectCompareWinClient.Configurations
             ConfigurationManager.RefreshSection(ImportSetupSection.SectionName);
         }
 
-        private static void SaveExisting(ImportSetupModel importSetup, System.Configuration.Configuration configuration, ImportSetupElement importSetupElement)
+        private static void SaveExisting(ImportSheetModel importSetup, System.Configuration.Configuration configuration, ImportSetupElement importSetupElement)
         {
             if (importSetupElement != null)
             {

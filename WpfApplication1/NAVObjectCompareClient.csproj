@@ -59,23 +59,24 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <ApplicationDefinition Include="Views\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="ServerSetup.xaml">
+    <Page Include="Views\ServerSetupView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ImportFiles.xaml">
+    <Page Include="Views\ImportSheetView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\CompareView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="ViewModel\CompareViewModel.cs" />
+    <Compile Include="Views\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -87,8 +88,8 @@
     <Compile Include="Helpers\Converters.cs" />
     <Compile Include="Helpers\XamlHelpers.cs" />
     <Compile Include="Model\ImportFilesModel.cs" />
-    <Compile Include="Model\ImportSetupModel.cs" />
-    <Compile Include="ViewModel\ImportFilesViewModel.cs" />
+    <Compile Include="Model\ImportSheetModel.cs" />
+    <Compile Include="ViewModel\ImportSheetViewModel.cs" />
     <Compile Include="ViewModel\ServerSetupViewModel.cs" />
     <Compile Include="Helpers\ComboBoxHelper.cs" />
     <Compile Include="Helpers\DataTableHelper.cs" />
@@ -98,14 +99,14 @@
     <Compile Include="Helpers\MessageHelper.cs" />
     <Compile Include="Helpers\RowFilters.cs" />
     <Compile Include="Model\ServerSetupModel.cs" />
-    <Compile Include="ServerSetup.xaml.cs">
-      <DependentUpon>ServerSetup.xaml</DependentUpon>
+    <Compile Include="Views\ServerSetupView.xaml.cs">
+      <DependentUpon>ServerSetupView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ImportFiles.xaml.cs">
-      <DependentUpon>ImportFiles.xaml</DependentUpon>
+    <Compile Include="Views\ImportSheetView.xaml.cs">
+      <DependentUpon>ImportSheetView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Views\CompareView.xaml.cs">
+      <DependentUpon>CompareView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

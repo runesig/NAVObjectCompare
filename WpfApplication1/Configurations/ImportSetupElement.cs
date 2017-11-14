@@ -91,9 +91,9 @@ namespace NAVObjectCompareWinClient.Configurations
             set { this[ImportFileNameElement] = value; }
         }
 
-        public ImportSetupModel ToImportSetupModel()
+        public ImportSheetModel ToImportSetupModel()
         {
-            return new ImportSetupModel(Name)
+            return new ImportSheetModel(Name)
             {
                 ImportType = (ImportTypes)ImportType,
                 ServerSetupName = ServerSetupName,
@@ -107,7 +107,7 @@ namespace NAVObjectCompareWinClient.Configurations
             };
         }
 
-        public void Fill(ImportSetupModel importSetup)
+        public void Fill(ImportSheetModel importSetup)
         {
             Name = importSetup.Name;
             ImportType = (int)importSetup.ImportType;

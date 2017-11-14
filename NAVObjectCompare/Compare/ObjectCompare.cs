@@ -101,17 +101,29 @@ namespace NAVObjectCompare.Compare
         {
             BinaryReader reader = new BinaryReader(stream);
 
-            // A
-            int countA = reader.ReadInt32();
-            _navObjectsA = new Dictionary<string, NavObject>(countA);
+            DeserializeNavObjectsA(ref reader);
 
-            for (int n = 0; n < countA; n++)
+            DeserializeNavObjectsB(ref reader);
+
+            DeserializeNavObjectsCompared(ref reader);
+
+        }
+
+        private void DeserializeNavObjectsCompared(ref BinaryReader reader)
+        {
+            int countCompared = reader.ReadInt32();
+            _objectsComparedDict = new Dictionary<string, NavObjectsCompared>(countCompared);
+
+            for (int n = 0; n < countCompared; n++)
             {
                 var key = reader.ReadString(); // Key
-                NavObject navObj = NavObject.Desserialize(ref reader);
-                _navObjectsA.Add(key, navObj);
+                NavObjectsCompared compared = NavObjectsCompared.Desserialize(ref reader);
+                _objectsComparedDict.Add(key, compared);
             }
+        }
 
+        private void DeserializeNavObjectsB(ref BinaryReader reader)
+        {
             // B
             int countB = reader.ReadInt32();
             _navObjectsB = new Dictionary<string, NavObject>(countB);
@@ -122,19 +134,20 @@ namespace NAVObjectCompare.Compare
                 NavObject navObj = NavObject.Desserialize(ref reader);
                 _navObjectsB.Add(key, navObj);
             }
+        }
 
+        private void DeserializeNavObjectsA(ref BinaryReader reader)
+        {
+            // A
+            int countA = reader.ReadInt32();
+            _navObjectsA = new Dictionary<string, NavObject>(countA);
 
-            int countCompared = reader.ReadInt32();
-            _objectsComparedDict = new Dictionary<string, NavObjectsCompared>(countCompared);
-
-            for (int n = 0; n < countCompared; n++)
+            for (int n = 0; n < countA; n++)
             {
                 var key = reader.ReadString(); // Key
-                NavObjectsCompared compared = NavObjectsCompared.Desserialize(ref reader);
-                _objectsComparedDict.Add(key, compared);
+                NavObject navObj = NavObject.Desserialize(ref reader);
+                _navObjectsA.Add(key, navObj);
             }
-
-
         }
 
         #endregion Serialize

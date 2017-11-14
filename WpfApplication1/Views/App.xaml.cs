@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAVObjectCompareWinClient.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -16,14 +17,14 @@ namespace NAVObjectCompareWinClient
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             // Create the startup window
-            MainWindow wnd = new MainWindow()
+            CompareView compareView = new CompareView()
             {
-                // Do stuff here, e.g. to the window
+                DataContext = new CompareViewModel(),
                 Title = "Dynamics NAV Object Compare"
             };
 
             // Show the window
-            wnd.Show();
+            compareView.Show();
         }
     }
 }

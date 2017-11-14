@@ -22,16 +22,16 @@ namespace NAVObjectCompareWinClient
     /// <summary>
     /// Interaction logic for ImportFiles.xaml
     /// </summary>
-    public partial class ImportFiles : Window
+    public partial class ImportSheetView : Window
     {
-        public ImportSetupModel SelectedImportSetupModelA { get; private set; }
-        public ImportSetupModel SelectedImportSetupModelB { get; private set; }
+        public ImportSheetModel SelectedImportSetupModelA { get; private set; }
+        public ImportSheetModel SelectedImportSetupModelB { get; private set; }
 
-        private ImportFilesViewModel _importFilesViewModel;
+        private ImportSheetViewModel _importFilesViewModel;
 
-        public ImportFiles()
+        public ImportSheetView()
         {
-            _importFilesViewModel = new ImportFilesViewModel();
+            _importFilesViewModel = new ImportSheetViewModel();
             DataContext = _importFilesViewModel;
             InitializeComponent();
         }
@@ -119,7 +119,7 @@ namespace NAVObjectCompareWinClient
         {
             ServerSetupModel serverSetupModel = (ServerSetupModel)serverSetupCombobox.SelectedItem;
 
-            ServerSetup serverSetup = InitServerSetup(serverSetupModel);
+            ServerSetupView serverSetup = InitServerSetup(serverSetupModel);
             serverSetup.ShowDialog();
 
             // Refresh
@@ -131,14 +131,14 @@ namespace NAVObjectCompareWinClient
             }
         }
 
-        private static ServerSetup InitServerSetup(ServerSetupModel serverSetupModel)
+        private static ServerSetupView InitServerSetup(ServerSetupModel serverSetupModel)
         {
-            ServerSetup serverSetup;
+            ServerSetupView serverSetup;
 
             if (serverSetupModel != null)
-                serverSetup = new ServerSetup(serverSetupModel.Name);
+                serverSetup = new ServerSetupView(serverSetupModel.Name);
             else
-                serverSetup = new ServerSetup();
+                serverSetup = new ServerSetupView();
 
             return serverSetup;
         }

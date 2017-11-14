@@ -1,4 +1,4 @@
-﻿<Window x:Class="NAVObjectCompareWinClient.MainWindow"
+﻿<Window x:Class="NAVObjectCompareWinClient.CompareView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NAVObjectCompareWinClient"
         xmlns:helpers="clr-namespace:NAVObjectCompareWinClient.Helpers"
         mc:Ignorable="d"
-        Title="MainWindow" Background="{DynamicResource BackgroundBrushClear}">
+        Title="NAV Object Compare" Background="{DynamicResource BackgroundBrushClear}">
     <Window.Resources>
         <SolidColorBrush x:Key="BackgroundBrushClear" Color="White" />
         <SolidColorBrush x:Key="BackgroundBrushUnequal" Color="Salmon" />

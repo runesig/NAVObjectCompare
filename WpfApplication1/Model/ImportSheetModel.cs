@@ -14,11 +14,11 @@ namespace NAVObjectCompareWinClient.Model
         File = 1
     }
 
-    public class ImportSetupModel : INotifyPropertyChanged
+    public class ImportSheetModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ImportSetupModel(string name)
+        public ImportSheetModel(string name)
         {
             _name = name;
         }

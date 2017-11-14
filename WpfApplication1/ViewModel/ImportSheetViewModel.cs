@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace NAVObjectCompareWinClient.ViewModel
 {
-    public class ImportFilesViewModel
+    public class ImportSheetViewModel
     {
         private const string ImportSetupNameA = "A";
         private const string ImportSetupNameB = "B";
 
         public ImportFilesModel ImportFiles { get; set; }
 
-        public ImportFilesViewModel()
+        public ImportSheetViewModel()
         {
             ImportFiles = new ImportFilesModel();
             SetServerSetups();
@@ -26,8 +26,8 @@ namespace NAVObjectCompareWinClient.ViewModel
 
         public void SetImportSetups()
         {
-            ImportSetupModel importSetupModelA = ImportSetupConfiguration.GetImportSetup(ImportSetupNameA);
-            ImportSetupModel importSetupModelB = ImportSetupConfiguration.GetImportSetup(ImportSetupNameB);
+            ImportSheetModel importSetupModelA = ImportSetupConfiguration.GetImportSetup(ImportSetupNameA);
+            ImportSheetModel importSetupModelB = ImportSetupConfiguration.GetImportSetup(ImportSetupNameB);
 
             ImportFiles.SetImportSetups(importSetupModelA, importSetupModelB);
         }

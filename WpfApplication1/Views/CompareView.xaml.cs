@@ -30,12 +30,12 @@ namespace NAVObjectCompareWinClient
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class CompareView : Window
     {
         Editor _editor = null;
         ObjectCompare _compare = null;
 
-        public MainWindow()
+        public CompareView()
         {
             InitializeComponent();
             InitApplication();
@@ -140,13 +140,13 @@ namespace NAVObjectCompareWinClient
 
         private void ImportSheet_Click(object sender, RoutedEventArgs e)
         {
-            ImportFiles importFiles = new ImportFiles() { Owner = this };
+            ImportSheetView importFiles = new ImportSheetView() { Owner = this };
             importFiles.ShowDialog();
 
             if ((importFiles.DialogResult.HasValue) && (importFiles.DialogResult.Value))
             {
-                ImportSetupModel importSetupModelA = importFiles.SelectedImportSetupModelA;
-                ImportSetupModel importSetupModelB = importFiles.SelectedImportSetupModelB;
+                ImportSheetModel importSetupModelA = importFiles.SelectedImportSetupModelA;
+                ImportSheetModel importSetupModelB = importFiles.SelectedImportSetupModelB;
 
                 ExportAndCompare(importSetupModelA, importSetupModelB);
             }
@@ -168,7 +168,7 @@ namespace NAVObjectCompareWinClient
 
         // Menu Stop
 
-        async private void ExportAndCompare(ImportSetupModel importSetupModelA, ImportSetupModel importSetupModelB)
+        async private void ExportAndCompare(ImportSheetModel importSetupModelA, ImportSheetModel importSetupModelB)
         {
             string filePathA = string.Empty;
             string filePathB = string.Empty;
@@ -341,12 +341,12 @@ namespace NAVObjectCompareWinClient
             else
             {
                 // A Comparison have been done previously Check what to do
-                if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count > 0))
+                if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA?.Count > 0) && (_compare.NavObjectsB?.Count > 0))
                 {
                     _compare = new ObjectCompare() { CompareFilePathA = filePathA }; // Start a new Compare
                     _compare.OnCompared += _compare_OnCompared;
                 }
-                else if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA.Count > 0) && (_compare.NavObjectsB.Count == 0)) // Compare has been done only for file A then add B
+                else if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA?.Count > 0) && (_compare.NavObjectsB?.Count == 0)) // Compare has been done only for file A then add B
                 {
                     _compare.CompareFilePathB = filePathA; // Set the A file to path B to add the new one
                     _compare.OnCompared += _compare_OnCompared;
@@ -476,10 +476,16 @@ namespace NAVObjectCompareWinClient
             {
                 Mouse.OverrideCursor = Cursors.Wait;
 
+                if (_compare == null)
+                {
+                    MessageHelper.ShowError("Nothing to save.");
+                    return;
+                }
+
                 using (System.IO.FileStream writeStream = System.IO.File.OpenWrite(filepath))
                 {
                     _compare.Serialize(writeStream);
-                }
+                }               
             }
             catch (Exception ex)
             {

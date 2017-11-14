@@ -22,20 +22,20 @@ namespace NAVObjectCompareWinClient
     /// <summary>
     /// Interaction logic for ServerSetup.xaml
     /// </summary>
-    public partial class ServerSetup : Window
+    public partial class ServerSetupView : Window
     {
         private ServerSetupViewModel _serverSetupViewModel;
 
         public ServerSetupModel SelectedServerSetup { get; private set; }
 
-        public ServerSetup()
+        public ServerSetupView()
         {
             InitializeComponent();
             _serverSetupViewModel = new ServerSetupViewModel();
             DataContext = _serverSetupViewModel;
         }
 
-        public ServerSetup(string name) : this()
+        public ServerSetupView(string name) : this()
         {
             _serverSetupViewModel.GetModel(name);
         }

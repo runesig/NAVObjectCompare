@@ -15,8 +15,8 @@ namespace NAVObjectCompareWinClient.Model
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ObservableCollection<ServerSetupModel> ServerSetups { get; private set; }
-        public ImportSetupModel ImportSetupA { get; private set; }
-        public ImportSetupModel ImportSetupB { get; private set; }
+        public ImportSheetModel ImportSetupA { get; private set; }
+        public ImportSheetModel ImportSetupB { get; private set; }
 
         public void SetServerSetups(ObservableCollection<ServerSetupModel> serverSetups)
         {
@@ -24,7 +24,7 @@ namespace NAVObjectCompareWinClient.Model
             RaisePropertyChanged("ServerSetups");
         }
 
-        public void SetImportSetups(ImportSetupModel importSetupA, ImportSetupModel importSetupB)
+        public void SetImportSetups(ImportSheetModel importSetupA, ImportSheetModel importSetupB)
         {
             ImportSetupA = importSetupA;
             ImportSetupB = importSetupB;
