@@ -7,6 +7,7 @@ using System.IO;
 using NAVObjectCompare.Models;
 using NAVObjectCompare.Helpers;
 using System.Collections.ObjectModel;
+using NAVObjectCompare.ExportObjects;
 
 namespace NAVObjectCompare.Compare
 {
@@ -15,7 +16,8 @@ namespace NAVObjectCompare.Compare
     public class ObjectCompare
     {
         // Enum
-        private enum ObjectPart { Empty, NewObject, ObjectProperties, Properties, Code };
+        public enum ObjectSource { A, B };
+        public enum ObjectPart { Empty, NewObject, ObjectProperties, Properties, Code };
 
         // Events
         public event CompareEventHandler OnCompared;
@@ -45,6 +47,19 @@ namespace NAVObjectCompare.Compare
 
             FindDifferencesA();
             FindDifferencesB();
+        }
+
+        public void ExportObjects(ObjectSource objectSource, IEnumerable<NavObjectsCompared> collection, string filePath)
+        {
+            switch(objectSource)
+            {
+                case ObjectSource.A:
+                    ObjectExport.ExportObjects(collection, _navObjectsA, filePath);
+                    break;
+                case ObjectSource.B:
+                    ObjectExport.ExportObjects(collection, _navObjectsB, filePath);
+                    break;
+            }
         }
 
         #region Serialize

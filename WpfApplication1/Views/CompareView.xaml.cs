@@ -327,38 +327,45 @@ namespace NAVObjectCompareWinClient
 
         private void RunComparison(string filePathA, string filePathB)
         {
-            if (_compare == null)
+            try
             {
-                _compare = new ObjectCompare()
+                if (_compare == null)
                 {
-                    CompareFilePathA = filePathA,
-                    CompareFilePathB = filePathB
-                }; // Start New Compare
-;
-                _compare.OnCompared += _compare_OnCompared;
-            }
-            else
-            {
-                // A Comparison have been done previously Check what to do
-                if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA?.Count > 0) && (_compare.NavObjectsB?.Count > 0))
-                {
-                    _compare = new ObjectCompare() { CompareFilePathA = filePathA }; // Start a new Compare
+                    _compare = new ObjectCompare()
+                    {
+                        CompareFilePathA = filePathA,
+                        CompareFilePathB = filePathB
+                    }; // Start New Compare
+                    ;
                     _compare.OnCompared += _compare_OnCompared;
                 }
-                else if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA?.Count > 0) && (_compare.NavObjectsB?.Count == 0)) // Compare has been done only for file A then add B
+                else
                 {
-                    _compare.CompareFilePathB = filePathA; // Set the A file to path B to add the new one
-                    _compare.OnCompared += _compare_OnCompared;
+                    // A Comparison have been done previously Check what to do
+                    if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA?.Count > 0) && (_compare.NavObjectsB?.Count > 0))
+                    {
+                        _compare = new ObjectCompare() { CompareFilePathA = filePathA }; // Start a new Compare
+                        _compare.OnCompared += _compare_OnCompared;
+                    }
+                    else if ((string.IsNullOrEmpty(filePathB)) && (_compare.NavObjectsA?.Count > 0) && (_compare.NavObjectsB?.Count == 0)) // Compare has been done only for file A then add B
+                    {
+                        _compare.CompareFilePathB = filePathA; // Set the A file to path B to add the new one
+                        _compare.OnCompared += _compare_OnCompared;
+                    }
+                    else if ((!string.IsNullOrEmpty(filePathA)) && (!string.IsNullOrEmpty(filePathB)))
+                    {
+                        // Totally New Compare
+                        _compare = new ObjectCompare() { CompareFilePathA = filePathA, CompareFilePathB = filePathB };
+                        _compare.OnCompared += _compare_OnCompared;
+                    }
                 }
-                else if ((!string.IsNullOrEmpty(filePathA)) && (!string.IsNullOrEmpty(filePathB)))
-                {
-                    // Totally New Compare
-                    _compare = new ObjectCompare() { CompareFilePathA = filePathA, CompareFilePathB = filePathB };
-                    _compare.OnCompared += _compare_OnCompared;
-                }
-            }
 
-            _compare.RunCompare();
+                _compare.RunCompare();
+            }
+            catch(Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }            
         }
 
         private void PopulateGrid()
@@ -529,14 +536,30 @@ namespace NAVObjectCompareWinClient
             SetSelectAllInGrid(false);
         }
 
-        private void ExportFiles_Click(object sender, RoutedEventArgs e)
+        private void ExportFilesA_Click(object sender, RoutedEventArgs e)
         {
-
+            ExportAllSelected(ObjectCompare.ObjectSource.A);
         }
 
-        private void ExportAllSelected()
+        private void ExportFilesB_Click(object sender, RoutedEventArgs e)
         {
+            ExportAllSelected(ObjectCompare.ObjectSource.B);
+        }
 
+
+        private void ExportAllSelected(ObjectCompare.ObjectSource objectSource)
+        {
+            try
+            {
+                IEnumerable<NavObjectsCompared> collection = ((ObservableCollection<NavObjectsCompared>)comparedDataGrid.ItemsSource).Where(s => s.Selected == true);
+
+                if (Dialogs.SaveFile(objectSource.ToString(), out string filePath))
+                    _compare.ExportObjects(objectSource, collection, filePath);
+            }
+            catch(Exception ex)
+            {
+                MessageHelper.ShowError(ex);
+            }
         }
 
         private void SetSelectAllInGrid(bool select)
@@ -552,7 +575,6 @@ namespace NAVObjectCompareWinClient
             }
             comparedDataGrid.Items.Refresh();
         }
-
 
     }
 }

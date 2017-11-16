@@ -32,7 +32,8 @@
                         <MenuItem x:Name="ImportFiles" Header="_Object File(s)" Click="ImportFiles_Click"/>
                     </MenuItem>
                     <MenuItem Header="_Export">
-                        <MenuItem x:Name="ExportFiles" Header="Export All _Selected" Click="ExportFiles_Click"/>
+                        <MenuItem x:Name="ExportFilesA" Header="Export All _Selected A" Click="ExportFilesA_Click"/>
+                        <MenuItem x:Name="ExportFilesB" Header="Export All _Selected B" Click="ExportFilesB_Click"/>
                     </MenuItem>                    
                     <Separator />
                     <MenuItem Header="_Exit" Click="ExitMenu_Click" />

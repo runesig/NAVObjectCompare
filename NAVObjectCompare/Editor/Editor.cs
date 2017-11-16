@@ -70,6 +70,9 @@ namespace NAVObjectCompare.Editor
 
         private void ReImportObject(string filePath)
         {
+            if (IsFileLocked(new FileInfo(filePath)))
+                return;
+
             string fileName = Path.GetFileNameWithoutExtension(filePath);
             string[] parts = fileName.Split('-');
 
@@ -89,6 +92,32 @@ namespace NAVObjectCompare.Editor
             }
 
             File.Delete(filePath);
+        }
+
+        private bool IsFileLocked(FileInfo file)
+        {
+            FileStream stream = null;
+
+            try
+            {
+                stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
+
+            //file is not locked
+            return false;
         }
 
         private void GetObjectAndImport(Dictionary<string, NavObject> prevObjects, string internalId, string filePath)

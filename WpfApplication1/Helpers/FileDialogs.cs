@@ -155,29 +155,24 @@ namespace NAVObjectCompareWinClient.Helpers
             return Environment.GetEnvironmentVariable("ProgramFiles");
         }
 
-        public static bool SaveFile(Dictionary<string, NavObject> objects, string initFilename, string tag)
+        public static bool SaveFile(string tag, out string filePath)
         {
+            filePath = string.Empty;
+
             SaveFileDialog saveDialog = new SaveFileDialog()
             {
                 Title = string.Format("Export {0}: NAV Object File(s)", tag),
-                Filter = "Txt files|*.txt",
-                FileName = initFilename
+                Filter = "Txt files|*.txt"
             };
 
             Nullable<bool> result = saveDialog.ShowDialog();
 
             if (result == true)
             {
-                try
-                {
-                    // ExportObjects(objects, saveDialog.FileName);
-                }
-                catch (Exception ex)
-                {
-                    MessageHelper.ShowError(ex);
-                }
+                filePath = saveDialog.FileName;
 
-                return true;
+                if (!string.IsNullOrEmpty(filePath))
+                    return true;
             }
 
             return false;
