@@ -31,11 +31,15 @@
                         <MenuItem x:Name="ImportSheet" Header="Import _Sheet" Click="ImportSheet_Click"/>
                         <MenuItem x:Name="ImportFiles" Header="_Object File(s)" Click="ImportFiles_Click"/>
                     </MenuItem>
+                    <MenuItem Header="_Export">
+                        <MenuItem x:Name="ExportFiles" Header="Export All _Selected" Click="ExportFiles_Click"/>
+                    </MenuItem>                    
                     <Separator />
                     <MenuItem Header="_Exit" Click="ExitMenu_Click" />
                 </MenuItem>
                 <MenuItem Header="_Edit">
                     <MenuItem x:Name="SelectAll" Header="Select _All" HorizontalAlignment="Left" Width="140" Click="SelectAll_Click"/>
+                    <MenuItem x:Name="DeSelectAll" Header="Deselect _All" HorizontalAlignment="Left" Width="140" Click="DeSelectAll_Click"/>
                     <Separator />
                     <MenuItem x:Name="Options" Header="_Options" HorizontalAlignment="Left" Width="140"/>
                 </MenuItem>

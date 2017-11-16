@@ -73,6 +73,8 @@ namespace NAVObjectCompare.Models
             writer.Write((int)Status);
             writer.Write(ObjectPropertiesEqual);
             writer.Write(CodeEqual);
+            writer.Write(Finished);
+            writer.Write(Edited);
             writer.Write(Comment);
         }
 
@@ -97,6 +99,8 @@ namespace NAVObjectCompare.Models
                 Status = (EqualStatus)reader.ReadInt32(),
                 ObjectPropertiesEqual = reader.ReadBoolean(),
                 CodeEqual = reader.ReadBoolean(),
+                Finished = reader.ReadBoolean(),
+                Edited = reader.ReadBoolean(),
                 Comment = reader.ReadString()
             };
         }

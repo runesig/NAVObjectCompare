@@ -521,11 +521,25 @@ namespace NAVObjectCompareWinClient
 
         private void SelectAll_Click(object sender, RoutedEventArgs e)
         {
-            SetSelectAllInGrid();
+            SetSelectAllInGrid(true);
+        }
+
+        private void DeSelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            SetSelectAllInGrid(false);
+        }
+
+        private void ExportFiles_Click(object sender, RoutedEventArgs e)
+        {
 
         }
 
-        private void SetSelectAllInGrid()
+        private void ExportAllSelected()
+        {
+
+        }
+
+        private void SetSelectAllInGrid(bool select)
         {
             ObservableCollection<NavObjectsCompared> collection = ((ObservableCollection<NavObjectsCompared>)comparedDataGrid.ItemsSource);
 
@@ -534,10 +548,11 @@ namespace NAVObjectCompareWinClient
 
             foreach (NavObjectsCompared compared in collection)
             {
-                compared.Selected = true;
+                compared.Selected = select;
             }
-
             comparedDataGrid.Items.Refresh();
         }
+
+
     }
 }
