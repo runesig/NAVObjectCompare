@@ -120,7 +120,8 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Header="Select" Binding="{Binding Selected}" IsReadOnly="False" Width="60">
+                
+                <!--<DataGridCheckBoxColumn Header="Select" Binding="{Binding Selected}" IsReadOnly="False" Width="60">
                     <DataGridCheckBoxColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
@@ -144,7 +145,39 @@
                             </Style.Triggers>
                         </Style>
                     </DataGridCheckBoxColumn.CellStyle>
-                </DataGridCheckBoxColumn>
+                </DataGridCheckBoxColumn>-->
+
+                <DataGridTemplateColumn Header="Select" IsReadOnly="False" Width="60">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Status}" Value="0">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="1">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="2">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Edited}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
+                                </DataTrigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>
+                </DataGridTemplateColumn>
+
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" Width="80">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
