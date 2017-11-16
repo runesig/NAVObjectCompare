@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace NAVObjectCompare.Editor
 {
     public delegate void FileWatcherEventHandler(object source, FileWatcherEventArgs e);
+
     public class FileWatcher
     {
 

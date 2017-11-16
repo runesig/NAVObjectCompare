@@ -29,6 +29,8 @@ namespace NAVObjectCompare.Models
             Status = EqualStatus.Equal;
             ObjectPropertiesEqual = true;
             CodeEqual = true;
+            Finished = false;
+            Edited = false;
             Comment = string.Empty;
         }
 
@@ -48,6 +50,8 @@ namespace NAVObjectCompare.Models
         public EqualStatus Status { get; set; }
         public bool ObjectPropertiesEqual { get; set; }
         public bool CodeEqual { get; set; }
+        public bool Finished { get; set; }
+        public bool Edited { get; set; }
         public string Comment { get; set; }
 
         #region Serialize

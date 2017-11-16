@@ -192,7 +192,8 @@ namespace NAVObjectCompare.Compare
             {
                 Id = navObjectA.Id,
                 Type = navObjectA.Type,
-                Name = navObjectA.Name
+                Name = navObjectA.Name,
+                Edited = (navObjectA == null ? false : navObjectA.IsEdited) || (navObjectB == null ? false : navObjectB.IsEdited)
             };
 
             GetDifference(navObjectA, navObjectB, objectsCompared);
@@ -226,7 +227,8 @@ namespace NAVObjectCompare.Compare
             {
                 Id = navObjectB.Id,
                 Type = navObjectB.Type,
-                Name = navObjectB.Name
+                Name = navObjectB.Name,
+                Edited = (navObjectB == null ? false : navObjectB.IsEdited) || (navObjectA == null ? false : navObjectA.IsEdited)
             };
 
 

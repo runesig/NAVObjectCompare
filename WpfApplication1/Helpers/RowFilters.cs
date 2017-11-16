@@ -15,6 +15,7 @@ namespace NAVObjectCompareWinClient.Helpers
         public const string FILTERALLNONEQUAL = "ALLNONEQUAL";
         public const string FILTERALLUNEXISTING = "FILTERALLUNEXISTING";
         public const string FILTERALLNONEQUALANDUNEXISTING = "FILTERALLNONEQUALANDUNEXISTING";
+        public const string FILTERALLEDITED = "ALLEDITED";
         public const string FILTEROBJECTPROPERTIES = "OBJECTPROPERTIES";
         public const string FILTERCODEDIFF = "CODEDIFF";
 
@@ -26,6 +27,7 @@ namespace NAVObjectCompareWinClient.Helpers
             showComboBox.Items.Add(new ComboboxItem { Text = "Show all non equal", Value = RowFilters.FILTERALLNONEQUAL });
             showComboBox.Items.Add(new ComboboxItem { Text = "Show all unexisting", Value = RowFilters.FILTERALLUNEXISTING });
             showComboBox.Items.Add(new ComboboxItem { Text = "Show all non equal and unexisting", Value = RowFilters.FILTERALLNONEQUALANDUNEXISTING });
+            showComboBox.Items.Add(new ComboboxItem { Text = "Show all edited", Value = RowFilters.FILTERALLEDITED });
             showComboBox.Items.Add(new ComboboxItem { Text = "Show only date,time or version differences", Value = RowFilters.FILTEROBJECTPROPERTIES });
             showComboBox.Items.Add(new ComboboxItem { Text = "Show code differences", Value = RowFilters.FILTERCODEDIFF });
 
@@ -104,6 +106,9 @@ namespace NAVObjectCompareWinClient.Helpers
                     break;
                 case FILTERALLNONEQUALANDUNEXISTING:
                     rowFilter = string.Format("Status > {0}", "0");
+                    break;
+                case FILTERALLEDITED:
+                    rowFilter = string.Format("Edited = {0}", "True");
                     break;
                 case FILTEROBJECTPROPERTIES:
                     rowFilter = string.Format("Status = {0} AND CodeEqual = {1} AND ObjectPropertiesEqual = {2}", "1", "True", "False");
