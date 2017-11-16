@@ -8,6 +8,7 @@ using System.IO;
 using NAVObjectCompare.Compare;
 using NAVObjectCompare.Editor;
 using NAVObjectCompare.Models;
+using NAVObjectCompare.ExportObjects;
 
 namespace NAVObjectCompare.Editor
 {
@@ -28,7 +29,7 @@ namespace NAVObjectCompare.Editor
         {
             _editorExePath = editorExePath;
 
-            _watcher = new FileWatcher(GetObjectFileFolder());
+            _watcher = new FileWatcher(ObjectExport.GetObjectFileFolder());
             _watcher.OnFileChanged += _watcher_OnFileChanged;
         }
 
@@ -36,28 +37,12 @@ namespace NAVObjectCompare.Editor
         {
             _watcher.StopWatching();
 
-            string filePathA = CreateAndExportObject(objectsCompared, this.ObjectsA, _tagA);
-            string filePathB = CreateAndExportObject(objectsCompared, this.ObjectsB, _tagB);
+            string filePathA = ObjectExport.CreateAndExportObject(objectsCompared, this.ObjectsA, _tagA);
+            string filePathB = ObjectExport.CreateAndExportObject(objectsCompared, this.ObjectsB, _tagB);
 
             Start(filePathA, filePathB);
 
             _watcher.StartWatching(filePathA, filePathB);
-        }
-
-        private string CreateAndExportObject(NavObjectsCompared objectsCompared, Dictionary<string, NavObject> objects, string tag)
-        { 
-            string filePath = GetObjectFilePath(objectsCompared, tag);
-
-            if (objects.TryGetValue(objectsCompared.InternalId, out NavObject navObject))
-            {
-                ExportFile(navObject.ObjectLines, filePath);
-            }
-            else
-            {
-                ExportFile(new List<string>(), filePath); // Empty file
-            }
-
-            return filePath;
         }
 
         private void Start(string filePathA, string filePathB)
@@ -75,36 +60,6 @@ namespace NAVObjectCompare.Editor
                 throw new Exception(string.Format("Beyond Compare is not installed at {0}", _editorExePath));
 
             Process.Start(_editorExePath, command);
-        }
-
-        private void ExportFile(List<string> lines, string filePath)
-        {
-            using (StreamWriter textObject = new StreamWriter(filePath, false, Encoding.Default))
-            {
-                foreach (string line in lines)
-                {
-                    textObject.WriteLine(line);
-                }
-            }
-        }
-
-        private string GetObjectFilePath(NavObjectsCompared objectsCompared, string tag)
-        {            
-            string fileName = string.Format("{0}-{1}-{2}.txt", objectsCompared.Type, objectsCompared.Id, tag);
-            return Path.Combine(GetObjectFileFolder(), fileName);
-        }
-
-        public static string GetObjectFileFolder()
-        {
-            string tempPath = System.IO.Path.GetTempPath();
-            string dateFolder = string.Format("{0}{1}{2}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-            string objectFilePath = Path.Combine(tempPath, dateFolder);
-
-            if (!Directory.Exists(objectFilePath))
-            {
-                Directory.CreateDirectory(objectFilePath);
-            }
-            return objectFilePath;
         }
 
         // Events
