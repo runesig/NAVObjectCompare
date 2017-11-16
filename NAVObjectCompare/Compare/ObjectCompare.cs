@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using NAVObjectCompare.Models;
 using NAVObjectCompare.Helpers;
+using System.Collections.ObjectModel;
 
 namespace NAVObjectCompare.Compare
 {
@@ -166,6 +167,12 @@ namespace NAVObjectCompare.Compare
         {
             return _objectsComparedDict.Values.ToList<NavObjectsCompared>();
         }
+
+        public ObservableCollection<NavObjectsCompared> GetObservableCollection()
+        {
+            return new ObservableCollection<NavObjectsCompared>(_objectsComparedDict.Values);
+        }
+
         public string CompareFilePathA { get; set; }
         public string CompareFilePathB { get; set; }
 
@@ -188,7 +195,7 @@ namespace NAVObjectCompare.Compare
             NavObject navObjectA = ObjectHelper.GetDictValue(_navObjectsA, internalId);
             NavObject navObjectB = ObjectHelper.GetDictValue(_navObjectsB, internalId);
 
-            NavObjectsCompared objectsCompared = new NavObjectsCompared(internalId)
+            NavObjectsCompared newObjectsCompared = new NavObjectsCompared(internalId)
             {
                 Id = navObjectA.Id,
                 Type = navObjectA.Type,
@@ -196,16 +203,15 @@ namespace NAVObjectCompare.Compare
                 Edited = (navObjectA == null ? false : navObjectA.IsEdited) || (navObjectB == null ? false : navObjectB.IsEdited)
             };
 
-            GetDifference(navObjectA, navObjectB, objectsCompared);
+            GetDifference(navObjectA, navObjectB, newObjectsCompared);
 
-            SetAValues(navObjectA, objectsCompared);
-            SetBValues(navObjectB, objectsCompared);
+            SetAValues(navObjectA, newObjectsCompared);
+            SetBValues(navObjectB, newObjectsCompared);
 
-            if (!_objectsComparedDict.ContainsKey(internalId))
-                _objectsComparedDict.Add(internalId, objectsCompared);
-            else
-                _objectsComparedDict[internalId] = objectsCompared;
+            AddObjectComparedToDictionary(internalId, newObjectsCompared);
         }
+
+
 
         public void FindDifferencesB()
         {
@@ -223,7 +229,7 @@ namespace NAVObjectCompare.Compare
             NavObject navObjectB = ObjectHelper.GetDictValue(_navObjectsB, internalId);
             NavObject navObjectA = ObjectHelper.GetDictValue(_navObjectsA, internalId);
 
-            NavObjectsCompared objectsCompared = new NavObjectsCompared(internalId)
+            NavObjectsCompared newObjectsCompared = new NavObjectsCompared(internalId)
             {
                 Id = navObjectB.Id,
                 Type = navObjectB.Type,
@@ -232,16 +238,26 @@ namespace NAVObjectCompare.Compare
             };
 
 
-            GetDifference(navObjectB, navObjectA, objectsCompared);
+            GetDifference(navObjectB, navObjectA, newObjectsCompared);
 
-            SetAValues(navObjectA, objectsCompared);
-            SetBValues(navObjectB, objectsCompared);
+            SetAValues(navObjectA, newObjectsCompared);
+            SetBValues(navObjectB, newObjectsCompared);
 
+            AddObjectComparedToDictionary(internalId, newObjectsCompared);
+        }
+
+        private void AddObjectComparedToDictionary(string internalId, NavObjectsCompared newObjectsCompared)
+        {
             if (!_objectsComparedDict.ContainsKey(internalId))
-                _objectsComparedDict.Add(internalId, objectsCompared);
+                _objectsComparedDict.Add(internalId, newObjectsCompared);
             else
-                _objectsComparedDict[internalId] = objectsCompared;
-
+            {
+                if (_objectsComparedDict.TryGetValue(internalId, out NavObjectsCompared prevObjectsCompared))
+                {
+                    newObjectsCompared.Selected = prevObjectsCompared.Selected;
+                }
+                _objectsComparedDict[internalId] = newObjectsCompared;
+            }
         }
 
         public bool IsEditedA()

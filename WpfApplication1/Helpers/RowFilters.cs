@@ -1,6 +1,10 @@
-﻿using System;
+﻿using NAVObjectCompare.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -16,6 +20,7 @@ namespace NAVObjectCompareWinClient.Helpers
         public const string FILTERALLUNEXISTING = "FILTERALLUNEXISTING";
         public const string FILTERALLNONEQUALANDUNEXISTING = "FILTERALLNONEQUALANDUNEXISTING";
         public const string FILTERALLEDITED = "ALLEDITED";
+        public const string FILTERALLSELECTED = "ALLSELECTED";
         public const string FILTEROBJECTPROPERTIES = "OBJECTPROPERTIES";
         public const string FILTERCODEDIFF = "CODEDIFF";
 
@@ -28,8 +33,9 @@ namespace NAVObjectCompareWinClient.Helpers
             showComboBox.Items.Add(new ComboboxItem { Text = "Show all unexisting", Value = RowFilters.FILTERALLUNEXISTING });
             showComboBox.Items.Add(new ComboboxItem { Text = "Show all non equal and unexisting", Value = RowFilters.FILTERALLNONEQUALANDUNEXISTING });
             showComboBox.Items.Add(new ComboboxItem { Text = "Show all edited", Value = RowFilters.FILTERALLEDITED });
+            showComboBox.Items.Add(new ComboboxItem { Text = "Show all selected", Value = RowFilters.FILTERALLSELECTED });
             showComboBox.Items.Add(new ComboboxItem { Text = "Show only date,time or version differences", Value = RowFilters.FILTEROBJECTPROPERTIES });
-            showComboBox.Items.Add(new ComboboxItem { Text = "Show code differences", Value = RowFilters.FILTERCODEDIFF });
+            showComboBox.Items.Add(new ComboboxItem { Text = "Show only code differences", Value = RowFilters.FILTERCODEDIFF });
 
             showComboBox.SelectedIndex = 0;
         }
@@ -51,82 +57,67 @@ namespace NAVObjectCompareWinClient.Helpers
             fieldFilterComboBox.SelectedIndex = 0;
         }
 
-        public static string CreateFilter(ComboboxItem showComboboxItem, ComboboxItem fieldComboBoxItem, string fieldFilterText)
+        public static ObservableCollection<NavObjectsCompared> CreateFilter(ObservableCollection<NavObjectsCompared> collection, ComboboxItem showComboboxItem, ComboboxItem fieldComboBoxItem, string fieldFilterText)
         {
-            string rowFilter = string.Empty;
-
-            string showFilter = CreateShowFilter(showComboboxItem);
-            string fieldFilter = CreateFieldFilter(fieldComboBoxItem, fieldFilterText);
-
-            AddToRowFilter(ref rowFilter, showFilter);
-            AddToRowFilter(ref rowFilter, fieldFilter);
-
-            return rowFilter;
+            ObservableCollection<NavObjectsCompared> collectionShowFilter = CreateShowLinq(collection, showComboboxItem);
+            return CreateFieldFilter(collectionShowFilter, fieldComboBoxItem, fieldFilterText);
         }
 
-        public static ComboboxItem GetComboBoxItem(ComboBox comboBox, string value)
+
+        private static ObservableCollection<NavObjectsCompared> CreateShowLinq(ObservableCollection<NavObjectsCompared> collection, ComboboxItem showComboboxItem)
         {
-            foreach(ComboboxItem item in comboBox.Items)
-            {
-                if (item.Value == value)
-                    return item;
-            }
-
-            return null;
-        }
-
-        private static void AddToRowFilter(ref string rowFilter, string filterToAdd)
-        {
-            if (!string.IsNullOrEmpty(filterToAdd))
-            {
-                if (string.IsNullOrEmpty(rowFilter))
-                    rowFilter = filterToAdd;
-                else
-                    rowFilter += " AND " + filterToAdd;
-            }
-        }
-
-        private static string CreateShowFilter(ComboboxItem showComboboxItem)
-        {
-            string rowFilter = string.Empty;
-
             switch (showComboboxItem.Value)
             {
                 case FILTERALL:
-                    rowFilter = string.Empty;
-                    break;
+                    return collection;
                 case FILTERALLEQUAL:
-                    rowFilter = string.Format("Status = {0}", "0");
-                    break;
+                    return new ObservableCollection<NavObjectsCompared>(collection.Where(w => w.Status == NavObjectsCompared.EqualStatus.Equal));
                 case FILTERALLNONEQUAL:
-                    rowFilter = string.Format("Status = {0}", "1");
-                    break;
+                    return new ObservableCollection<NavObjectsCompared>(collection.Where(w => w.Status == NavObjectsCompared.EqualStatus.Unequal));
                 case FILTERALLUNEXISTING:
-                    rowFilter = string.Format("Status = {0}", "2");
-                    break;
+                    return new ObservableCollection<NavObjectsCompared>(collection.Where(w => w.Status == NavObjectsCompared.EqualStatus.Unexisting));
                 case FILTERALLNONEQUALANDUNEXISTING:
-                    rowFilter = string.Format("Status > {0}", "0");
-                    break;
+                    return new ObservableCollection<NavObjectsCompared>(collection.Where(w => w.Status > NavObjectsCompared.EqualStatus.Equal));
                 case FILTERALLEDITED:
-                    rowFilter = string.Format("Edited = {0}", "True");
-                    break;
+                    return new ObservableCollection<NavObjectsCompared>(collection.Where(w => w.Edited == true));
+                case FILTERALLSELECTED:
+                    return new ObservableCollection<NavObjectsCompared>(collection.Where(w => w.Selected == true));
                 case FILTEROBJECTPROPERTIES:
-                    rowFilter = string.Format("Status = {0} AND CodeEqual = {1} AND ObjectPropertiesEqual = {2}", "1", "True", "False");
-                    break;
+                    return new ObservableCollection<NavObjectsCompared>(collection.Where(w => w.Status == NavObjectsCompared.EqualStatus.Unequal).Where(c => c.CodeEqual == true).Where(p => p.ObjectPropertiesEqual == false));
                 case FILTERCODEDIFF:
-                    rowFilter = string.Format("Status = {0} AND CodeEqual = {1} AND ObjectPropertiesEqual = {2}", "1", "False", "True");
-                    break;
+                    return new ObservableCollection<NavObjectsCompared>(collection.Where(w => w.Status == NavObjectsCompared.EqualStatus.Unequal).Where(c => c.CodeEqual == false).Where(p => p.ObjectPropertiesEqual == true));
             }
 
-            return rowFilter;
+            return collection;
         }
 
-        private static string CreateFieldFilter(ComboboxItem fieldComboBoxItem, string filterText)
+        private static ObservableCollection<NavObjectsCompared> CreateFieldFilter(ObservableCollection<NavObjectsCompared> collection, ComboboxItem fieldComboBoxItem, string filterText)
         {
             if (!string.IsNullOrEmpty(filterText) && (fieldComboBoxItem != null))
-                return string.Format("CONVERT({0}, System.String) LIKE '%{1}%'", fieldComboBoxItem.Value, filterText);
+            {
+                IQueryable<NavObjectsCompared> coll = collection.AsQueryable<NavObjectsCompared>();
+                var query = Simplified<NavObjectsCompared>(coll, fieldComboBoxItem.Value, filterText);
 
-            return string.Empty;
+                return new ObservableCollection<NavObjectsCompared>(query);
+            }
+
+            return collection;
+        }
+
+        private static IQueryable<T> Simplified<T>(IQueryable<T> query, string propertyName, string propertyValue)
+        {
+            PropertyInfo propertyInfo = typeof(T).GetProperty(propertyName);
+            return Simplified<T>(query, propertyInfo, propertyValue);
+        }
+
+        private static IQueryable<T> Simplified<T>(IQueryable<T> query, PropertyInfo propertyInfo, string propertyValue)
+        {
+            var eParam = Expression.Parameter(typeof(T), "e");
+            var method = typeof(string).GetMethod("Contains");
+            var call = Expression.Call(Expression.Property(eParam, propertyInfo), method, Expression.Constant(propertyValue));
+            var lambda = Expression.Lambda<Func<T, bool>>(call, eParam);
+
+            return query.Where(lambda);
         }
     }
 }

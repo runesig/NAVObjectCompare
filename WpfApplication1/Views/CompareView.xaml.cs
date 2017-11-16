@@ -24,6 +24,7 @@ using System.ComponentModel;
 using NAVObjectCompareWinClient.Configurations;
 using NAVObjectCompareWinClient.Model;
 using NAVObjectCompare.ExportFinexe;
+using System.Collections.ObjectModel;
 
 namespace NAVObjectCompareWinClient
 {
@@ -97,7 +98,6 @@ namespace NAVObjectCompareWinClient
             try
             {
                 await HideOrShowProgressBarAsync();
-
 
                 await Task.Factory.StartNew(() =>
                 {
@@ -235,10 +235,9 @@ namespace NAVObjectCompareWinClient
             try
             {
                 DataGridRow dataGridRow = (DataGridRow)e.Source;
-                DataRowView dataRowView = (DataRowView)dataGridRow.Item;
+                NavObjectsCompared navObjectsCompared = (NavObjectsCompared)dataGridRow.Item;
 
-                string internalId = (string)dataRowView["InternalId"];
-                OpenEditor(internalId);
+                OpenEditor(navObjectsCompared.InternalId);
             }
             catch (Exception ex)
             {
@@ -364,25 +363,24 @@ namespace NAVObjectCompareWinClient
 
         private void PopulateGrid()
         {
-            DataTable listAsDataTable = DataTableHelper.BuildDataTable<NavObjectsCompared>(_compare.GetList());
-            DataView listAsDataView = listAsDataTable.DefaultView;
-
             comparedDataGrid.AutoGenerateColumns = false;
-            comparedDataGrid.ItemsSource = listAsDataView;
+            comparedDataGrid.ItemsSource = _compare.GetObservableCollection();
 
             SetRowFilters();
         }
 
         private void SetRowFilters()
         {
+            if (_compare == null)
+                return;
+
             ComboboxItem showComboBoxItem = (ComboboxItem)showComboBox.SelectedItem;
             ComboboxItem fieldFilterComboboxItem = (ComboboxItem)fieldFilterComboBox.SelectedItem;
             string fieldFilter = fieldFilterTextBox.Text;
 
-            if (comparedDataGrid.ItemsSource == null)
-                return;
-
-            (comparedDataGrid.ItemsSource as DataView).RowFilter = RowFilters.CreateFilter(showComboBoxItem, fieldFilterComboboxItem, fieldFilter);
+            ObservableCollection<NavObjectsCompared> collection = _compare.GetObservableCollection();
+            
+            comparedDataGrid.ItemsSource = RowFilters.CreateFilter(collection, showComboBoxItem, fieldFilterComboboxItem, fieldFilter);
 
             SetGridRowCountStatus();
         }
@@ -395,7 +393,7 @@ namespace NAVObjectCompareWinClient
 
         private void SetGridRowCountStatus()
         {
-            int count = (comparedDataGrid.ItemsSource as DataView)?.Count == null ? 0 : (comparedDataGrid.ItemsSource as DataView).Count;
+            int count = comparedDataGrid.ItemsSource == null ? 0 : ((ObservableCollection<NavObjectsCompared>)comparedDataGrid.ItemsSource).Count;
             GridRowCountTextBox.Text = string.Format("No of Rows: {0}", count);
         }
 
@@ -462,12 +460,12 @@ namespace NAVObjectCompareWinClient
 
         private void FilterToValue_Click(object sender, RoutedEventArgs e)
         {
-            NAVObjectCompareWinClient.Helpers.ComboboxItem selectedItem = RowFilters.GetComboBoxItem(fieldFilterComboBox, GetSelectedColumn());
+            //NAVObjectCompareWinClient.Helpers.ComboboxItem selectedItem = RowFilters.GetComboBoxItem(fieldFilterComboBox, GetSelectedColumn());
 
-            fieldFilterComboBox.SelectedItem = selectedItem;
-            fieldFilterTextBox.Text = GetSelectedGridValue().ToString();
+            //fieldFilterComboBox.SelectedItem = selectedItem;
+            //fieldFilterTextBox.Text = GetSelectedGridValue().ToString();
 
-            SetRowFilters();
+            //SetRowFilters();
         }
 
         private void SaveWorkspaceFile(string filepath)
@@ -521,6 +519,25 @@ namespace NAVObjectCompareWinClient
             }
         }
 
+        private void SelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            SetSelectAllInGrid();
 
+        }
+
+        private void SetSelectAllInGrid()
+        {
+            ObservableCollection<NavObjectsCompared> collection = ((ObservableCollection<NavObjectsCompared>)comparedDataGrid.ItemsSource);
+
+            if (collection == null)
+                return;
+
+            foreach (NavObjectsCompared compared in collection)
+            {
+                compared.Selected = true;
+            }
+
+            comparedDataGrid.Items.Refresh();
+        }
     }
 }

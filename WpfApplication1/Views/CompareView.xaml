@@ -11,7 +11,7 @@
         <SolidColorBrush x:Key="BackgroundBrushClear" Color="White" />
         <SolidColorBrush x:Key="BackgroundBrushUnequal" Color="Salmon" />
         <SolidColorBrush x:Key="BackgroundBrushUnexisting" Color="LemonChiffon" />
-        <SolidColorBrush x:Key="BackgroundBrushEdited" Color="Wheat" />
+        <SolidColorBrush x:Key="BackgroundBrushEdited" Color="Gold" />
         <SolidColorBrush x:Key="BackgroundBrushA" Color="Azure" />
         <SolidColorBrush x:Key="BackgroundBrushB" Color="OldLace" />
         <SolidColorBrush x:Key="BackgroundBrushSelected" Color="DodgerBlue" Opacity=".4"/>
@@ -34,7 +34,9 @@
                     <Separator />
                     <MenuItem Header="_Exit" Click="ExitMenu_Click" />
                 </MenuItem>
-                <MenuItem Header="_Tools">
+                <MenuItem Header="_Edit">
+                    <MenuItem x:Name="SelectAll" Header="Select _All" HorizontalAlignment="Left" Width="140" Click="SelectAll_Click"/>
+                    <Separator />
                     <MenuItem x:Name="Options" Header="_Options" HorizontalAlignment="Left" Width="140"/>
                 </MenuItem>
                 <MenuItem Header="_Help">
