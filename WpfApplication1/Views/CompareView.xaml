@@ -127,33 +127,7 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                
-                <!--<DataGridCheckBoxColumn Header="Select" Binding="{Binding Selected}" IsReadOnly="False" Width="60">
-                    <DataGridCheckBoxColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Status}" Value="0">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Status}" Value="1">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnequal}" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Status}" Value="2">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Edited}" Value="True">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
-                                </DataTrigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushSelected}"/>
-                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrushClear}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGridCheckBoxColumn.CellStyle>
-                </DataGridCheckBoxColumn>-->
-
+  
                 <DataGridTemplateColumn Header="Select" IsReadOnly="False" Width="60">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -172,6 +146,9 @@
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
@@ -199,6 +176,9 @@
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
                                 </DataTrigger>
@@ -223,6 +203,9 @@
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
@@ -249,6 +232,9 @@
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
                                 </DataTrigger>
@@ -273,6 +259,9 @@
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
@@ -299,6 +288,9 @@
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
                                 </DataTrigger>
@@ -323,6 +315,9 @@
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
@@ -349,6 +344,9 @@
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushA}" />
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
                                 </DataTrigger>
@@ -373,6 +371,9 @@
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
@@ -399,6 +400,9 @@
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
                                 </DataTrigger>
@@ -423,6 +427,9 @@
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
@@ -449,6 +456,9 @@
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />
                                 </DataTrigger>
@@ -473,6 +483,9 @@
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Status}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushUnexisting}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ConsideredEqual}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BackgroundBrushClear}" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Edited}" Value="True">
                                     <Setter Property="Background" Value="{StaticResource BackgroundBrushEdited}" />

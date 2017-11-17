@@ -54,6 +54,20 @@ namespace NAVObjectCompare.Models
         public bool Edited { get; set; }
         public string Comment { get; set; }
 
+        public bool ConsideredEqual
+        {
+            get
+            {
+                if (Status == EqualStatus.Equal)
+                    return true;
+
+                if ((Status == EqualStatus.Unequal) && (ObjectPropertiesEqual == false) && (CodeEqual == true))
+                    return true;
+
+                return false;
+            }
+        }
+
         #region Serialize
         public void Serialize(ref BinaryWriter writer)
         {
