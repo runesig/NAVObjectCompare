@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 namespace NAVObjectCompare.Editor
 {
     public delegate void FileWatcherEventHandler(object source, FileWatcherEventArgs e);
+    public delegate void FileWatcherErrorEventHandler(object source, FileWatcherErrorEventArgs e);
 
     public class FileWatcher
     {
 
         public event FileWatcherEventHandler OnFileChanged;
+        public event FileWatcherErrorEventHandler OnFileError;
 
         private FileSystemWatcher _systemWatcher = new FileSystemWatcher();
         private string _filePathA = string.Empty;
@@ -60,10 +62,12 @@ namespace NAVObjectCompare.Editor
 
         private void OnError(object sender, ErrorEventArgs e)
         {
+            RaiseErrorEvent(e.GetException());
         }
 
         private void OnChanged(object source, FileSystemEventArgs e)
         {
+            // File is changed first but normally name of file is different because its a tmp file
             if (e.FullPath == _filePathA)
                 RaiseEventFileChanged(_filePathA);
 
@@ -73,6 +77,7 @@ namespace NAVObjectCompare.Editor
 
         private void OnRenamed(object source, RenamedEventArgs e)
         {
+            // The tmp file is renamed and this event occours. This is what normally imports the file.
             if (e.FullPath == _filePathA)
                 RaiseEventFileChanged(_filePathA);
 
@@ -84,6 +89,11 @@ namespace NAVObjectCompare.Editor
         {
             this.OnFileChanged?.Invoke(this, new FileWatcherEventArgs(filePath));
         }
+
+        private void RaiseErrorEvent(Exception ex)
+        {
+            this.OnFileError?.Invoke(this, new FileWatcherErrorEventArgs(ex));
+        }
     }
 
     public class FileWatcherEventArgs : EventArgs
@@ -93,5 +103,14 @@ namespace NAVObjectCompare.Editor
             this.FileChangedPath = fileChangedPath;
         }
         public string FileChangedPath { get; private set; }
+    }
+
+    public class FileWatcherErrorEventArgs : EventArgs
+    {
+        public FileWatcherErrorEventArgs(Exception ex)
+        {
+            this.Exception = ex;
+        }
+        public Exception Exception { get; private set; }
     }
 }

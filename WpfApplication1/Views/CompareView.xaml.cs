@@ -61,6 +61,7 @@ namespace NAVObjectCompareWinClient
 
             _editor = new Editor(appSettings.EditorPath);
             _editor.OnReCompareObject += _editor_OnReCompareObject;
+            _editor.OnEditorError += _editor_OnEditorError;
         }
 
         private void InitFilters()
@@ -89,6 +90,11 @@ namespace NAVObjectCompareWinClient
         private void _editor_OnReCompareObject(object source, EditorEventArgs e)
         {
             this.Dispatcher.Invoke(() => ReCompare(e.NavObject.InternalId), DispatcherPriority.Background);
+        }
+
+        private void _editor_OnEditorError(object source, EditorErrorEventArgs e)
+        {
+            this.Dispatcher.Invoke(() => MessageHelper.ShowError(e.Exception), DispatcherPriority.Normal);
         }
 
         async private void ReCompare(string internalId)

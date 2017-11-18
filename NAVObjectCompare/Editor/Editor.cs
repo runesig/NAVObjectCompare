@@ -13,10 +13,12 @@ using NAVObjectCompare.ExportObjects;
 namespace NAVObjectCompare.Editor
 {
     public delegate void EditorEventHandler(object source, EditorEventArgs e);
+    public delegate void EditorErrorEventHandler(object source, EditorErrorEventArgs e);
 
     public class Editor
     {
         public event EditorEventHandler OnReCompareObject;
+        public event EditorErrorEventHandler OnEditorError;
 
         FileWatcher _watcher = null;
         string _editorExePath = string.Empty;
@@ -31,6 +33,7 @@ namespace NAVObjectCompare.Editor
 
             _watcher = new FileWatcher(ObjectExport.GetObjectFileFolder());
             _watcher.OnFileChanged += _watcher_OnFileChanged;
+            _watcher.OnFileError += _watcher_OnFileError;
         }
 
         public void OpenEditor(NavObjectsCompared objectsCompared)
@@ -65,33 +68,68 @@ namespace NAVObjectCompare.Editor
         // Events
         private void _watcher_OnFileChanged(object source, FileWatcherEventArgs e)
         {
-            ReImportObject(e.FileChangedPath);
+            int noOfRetries = 0;
+            string internalIdProcessed = string.Empty;
+
+            ReImportObject(e.FileChangedPath, ref noOfRetries, ref internalIdProcessed);
         }
 
-        private void ReImportObject(string filePath)
+        private void _watcher_OnFileError(object source, FileWatcherErrorEventArgs e)
         {
-            if (IsFileLocked(new FileInfo(filePath)))
-                return;
+            OnEditorError?.Invoke(this, new EditorErrorEventArgs(e.Exception)); // Redirect Exception
+        }
 
+        private void ReImportObject(string filePath, ref int noOfRetries, ref string internalIdProcessed)
+        {
+            if (!string.IsNullOrEmpty(internalIdProcessed))
+                return; // Object is alread processed
+
+            try
+            {
+                FileInfo fileInfo = new FileInfo(filePath);
+                if (!IsFileExists(fileInfo))
+                    return;
+
+                if (IsFileLocked(fileInfo))
+                {
+                    if (noOfRetries == 10)
+                        throw new Exception("Timed out reimporting object.");
+
+                    System.Threading.Thread.Sleep(1000);
+                    noOfRetries++;
+                    ReImportObject(filePath, ref noOfRetries, ref internalIdProcessed);
+                    return;
+                }
+
+                SplitFileName(filePath, out string[] parts);
+
+                internalIdProcessed = string.Format("{0}-{1}", parts[0].ToUpper(), parts[1]);
+
+                switch (parts[2])
+                {
+                    case _tagA:
+                        GetObjectAndImport(ObjectsA, internalIdProcessed, filePath);
+                        break;
+                    case _tagB:
+                        GetObjectAndImport(ObjectsB, internalIdProcessed, filePath);
+                        break;
+                }
+
+                File.Delete(filePath);
+            }
+            catch (Exception ex)
+            {
+                OnEditorError?.Invoke(this, new EditorErrorEventArgs(ex));
+            }
+        }
+
+        private void SplitFileName(string filePath, out string[] parts)
+        {
             string fileName = Path.GetFileNameWithoutExtension(filePath);
-            string[] parts = fileName.Split('-');
+            parts = fileName.Split('-');
 
             if (parts.Length != 3)
-                return; // Not correct filename
-
-            string internalId = string.Format("{0}-{1}", parts[0].ToUpper(), parts[1]);
-
-            switch (parts[2])
-            {
-                case _tagA:
-                    GetObjectAndImport(ObjectsA, internalId, filePath);
-                    break;
-                case _tagB:
-                    GetObjectAndImport(ObjectsB, internalId, filePath);
-                    break;
-            }
-
-            File.Delete(filePath);
+                throw new Exception(string.Format("Incorrect file name: {0}. Reimport not possible", filePath));
         }
 
         private bool IsFileLocked(FileInfo file)
@@ -115,9 +153,12 @@ namespace NAVObjectCompare.Editor
                 if (stream != null)
                     stream.Close();
             }
-
-            //file is not locked
             return false;
+        }
+
+        private bool IsFileExists(FileInfo file)
+        {
+            return file.Exists;
         }
 
         private void GetObjectAndImport(Dictionary<string, NavObject> prevObjects, string internalId, string filePath)
@@ -157,5 +198,14 @@ namespace NAVObjectCompare.Editor
             this.NavObject = newObject;
         }
         public NavObject NavObject { get; private set;}
+    }
+
+    public class EditorErrorEventArgs : EventArgs
+    {
+        public EditorErrorEventArgs(Exception ex)
+        {
+            this.Exception = ex;
+        }
+        public Exception Exception { get; private set; }
     }
 }
