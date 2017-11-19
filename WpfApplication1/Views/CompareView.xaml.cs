@@ -582,5 +582,10 @@ namespace NAVObjectCompareWinClient
             comparedDataGrid.Items.Refresh();
         }
 
+        private void About_Click(object sender, RoutedEventArgs e)
+        {
+            AboutView aboutView = new AboutView(this);
+            aboutView.ShowDialog();
+        }
     }
 }

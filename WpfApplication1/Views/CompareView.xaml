@@ -45,7 +45,7 @@
                     <MenuItem x:Name="Options" Header="_Options" HorizontalAlignment="Left" Width="140"/>
                 </MenuItem>
                 <MenuItem Header="_Help">
-                    <MenuItem x:Name="About" Header="_About" HorizontalAlignment="Left" Width="140"/>
+                    <MenuItem x:Name="About" Header="_About" HorizontalAlignment="Left" Width="140" Click="About_Click"/>
                 </MenuItem>
             </Menu>
             <!--Menu End-->
