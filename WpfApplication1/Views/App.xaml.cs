@@ -20,7 +20,7 @@ namespace NAVObjectCompareWinClient
             CompareView compareView = new CompareView()
             {
                 DataContext = new CompareViewModel(),
-                Title = "Dynamics NAV Object Compare"
+                // Title = "Dynamics NAV Object Compare"
             };
 
             // Show the window
