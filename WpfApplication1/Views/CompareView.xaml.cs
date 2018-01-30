@@ -25,6 +25,7 @@ using NAVObjectCompareWinClient.Configurations;
 using NAVObjectCompareWinClient.Model;
 using NAVObjectCompare.ExportFinexe;
 using System.Collections.ObjectModel;
+using NAVObjectCompareWinClient.ViewModel;
 
 namespace NAVObjectCompareWinClient
 {
@@ -35,9 +36,13 @@ namespace NAVObjectCompareWinClient
     {
         Editor _editor = null;
         ObjectCompare _compare = null;
+        private CompareViewModel _compareViewModel;
 
         public CompareView()
         {
+            _compareViewModel = new CompareViewModel();
+            DataContext = _compareViewModel;
+
             InitializeComponent();
             InitApplication();
         }
