@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NAVObjectCompareWinClient"
         xmlns:helpers="clr-namespace:NAVObjectCompareWinClient.Helpers"
         mc:Ignorable="d"
-        Title="NAV Object Compare BETA 1" Background="{DynamicResource BackgroundBrushClear}">
+        Title="NAV Object Compare BETA 2" Background="{DynamicResource BackgroundBrushClear}">
     <Window.Resources>
         <SolidColorBrush x:Key="BackgroundBrushClear" Color="White" />
         <SolidColorBrush x:Key="BackgroundBrushUnequal" Color="Salmon" />
@@ -248,8 +248,7 @@
                 </DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding StringDateA}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.Header>
-                        <TextBlock Text="{Binding Path=DataContext.NameA,RelativeSource={ RelativeSource Mode=FindAncestor, AncestorType={x:Type local:CompareView}}}" />
-                        <!--<TextBlock Text="Jadda" />-->
+                        <TextBlock Text="{Binding Path=DataContext.DateNameA, Mode=OneWay, RelativeSource={ RelativeSource Mode=FindAncestor, AncestorType={x:Type local:CompareView}}}" />
                     </DataGridTextColumn.Header>
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
@@ -362,7 +361,10 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Date Object B" Binding="{Binding StringDateB}" IsReadOnly="True" Width="*">
+                <DataGridTextColumn Binding="{Binding StringDateB}" IsReadOnly="True" Width="*">
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="{Binding Path=DataContext.DateNameB, RelativeSource={ RelativeSource Mode=FindAncestor, AncestorType={x:Type local:CompareView}}}" />
+                    </DataGridTextColumn.Header>
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" Value="{StaticResource BackgroundBrushB}" />

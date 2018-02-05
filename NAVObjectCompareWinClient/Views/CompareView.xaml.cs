@@ -371,6 +371,8 @@ namespace NAVObjectCompareWinClient
                     }
                 }
 
+                _compareViewModel.PrettyNameA = _compare.SourcePrettyNameA;
+                _compareViewModel.PrettyNameB = _compare.SourcePrettyNameB;
                 _compare.RunCompare();
             }
             catch(Exception ex)

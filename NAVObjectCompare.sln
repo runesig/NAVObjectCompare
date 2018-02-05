@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAVObjectCompare", "NAVObjectCompare\NAVObjectCompare.csproj", "{63EB0AEB-837A-4687-A279-C418F30E9427}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAVObjectCompareClient", "WpfApplication1\NAVObjectCompareClient.csproj", "{4ACFB603-2C3D-440A-B202-DD2D2EC04774}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAVObjectCompareClient", "NAVObjectCompareWinClient\NAVObjectCompareClient.csproj", "{4ACFB603-2C3D-440A-B202-DD2D2EC04774}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NavObjectCompareTests", "NavObjectCompareTests\NavObjectCompareTests.csproj", "{98BD3F18-EF4C-4ED0-A99A-14C4A539FCD3}"
 EndProject

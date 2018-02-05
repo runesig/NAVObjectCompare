@@ -22,6 +22,53 @@ namespace NAVObjectCompare.Compare
         // Events
         public event CompareEventHandler OnCompared;
 
+        // Properties
+        private string _sourcePrettyNameA = string.Empty;
+        private string _sourcePrettyNameB = string.Empty;
+
+        public string SourcePrettyNameA
+        {
+            get
+            {
+                if(string.IsNullOrEmpty(_sourcePrettyNameA))
+                {
+                    if(!string.IsNullOrEmpty(this.CompareFilePathA))
+                    {
+                        if (!string.IsNullOrEmpty(this.CompareFilePathA))
+                            return GetFileNamePart(this.CompareFilePathA);
+                    }
+                }
+
+                return _sourcePrettyNameA;
+            }
+
+            set { _sourcePrettyNameA = value; }
+        }
+
+        public string SourcePrettyNameB
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_sourcePrettyNameB))
+                {
+                    if (!string.IsNullOrEmpty(this.CompareFilePathB))
+                        return GetFileNamePart(this.CompareFilePathB);
+                }
+
+                return _sourcePrettyNameB;
+            }
+
+            set { _sourcePrettyNameB = value; }
+        }
+
+        private string GetFileNamePart(string filePath)
+        {
+            Uri uri = new Uri(filePath);
+            return uri.Segments.Last();
+        }
+
+        public string CompareFilePathA { get; set; }
+        public string CompareFilePathB { get; set; }
 
         public Dictionary<string, NavObject> NavObjectsA { get { return _navObjectsA; } }
         public Dictionary<string, NavObject> NavObjectsB { get { return _navObjectsB; } }
@@ -187,9 +234,6 @@ namespace NAVObjectCompare.Compare
         {
             return new ObservableCollection<NavObjectsCompared>(_objectsComparedDict.Values);
         }
-
-        public string CompareFilePathA { get; set; }
-        public string CompareFilePathB { get; set; }
 
         #region Public Methods
 
